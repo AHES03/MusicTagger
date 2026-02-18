@@ -18,7 +18,7 @@ class MetadataPayload(BaseModel):
     artist: str
     album: str
     track_number: int
-    year: str
+    date: str
     genre: str
     spotify_id: str  # Used to fetch and embed artwork
 

@@ -6,7 +6,7 @@ from mutagen import File
 
 file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
 audio = File(file_path)
-print()
+print(audio['genre'])
 # load_dotenv('.env')
 # client_id = os.getenv('SPOTIFY_CLIENT_ID')
 # client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')

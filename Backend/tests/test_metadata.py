@@ -9,7 +9,7 @@ class TestMetadataReader:
         pass
 
     def test_read_contains_expected_fields(self, sample_audio_file):
-        """Result should include: title, artist, album, track_number, year, genre."""
+        """Result should include: title, artist, album, track_number, date, genre."""
         pass
 
     def test_read_invalid_path_raises_error(self):

@@ -39,7 +39,7 @@ class TestSearchTrack:
 
 
     def test_search_result_contains_expected_fields(self, spotify_client):
-        """Each result should have: spotify_id, title, artist, album, year, artwork_url."""
+        """Each result should have: spotify_id, title, artist, album, date, artwork_url."""
         query = "The Beatles"
         test = SpotifyClient()
         test.authenticate()
