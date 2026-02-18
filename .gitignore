@@ -14,3 +14,12 @@ DerivedData/
 
 # macOS
 .DS_Store
+
+# Test audio files
+test_files/
+**/test_files/
+*.mp3
+*.m4a
+*.flac
+*.aac
+*.wav
