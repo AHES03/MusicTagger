@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+spotipy
+mutagen
+python-dotenv
+pydantic
+
+# Testing
+pytest
+pytest-asyncio
+httpx
