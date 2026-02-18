@@ -12,6 +12,7 @@ class MetadataReader:
         Read and return all existing metadata fields from the file.
         Fields: title, artist, album, track_number, year, genre, artwork.
         """
+
         pass
 
 
