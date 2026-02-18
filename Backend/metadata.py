@@ -1,9 +1,11 @@
+from mutagen import File
 class MetadataReader:
     """Reads existing metadata tags from a local music file."""
 
     def __init__(self, file_path: str):
         # Load the file using mutagen
-        pass
+        self.audio = File(file_path)
+
 
     def read(self) -> dict:
         """
