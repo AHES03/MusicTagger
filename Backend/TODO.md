@@ -1,18 +1,18 @@
 # Backend TODO
 
 ## Setup
-- [ ] Copy `.env.example` to `.env` and fill in your Spotify credentials
-- [ ] Create a virtual environment and run `pip install -r requirements.txt`
+- [x] Copy `.env.example` to `.env` and fill in your Spotify credentials
+- [x] Create a virtual environment and run `pip install -r requirements.txt`
 
 ---
 
 ## spotify_client.py
 
-- [ ] `__init__` — load env vars using `python-dotenv`
-- [ ] `authenticate` — set up `SpotifyClientCredentials` and assign the `Spotify` client instance to `self`
-- [ ] `search_track` — call Spotify search API, return a list of simplified track dicts
-- [ ] `get_track_metadata` — fetch a single track by ID, extract and return all relevant fields
-- [ ] `get_album_artwork` — use the artwork URL from track metadata to download and return image bytes
+- [x] `__init__` — load env vars using `python-dotenv`
+- [x] `authenticate` — set up `SpotifyClientCredentials` and assign the `Spotify` client instance to `self`
+- [x] `search_track` — call Spotify search API, return a list of simplified track dicts
+- [x] `get_track_metadata` — fetch a single track by ID, extract and return all relevant fields
+- [x] `get_album_artwork` — use the artwork URL from track metadata to download and return image bytes
 
 ---
 
