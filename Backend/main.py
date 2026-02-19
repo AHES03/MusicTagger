@@ -8,6 +8,7 @@ spotify = SpotifyClient()
 spotify.authenticate()
 
 
+
 @app.get("/health",status_code=200)
 def health_check():
     """Confirm the backend is running."""
@@ -26,10 +27,21 @@ def search(request: SearchRequest):
     return {'Tracks': resp}
 
 
-@app.post("/read-metadata")
+@app.post("/read-metadata",status_code=200)
 def read_metadata(request: ReadMetadataRequest):
     """Read and return existing metadata from a local file."""
-    pass
+    path = request.file_path
+    try:
+        metadata_reader = MetadataReader(path)
+    except ValueError as e:
+        if "File does not exist" in str(e):
+            raise HTTPException(status_code=404, detail=str(e))
+        elif "Unsupported file format" in str(e):
+            raise HTTPException(status_code=422, detail=str(e))
+        else:
+            raise HTTPException(status_code=400, detail=str(e))
+    metadata = metadata_reader.read()
+    return {'Metadata': metadata}
 
 
 @app.post("/write-metadata")

@@ -35,8 +35,7 @@ class TestSearchRoute:
 
     def test_search_returns_422_with_missing_query(self, api_client):
         """POST /search with no body should return 422."""
-        query = ""
-        response = api_client.post("/search", json={"query": query})
+        response = api_client.post("/search")
         assert response.status_code == 422
 
 
@@ -45,15 +44,20 @@ class TestReadMetadataRoute:
 
     def test_read_returns_200_with_valid_file(self, api_client):
         """POST /read-metadata with a valid file path should return 200."""
-        pass
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        response = api_client.post("/read-metadata", json={"file_path": file_path})
+        assert response.status_code == 200
 
     def test_read_returns_422_with_missing_body(self, api_client):
         """POST /read-metadata with no body should return 422."""
-        pass
+        response = api_client.post("/read-metadata")
+        assert response.status_code == 422
 
     def test_read_returns_error_for_invalid_path(self, api_client):
         """POST /read-metadata with a bad file path should return an error response."""
-        pass
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/ - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        response = api_client.post("/read-metadata", json={"file_path": file_path})
+        assert response.status_code == 404
 
 
 class TestWriteMetadataRoute:
