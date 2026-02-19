@@ -28,7 +28,7 @@
 
 ## main.py
 
-- [ ] `health_check` — return a simple `{"status": "ok"}` response
+- [x] `health_check` — return a simple `{"status": "ok"}` response
 - [ ] `search` — call `SpotifyClient.search_track`, return results as a list of `TrackResult`
 - [ ] `read_metadata` — instantiate `MetadataReader` and return the result
 - [ ] `write_metadata` — fetch artwork via `SpotifyClient.get_album_artwork`, then use `MetadataWriter` to write tags and artwork

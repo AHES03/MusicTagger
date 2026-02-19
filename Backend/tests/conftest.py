@@ -1,4 +1,6 @@
 import pytest
+from fastapi.testclient import TestClient
+from main import app
 
 # Shared fixtures available to all test files
 
@@ -24,4 +26,4 @@ def api_client():
     Return a TestClient wrapping the FastAPI app.
     Used for testing routes in test_main.py.
     """
-    pass
+    return TestClient(app)

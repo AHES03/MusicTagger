@@ -1,26 +1,37 @@
 import pytest
 
 
+
 class TestHealthCheck:
 
     def test_health_returns_200(self, api_client):
         """GET /health should return a 200 status code."""
-        pass
+        response = api_client.get("/health")
+        assert response.status_code == 200
+
 
     def test_health_returns_ok_status(self, api_client):
         """GET /health response body should indicate the server is running."""
-        pass
+        response = api_client.get("/health")
+        assert response.json()['Health'] == 'ok'
 
 
 class TestSearchRoute:
 
     def test_search_returns_200_with_valid_query(self, api_client):
         """POST /search with a valid query should return 200."""
-        pass
+        query = "The Beatles"
+        response = api_client.post("/search", json={"query": query})
+        assert response.status_code == 200
+
 
     def test_search_returns_list_of_tracks(self, api_client):
         """Response body should be a list of track objects."""
-        pass
+        query = "The Beatles"
+        response = api_client.post("/search", json={"query": query})
+        assert response.status_code == 200
+        assert isinstance(response.json()['Tracks'], list)
+
 
     def test_search_returns_422_with_missing_query(self, api_client):
         """POST /search with no body should return 422."""

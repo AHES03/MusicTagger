@@ -5,18 +5,22 @@ from models import SearchRequest, MetadataPayload, ReadMetadataRequest
 
 app = FastAPI()
 spotify = SpotifyClient()
+spotify.authenticate()
 
 
-@app.get("/health")
+@app.get("/health",status_code=200)
 def health_check():
     """Confirm the backend is running."""
-    pass
+    resp = {"Health":"ok"}
+    return resp
 
 
-@app.post("/search")
+@app.post("/search",status_code=200)
 def search(request: SearchRequest):
     """Search Spotify for tracks. Returns a list of SpotifyTrack."""
-    pass
+    query = request.query
+    resp = spotify.search_track(query)
+    return {'Tracks': resp}
 
 
 @app.post("/read-metadata")
