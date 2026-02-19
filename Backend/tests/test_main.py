@@ -35,7 +35,10 @@ class TestSearchRoute:
 
     def test_search_returns_422_with_missing_query(self, api_client):
         """POST /search with no body should return 422."""
-        pass
+        query = ""
+        response = api_client.post("/search", json={"query": query})
+        assert response.status_code == 422
+
 
 
 class TestReadMetadataRoute:

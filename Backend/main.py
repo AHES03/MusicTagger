@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from spotify_client import SpotifyClient
 from metadata import MetadataReader, MetadataWriter
 from models import SearchRequest, MetadataPayload, ReadMetadataRequest
@@ -19,7 +19,10 @@ def health_check():
 def search(request: SearchRequest):
     """Search Spotify for tracks. Returns a list of SpotifyTrack."""
     query = request.query
-    resp = spotify.search_track(query)
+    try:
+        resp = spotify.search_track(query)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
     return {'Tracks': resp}
 
 
