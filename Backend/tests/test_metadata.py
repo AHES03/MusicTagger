@@ -84,4 +84,3 @@ class TestMetadataWriter:
         with pytest.raises(ValueError) as excinfo:
             reader.write_artwork(b"this is not an image")
         assert "Invalid cover file type" in str(excinfo.value)
-        

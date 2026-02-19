@@ -20,9 +20,9 @@
 
 - [x] `MetadataReader.__init__` — load the file with mutagen, detect format (MP3 / MP4 / FLAC)
 - [x] `MetadataReader.read` — extract and return all tag fields as a dict
-- [ ] `MetadataWriter.__init__` — load the file with mutagen, detect format
-- [ ] `MetadataWriter.write` — map the metadata dict fields to the correct mutagen tag keys per format
-- [ ] `MetadataWriter.write_artwork` — embed image bytes into the correct tag field per format
+- [x] `MetadataWriter.__init__` — load the file with mutagen, detect format
+- [x] `MetadataWriter.write` — map the metadata dict fields to the correct mutagen tag keys per format
+- [x] `MetadataWriter.write_artwork` — embed image bytes into the correct tag field per format
 
 ---
 
