@@ -23,4 +23,4 @@ test_files/
 *.m4a
 *.flac
 *.aac
-*.wav
+*.wav.cache/
