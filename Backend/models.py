@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class SpotifyTrack(BaseModel):
@@ -14,13 +15,13 @@ class SpotifyTrack(BaseModel):
 class MetadataPayload(BaseModel):
     """Metadata fields to be written to a local file."""
     file_path: str
-    title: str
-    artist: str
-    album: str
-    track_number: int
-    date: str
-    genre: str
-    spotify_id: str  # Used to fetch and embed artwork
+    title: Optional[str] = None
+    artist: Optional[str] = None
+    album: Optional[str] = None
+    track_number: Optional[int] = None
+    date: Optional[str] = None
+    genre: Optional[str] = None
+    spotify_id: Optional[str] = None  # Used to fetch and embed artwork
 
 
 class SearchRequest(BaseModel):

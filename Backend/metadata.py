@@ -7,7 +7,10 @@ class MetadataReader:
     def __init__(self, file_path: str):
         # Load the file using mutagen
         self.file_path =file_path
-        self.audio = File(file_path)
+        try:
+            self.audio = File(file_path)
+        except:
+            raise ValueError("File does not exist")
         if self.audio is None:
             raise ValueError("Unsupported file format")
 
@@ -28,6 +31,7 @@ class MetadataReader:
             "genre": self.audio.get('genre', [None])[0],
             "spotify_id": self.audio.get('spotify_id', [None])[0]
         }
+        print()
         return MetadataPayload(**mapped_dict)
 
 
