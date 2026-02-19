@@ -1,7 +1,6 @@
 import pytest
 
 
-
 class TestHealthCheck:
 
     def test_health_returns_200(self, api_client):
@@ -91,20 +90,35 @@ class TestWriteArtworkRoute:
 
     def test_write_artwork_returns_200_with_valid_payload(self, api_client):
         """POST /write-artwork with valid file and artwork paths should return 200."""
-        pass
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        img_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/196873704166.jpg'
+        metadata_file = api_client.post("/write-artwork", json={"file_path": file_path,"artwork_path":img_path})
+
+        assert metadata_file.status_code == 200
+
 
     def test_write_artwork_returns_422_with_missing_body(self, api_client):
         """POST /write-artwork with no body should return 422."""
-        pass
+        metadata_file = api_client.post("/write-metadata")
+        assert metadata_file.status_code == 422
 
     def test_write_artwork_returns_error_for_invalid_audio_path(self, api_client):
         """POST /write-artwork with a bad audio file path should return 404."""
-        pass
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/ - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        img_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/196873704166.jpg'
+        metadata_file = api_client.post("/write-artwork", json={"file_path": file_path, "artwork_path": img_path})
+        assert metadata_file.status_code == 404
 
     def test_write_artwork_returns_error_for_invalid_artwork_path(self, api_client):
         """POST /write-artwork with a bad artwork path should return 404."""
-        pass
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        img_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/gue.jpg'
+        metadata_file = api_client.post("/write-artwork", json={"file_path": file_path, "artwork_path": img_path})
+        assert metadata_file.status_code == 404
 
     def test_write_artwork_returns_error_for_invalid_image_format(self, api_client):
         """POST /write-artwork with a non-image file as artwork should return 422."""
-        pass
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        img_path = "REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-03 KISS ME.flac"
+        metadata_file = api_client.post("/write-artwork", json={"file_path": file_path, "artwork_path": img_path})
+        assert metadata_file.status_code == 422
