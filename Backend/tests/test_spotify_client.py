@@ -7,7 +7,7 @@ from unittest.mock import patch, MagicMock
 
 class TestAuthentication:
 
-    def test_authenticate_succeeds_with_valid_credentials(self, spotify_client):
+    def test_authenticate_succeeds_with_valid_credentials(self):
         """Client should authenticate without raising an exception."""
         test = SpotifyClient()
         test.authenticate()
@@ -29,7 +29,7 @@ class TestAuthentication:
 
 class TestSearchTrack:
 
-    def test_search_returns_list(self, spotify_client):
+    def test_search_returns_list(self):
         """A valid query should return a list."""
         query = "The Beatles"
         test = SpotifyClient()
@@ -38,7 +38,7 @@ class TestSearchTrack:
         assert isinstance(response, list)
 
 
-    def test_search_result_contains_expected_fields(self, spotify_client):
+    def test_search_result_contains_expected_fields(self):
         """Each result should have: spotify_id, title, artist, album, date, artwork_url."""
         query = "The Beatles"
         test = SpotifyClient()
@@ -47,7 +47,7 @@ class TestSearchTrack:
         assert type(response[0]) == SpotifyTrack
 
 
-    def test_search_with_empty_query_raises_error(self, spotify_client):
+    def test_search_with_empty_query_raises_error(self):
         """An empty query string should raise a ValueError."""
         query = ""
         test = SpotifyClient()
@@ -60,8 +60,8 @@ class TestSearchTrack:
 
 class TestGetTrackMetadata:
 
-    def test_returns_dict_with_all_fields(self, spotify_client):
-        """A valid track ID should return a dict with all metadata fields."""
+    def test_returns_dict_with_all_fields(self):
+        """A valid track ID should return a SpotifyTrack."""
         trackId = '3GfOAdcoc3X5GPiiXmpBjK'
         test = SpotifyClient()
         test.authenticate()
@@ -69,7 +69,7 @@ class TestGetTrackMetadata:
         assert type(response) == SpotifyTrack
 
 
-    def test_invalid_track_id_raises_error(self, spotify_client):
+    def test_invalid_track_id_raises_error(self):
         """An invalid track ID should raise an appropriate error."""
         trackId = 'hagyugwegqw73e32f'
         test = SpotifyClient()
@@ -81,7 +81,7 @@ class TestGetTrackMetadata:
 
 class TestGetAlbumArtwork:
 
-    def test_returns_bytes(self, spotify_client):
+    def test_returns_bytes(self):
         """A valid track ID should return image data as bytes."""
         trackId = '3GfOAdcoc3X5GPiiXmpBjK'
         test = SpotifyClient()
@@ -90,7 +90,7 @@ class TestGetAlbumArtwork:
         assert type(response) == bytes
 
 
-    def test_bad_artwork_url_raises_error(self, spotify_client):
+    def test_bad_artwork_url_raises_error(self):
         """An invalid track ID should raise an appropriate error."""
         trackId = '3GfOAdcoc3X5GPiiXmpBjK'  # valid track
         test = SpotifyClient()
