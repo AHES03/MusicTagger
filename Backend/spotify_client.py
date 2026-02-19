@@ -7,10 +7,10 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 
 class SpotifyClient:
-    """Handles all communication with the Spotify Web API."""
+    """@brief Handles all communication with the Spotify Web API."""
 
     def __init__(self):
-        # Initialize spotipy client with credentials from .env
+        ## @brief Initialises the client by loading credentials from .env.
         load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
         self.client_id = os.getenv('SPOTIFY_CLIENT_ID')
         self.client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
@@ -18,8 +18,9 @@ class SpotifyClient:
 
     def authenticate(self) -> None:
         """
-        Authenticate with the Spotify API using client credentials from .env.
+        @brief Authenticate with the Spotify API using client credentials from .env.
         Sets up the spotipy client instance for use by other methods.
+        @throws SpotifyOauthError if credentials are missing or invalid.
         """
         auth_manager = SpotifyClientCredentials(client_id=self.client_id, client_secret=self.client_secret)
         self.sp_client = spotipy.Spotify(auth_manager=auth_manager)
@@ -28,8 +29,10 @@ class SpotifyClient:
 
     def search_track(self, query: str) -> list[SpotifyTrack]:
         """
-        Search Spotify for tracks matching the query string.
-        Returns a list of track results.
+        @brief Search Spotify for tracks matching the query string.
+        @param query The search string to send to Spotify.
+        @return A list of SpotifyTrack objects.
+        @throws ValueError if query is empty.
         """
         if not query:
             raise ValueError("Query must not be empty")
@@ -51,8 +54,10 @@ class SpotifyClient:
 
     def get_track_metadata(self, track_id: str) -> SpotifyTrack:
         """
-        Fetch full metadata for a single track by its Spotify ID.
-        Returns a SpotifyTrack with title, artist, album, date, and artwork URL.
+        @brief Fetch full metadata for a single track by its Spotify ID.
+        @param track_id The Spotify track ID.
+        @return A SpotifyTrack with title, artist, album, date, and artwork URL.
+        @throws ValueError if the track ID is invalid.
         """
 
         try:
@@ -73,7 +78,10 @@ class SpotifyClient:
 
     def get_album_artwork(self, track_id: str) -> bytes:
         """
-        Download and return the album artwork image as bytes.
+        @brief Download and return the album artwork image as bytes.
+        @param track_id The Spotify track ID to fetch artwork for.
+        @return Raw image bytes of the album artwork.
+        @throws ValueError if the track ID is invalid or artwork URL is unreachable.
         """
         spTrack = self.get_track_metadata(track_id)
         image = httpx.get(spTrack.artwork_url)

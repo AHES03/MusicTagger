@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from spotify_client import SpotifyClient
 from metadata import MetadataReader, MetadataWriter
-from models import SearchRequest, MetadataPayload, ReadMetadataRequest
+from models import SearchRequest, MetadataPayload, ReadMetadataRequest, WriteArtworkRequest
 
 app = FastAPI()
 spotify = SpotifyClient()
@@ -11,14 +11,19 @@ spotify.authenticate()
 
 @app.get("/health",status_code=200)
 def health_check():
-    """Confirm the backend is running."""
+    """@brief Confirm the backend is running. @return JSON with Health status."""
     resp = {"Health":"ok"}
     return resp
 
 
 @app.post("/search",status_code=200)
 def search(request: SearchRequest):
-    """Search Spotify for tracks. Returns a list of SpotifyTrack."""
+    """
+    @brief Search Spotify for tracks matching the query.
+    @param request SearchRequest containing the query string.
+    @return JSON with a list of SpotifyTrack objects under key 'Tracks'.
+    @throws HTTPException 422 if query is empty.
+    """
     query = request.query
     try:
         resp = spotify.search_track(query)
@@ -29,7 +34,13 @@ def search(request: SearchRequest):
 
 @app.post("/read-metadata",status_code=200)
 def read_metadata(request: ReadMetadataRequest):
-    """Read and return existing metadata from a local file."""
+    """
+    @brief Read and return existing metadata from a local audio file.
+    @param request ReadMetadataRequest containing the file path.
+    @return JSON with a MetadataPayload under key 'Metadata'.
+    @throws HTTPException 404 if file does not exist.
+    @throws HTTPException 422 if file format is unsupported.
+    """
     path = request.file_path
     try:
         metadata_reader = MetadataReader(path)
@@ -44,7 +55,36 @@ def read_metadata(request: ReadMetadataRequest):
     return {'Metadata': metadata}
 
 
-@app.post("/write-metadata")
+@app.post("/write-metadata", status_code=200)
 def write_metadata(payload: MetadataPayload):
-    """Write metadata (and artwork) to a local file."""
+    """
+    @brief Write metadata tags to a local audio file.
+    @param payload MetadataPayload containing the file path and tag fields.
+    @return JSON with success status.
+    @throws HTTPException 404 if file does not exist.
+    @throws HTTPException 422 if file format is unsupported.
+    """
+    try:
+        path = payload.file_path
+        metadata_writer = MetadataWriter(path)
+    except ValueError as e:
+        if "File does not exist" in str(e):
+            raise HTTPException(status_code=404, detail=str(e))
+        elif "Unsupported file format" in str(e):
+            raise HTTPException(status_code=422, detail=str(e))
+        else:
+            raise HTTPException(status_code=400, detail=str(e))
+    metadata_writer.write(payload)
+    return {'status': "success"}
+
+
+@app.post("/write-artwork", status_code=200)
+def write_artwork(request: WriteArtworkRequest):
+    """
+    @brief Read artwork from a local image path and embed it into an audio file.
+    @param request WriteArtworkRequest containing the audio file path and artwork image path.
+    @return JSON with success status.
+    @throws HTTPException 404 if either file path does not exist.
+    @throws HTTPException 422 if the image file is not a valid format.
+    """
     pass

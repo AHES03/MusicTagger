@@ -32,3 +32,9 @@ class SearchRequest(BaseModel):
 class ReadMetadataRequest(BaseModel):
     """Request body for reading metadata from a local file."""
     file_path: str
+
+
+class WriteArtworkRequest(BaseModel):
+    """Request body for writing artwork to a local audio file."""
+    file_path: str
+    artwork_path: str

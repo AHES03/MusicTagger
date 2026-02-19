@@ -11,7 +11,7 @@ xcuserdata/
 DerivedData/
 *.xcworkspace/xcuserdata/
 .build/
-
+Doxyfile
 # macOS
 .DS_Store
 

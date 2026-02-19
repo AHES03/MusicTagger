@@ -1,0 +1,5 @@
+var namespacetest__metadata =
+[
+    [ "TestMetadataReader", "classtest__metadata_1_1_test_metadata_reader.html", "classtest__metadata_1_1_test_metadata_reader" ],
+    [ "TestMetadataWriter", "classtest__metadata_1_1_test_metadata_writer.html", "classtest__metadata_1_1_test_metadata_writer" ]
+];

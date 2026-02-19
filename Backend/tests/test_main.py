@@ -64,12 +64,47 @@ class TestWriteMetadataRoute:
 
     def test_write_returns_200_with_valid_payload(self, api_client):
         """POST /write-metadata with a full valid payload should return 200."""
-        pass
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        metadata_file = api_client.post("/read-metadata", json={"file_path": file_path})
+        MT = metadata_file.json()['Metadata']
+        MT['title'] = "Hello"
+        metadata_file = api_client.post("/write-metadata", json=MT)
+        assert metadata_file.status_code == 200
 
-    def test_write_returns_422_with_missing_fields(self, api_client):
-        """POST /write-metadata with an incomplete payload should return 422."""
-        pass
+    def test_write_returns_422_with_missing_body(self, api_client):
+        """POST /write-metadata with no body should return 422."""
+        metadata_file = api_client.post("/write-metadata")
+        assert metadata_file.status_code == 422
+
 
     def test_write_returns_error_for_invalid_path(self, api_client):
-        """POST /write-metadata with a bad file path should return an error response."""
+        """POST /write-metadata with a bad file path should return 404."""
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        metadata_file = api_client.post("/read-metadata", json={"file_path": file_path})
+        MT = metadata_file.json()['Metadata']
+        MT['file_path'] = ""
+        metadata_file = api_client.post("/write-metadata", json=MT)
+        assert metadata_file.status_code == 404
+
+
+class TestWriteArtworkRoute:
+
+    def test_write_artwork_returns_200_with_valid_payload(self, api_client):
+        """POST /write-artwork with valid file and artwork paths should return 200."""
+        pass
+
+    def test_write_artwork_returns_422_with_missing_body(self, api_client):
+        """POST /write-artwork with no body should return 422."""
+        pass
+
+    def test_write_artwork_returns_error_for_invalid_audio_path(self, api_client):
+        """POST /write-artwork with a bad audio file path should return 404."""
+        pass
+
+    def test_write_artwork_returns_error_for_invalid_artwork_path(self, api_client):
+        """POST /write-artwork with a bad artwork path should return 404."""
+        pass
+
+    def test_write_artwork_returns_error_for_invalid_image_format(self, api_client):
+        """POST /write-artwork with a non-image file as artwork should return 422."""
         pass
