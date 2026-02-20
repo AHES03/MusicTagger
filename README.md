@@ -20,7 +20,7 @@ Browse your local music library, search Spotify for the correct track, and write
 
 MusicTag is split into two components:
 
-**SwiftUI Frontend (`MTApp/`)**
+**SwiftUI Frontend (`MT_UI/`)**
 - Native macOS UI built with SwiftUI
 - Handles folder browsing and file selection
 - Communicates with the Python backend over local HTTP
@@ -36,19 +36,20 @@ MusicTag is split into two components:
 
 ```
 MusicTag/
-├── MTApp/                        # SwiftUI macOS app
-│   ├── MTApp.swift               # App entry point
-│   ├── Views/
-│   │   ├── ContentView.swift
-│   │   ├── FileListView.swift
-│   │   ├── MetadataEditorView.swift
-│   │   └── SpotifySearchView.swift
-│   ├── Models/
-│   │   ├── Track.swift
-│   │   └── MusicFile.swift
-│   └── Services/
-│       ├── APIClient.swift
-│       └── BackendLauncher.swift
+├── MT_UI/                        # Xcode project
+│   └── MT_UI/                    # SwiftUI macOS app source
+│       ├── MT_UIApp.swift        # App entry point
+│       ├── ContentView.swift
+│       ├── Views/
+│       │   ├── FileListView.swift
+│       │   ├── MetadataEditorView.swift
+│       │   └── SpotifySearchView.swift
+│       ├── Models/
+│       │   ├── Track.swift
+│       │   └── MusicFile.swift
+│       └── Services/
+│           ├── APIClient.swift
+│           └── BackendLauncher.swift
 └── Backend/                      # Python FastAPI server
     ├── main.py                   # API routes
     ├── spotify_client.py         # Spotify API integration
@@ -97,7 +98,7 @@ uvicorn main:app --reload
 
 ### Frontend Setup
 
-Open `MTApp/` in Xcode and run the app. The SwiftUI frontend will connect to the locally running Python server on startup.
+Open `MT_UI/MT_UI.xcodeproj` in Xcode and run the app. The SwiftUI frontend will connect to the locally running Python server on startup.
 
 ---
 
@@ -109,6 +110,7 @@ Open `MTApp/` in Xcode and run the app. The SwiftUI frontend will connect to the
 | `POST` | `/search` | Search Spotify for tracks |
 | `POST` | `/read-metadata` | Read tags from a local file |
 | `POST` | `/write-metadata` | Write tags to a local file |
+| `POST` | `/write-artwork` | Embed album artwork into a local file |
 
 ---
 
