@@ -99,7 +99,7 @@ class TestWriteArtworkRoute:
 
     def test_write_artwork_returns_422_with_missing_body(self, api_client):
         """POST /write-artwork with no body should return 422."""
-        metadata_file = api_client.post("/write-metadata")
+        metadata_file = api_client.post("/write-artwork")
         assert metadata_file.status_code == 422
 
     def test_write_artwork_returns_error_for_invalid_audio_path(self, api_client):

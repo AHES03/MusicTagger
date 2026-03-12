@@ -1,5 +1,3 @@
-from os import write
-
 import pytest
 from spotify_client import SpotifyClient
 from metadata import MetadataReader, MetadataWriter

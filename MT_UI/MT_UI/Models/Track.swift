@@ -4,23 +4,32 @@
 
 import Foundation
 
-// TODO: Conform to Identifiable using spotifyId as the id.
-// TODO: Conform to Decodable so URLSession/JSONDecoder can deserialise the backend response.
+// Conforms to Identifiable (id = spotifyId) and Decodable (JSON → struct).
+// CodingKeys maps snake_case JSON keys to camelCase Swift properties.
+// All fields are non-optional — the backend always returns values for Spotify tracks.
 
-struct Track {
+struct Track: Identifiable, Decodable {
 
-    // TODO: spotifyId — String. Maps to "spotify_id" in JSON.
-    //       Use CodingKeys to map snake_case JSON keys to camelCase Swift properties.
+    enum CodingKeys: String, CodingKey {
+        case spotifyId = "spotify_id"
+        case artworkUrl = "artwork_url"
+        case title, artist, album, date
+    }
 
-    // TODO: title — String. Maps to "title" in JSON.
-
-    // TODO: artist — String. Maps to "artist" in JSON.
-
-    // TODO: album — String. Maps to "album" in JSON.
-
-    // TODO: date — String. Maps to "date" in JSON.
-
-    // TODO: artworkUrl — String. Maps to "artwork_url" in JSON.
-    //       Used to fetch and display album art in the search results list.
-    //       Also passed to /write-artwork as artwork_path when the user confirms a result.
+    let spotifyId: String
+    let title: String
+    let artist: String
+    let album: String
+    let date: String
+    let artworkUrl: String  // Passed to /write-artwork as artwork_path when user confirms a result.
+    var id: String{spotifyId}
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.spotifyId = try container.decode(String.self, forKey: .spotifyId)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.artist = try container.decode(String.self, forKey: .artist)
+        self.album = try container.decode(String.self, forKey: .album)
+        self.date = try container.decode(String.self, forKey: .date)
+        self.artworkUrl = try container.decode(String.self, forKey: .artworkUrl)
+    }
 }
