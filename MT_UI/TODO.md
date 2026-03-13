@@ -29,18 +29,20 @@
 ## Views
 
 ### ContentView.swift
-- [ ] `HSplitView` with `MetadataEditorView` (left) and `FileListView` (right)
-- [ ] Shared state — `@State files: [MusicFile]`, `@State selectedFile: MusicFile?`
+- [x] `HSplitView` with `MetadataEditorView` (left) and `FileListView` (right)
+- [x] Shared state — `@State files: [MusicFile]`, `@State selectedFile: MusicFile?`
+- [x] Window minimum size constraint
 - [ ] Toolbar — open files button, save button
-- [ ] Window minimum size constraint
 
 ### FileListView.swift
-- [ ] `Table` with columns: Filename, Path, Tag, Title, Track, Artist, Album
-- [ ] Single-row selection bound to `selectedFile`
-- [ ] `.alternatingRowBackgrounds()` for striped appearance
-- [ ] Drag-and-drop import — filter by audio extensions, call `readMetadata` for each
-- [ ] Empty state placeholder
-- [ ] Right-click context menu — Remove from list, Show in Finder
+- [x] `Table` with columns: Title, Track #, Artist, Album
+- [x] Single-row selection (`MusicFile.ID?`)
+- [x] `.alternatingRowBackgrounds()` for striped appearance
+- [x] Right-click context menu — Remove from list, Show in Finder
+- [x] Wire selection changes to `onSelect` binding via `.onChange(of: selection)`
+- [x] Call `APIClient.readMetadata` when selection changes, update file metadata
+- [x] Drag-and-drop import — filter by audio extensions, call `readMetadata` for each
+- [x] Empty state placeholder
 
 ### MetadataEditorView.swift
 - [ ] Text fields — Title, Artist, Album, Date, Track Number, Genre

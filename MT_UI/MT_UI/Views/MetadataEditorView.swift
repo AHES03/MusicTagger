@@ -4,9 +4,13 @@
 
 import SwiftUI
 
-// TODO: Create a MetadataEditorView struct conforming to View.
-//       Receives a `Binding<MusicFile?>` from ContentView.
-//       When selectedFile is nil, show a placeholder: "Select a file to edit its metadata."
+struct MetadataEditorView: View {
+    @Binding var file: MusicFile?
+    var body: some View {
+        // TODO: Implement full metadata editor form
+        Text("MetadataEditorView")
+    }
+}
 
 // MARK: - Text Fields
 

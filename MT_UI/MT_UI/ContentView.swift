@@ -3,35 +3,26 @@
 
 import SwiftUI
 
-// TODO: Hold shared app state here (or in a ViewModel/@EnvironmentObject):
-//         - files: [MusicFile]  — the list of imported files
-//         - selectedFile: MusicFile?  — the currently selected file
-//       These are passed down to child views.
 
-// TODO: Body should be an HSplitView (or NavigationSplitView) with two panels:
-//
-//         HSplitView {
-//             MetadataEditorView(...)   // Left panel — fixed ~200pt width
-//             FileListView(...)         // Right panel — fills remaining space
-//         }
-//
-//       Set the left panel's frame to a fixed or min width (~200pt) matching the screenshot.
-
-// TODO: Add a macOS toolbar (`.toolbar { }`) above the right panel with:
-//         - Open folder / add files button
-//         - Save / write metadata button
-//         - Any other actions from Example.png (the icon strip across the top right)
-
-// TODO: Apply .frame(minWidth: 800, minHeight: 500) or equivalent window constraints.
-
-// TODO: Handle drag-and-drop of audio files onto the window at this level,
-//       or delegate it to FileListView. On drop, call APIClient.readMetadata()
-//       for each dropped file and append to `files`.
+// State: files (imported file list) and selectedFile (current selection) owned here
+// and passed down as bindings to child views.
+// TODO: Add toolbar — open files button, save button.
+// TODO: Handle drag-and-drop at this level or delegate to FileListView.
 
 struct ContentView: View {
+    @State private var selectedFile: MusicFile?
+    @State private var files: [MusicFile] = []
     var body: some View {
-        // TODO: Replace with HSplitView containing MetadataEditorView and FileListView
-        Text("Hello, world!")
+        HSplitView {
+            MetadataEditorView(file: $selectedFile)
+                .frame(minWidth: 200, maxWidth: 200)
+                .frame(maxHeight: .infinity)
+            FileListView(files: $files, onSelect: $selectedFile)
+                .frame(maxWidth:
+                  .infinity, maxHeight: .infinity)
+        }
+        .frame(minWidth: 800, minHeight: 500)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
