@@ -12,12 +12,12 @@
 - [x] Singleton (`static let shared`)
 - [x] Base URL constant
 - [x] `SearchResponse` wrapper struct for `/search` response
-- [ ] `APIError` enum — `invalidResponse(Int)`, `decodingFailed`, `networkUnavailable`
+- [x] `APIError` enum — `invalidResponse(String?)`, `decodingFailed`, `networkUnavailable`
 - [x] `searchTracks(query:)` — POST /search, decode `SearchResponse`, return `[Track]`
-- [ ] `readMetadata(filePath:)` — POST /read-metadata, decode `MetadataResponse`, return `MusicFile`
-- [ ] `writeMetadata(file:)` — POST /write-metadata, encode `MusicFile` as body
-- [ ] `writeArtwork(filePath:artworkPath:)` — POST /write-artwork
-- [ ] `healthCheck()` — GET /health, return `Bool`
+- [x] `readMetadata(filePath:)` — POST /read-metadata, decode `ReadMetadataResponse`, return `MusicFile`
+- [x] `writeMetadata(file:)` — POST /write-metadata, encode `MusicFile` as body
+- [x] `writeArtwork(filePath:artworkPath:)` — POST /write-artwork
+- [x] `healthCheck()` — GET /health, return `Bool`
 
 ### BackendLauncher.swift
 - [ ] `launch()` — start uvicorn via `Process()`, poll `/health` until ready

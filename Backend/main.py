@@ -44,7 +44,7 @@ def read_metadata(request: ReadMetadataRequest):
     @throws HTTPException 404 if file does not exist.
     @throws HTTPException 422 if file format is unsupported.
     """
-    path = request.file_path
+    path = request.c
     try:
         metadata_reader = MetadataReader(path)
     except ValueError as e:
