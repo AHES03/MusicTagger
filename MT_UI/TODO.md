@@ -20,9 +20,9 @@
 - [x] `healthCheck()` — GET /health, return `Bool`
 
 ### BackendLauncher.swift
-- [ ] `launch()` — start uvicorn via `Process()`, poll `/health` until ready
-- [ ] `terminate()` — shut down the process on app quit
-- [ ] `@Published isReady: Bool` — signal UI when backend is up
+- [x] `launch()` — start uvicorn via `Process()`, poll `/health` until ready
+- [x] `terminate()` — shut down the process on app quit
+- [x] `@Published isOnline: Bool` — signals UI when backend is up
 
 ---
 
