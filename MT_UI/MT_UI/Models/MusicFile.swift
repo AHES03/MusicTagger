@@ -14,7 +14,10 @@ struct MusicFile: Identifiable, Hashable, Codable {
         case filePath = "file_path",
          trackNumber = "track_number",
              spotifyId = "spotify_id",
-             title, artist, album, date, genre
+             albumArtist = "album_artist",
+             discNumber = "disc_number",
+             isCompilation = "is_compilation",
+             title, artist, album, date, genre, comment, composer
     }
 
     let filePath : String   // Primary key — sent with every backend request.
@@ -24,6 +27,11 @@ struct MusicFile: Identifiable, Hashable, Codable {
     var trackNumber : Int?
     var date : String?      // Stored as String to match backend (e.g. "2021" or "2021-06-01").
     var genre : String?
+    var comment : String?
+    var albumArtist : String?
+    var composer : String?
+    var discNumber : Int?
+    var isCompilation : Bool?
     var spotifyId : String?
     var artworkData : Data? = nil   // UI-only — loaded separately, not part of JSON.
     var id: String {filePath}
@@ -40,6 +48,11 @@ struct MusicFile: Identifiable, Hashable, Codable {
         self.trackNumber = try container.decodeIfPresent(Int.self, forKey: .trackNumber)
         self.date = try container.decodeIfPresent(String.self, forKey: .date)
         self.genre = try container.decodeIfPresent(String.self, forKey: .genre)
+        self.comment = try container.decodeIfPresent(String.self, forKey: .comment)
+        self.albumArtist = try container.decodeIfPresent(String.self, forKey: .albumArtist)
+        self.composer = try container.decodeIfPresent(String.self, forKey: .composer)
+        self.discNumber = try container.decodeIfPresent(Int.self, forKey: .discNumber)
+        self.isCompilation = try container.decodeIfPresent(Bool.self, forKey: .isCompilation)
         self.spotifyId = try container.decodeIfPresent(String.self, forKey: .spotifyId)
         self.artworkData = nil
     }

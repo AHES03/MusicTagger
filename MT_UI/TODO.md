@@ -45,19 +45,19 @@
 - [x] Empty state placeholder
 
 ### MetadataEditorView.swift
-- [ ] Text fields — Title, Artist, Album, Date, Track Number, Genre
-- [ ] Inline row — Year / Track / Genre
-- [ ] Extra fields — Comment, Album Artist, Composer, Disc Number, Compilation toggle
-- [ ] Artwork preview area — show image or placeholder disc icon
+- [x] Text fields — Title, Artist, Album, Date, Track Number, Genre
+- [x] Inline row — Date / Track # / Genre
+- [x] Extra fields — Comment, Album Artist, Composer, Disc Number, Compilation toggle
+- [x] Artwork preview area — show image or placeholder disc icon
 - [ ] Artwork tap/drop — open file picker, call `writeArtwork`
-- [ ] Search Spotify button — open `SpotifySearchView` as sheet
-- [ ] Save button — call `writeMetadata`, show success/failure feedback
-- [ ] Nil state — placeholder when no file is selected
+- [x] Search Spotify button — open `SpotifySearchView` as sheet
+- [x] Save button — call `writeMetadata`
+- [x] Nil state — placeholder when no file is selected
 
 ### SpotifySearchView.swift
-- [ ] Search bar — TextField + trigger on Return
+- [x] Search bar — TextField + Search button, pre-filled from file title/artist
+- [x] Loading indicator — `isLoading` toggled around async call
 - [ ] Results list — `AsyncImage` thumbnail, title, artist, album, date
-- [ ] Loading indicator — `ProgressView` while request is in flight
 - [ ] Empty/error state messages
 - [ ] On selection — map `Track` → `MusicFile` fields, call `writeArtwork`, dismiss sheet
 

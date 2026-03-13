@@ -40,6 +40,13 @@
 
 ---
 
+## Model Updates Required
+- [ ] Add `comment`, `album_artist`, `composer`, `disc_number`, `is_compilation` fields to `MetadataPayload` in `models.py`
+- [ ] Update `MetadataReader.read` in `metadata.py` to read and return the new fields
+- [ ] Update `MetadataWriter.write` in `metadata.py` to write the new fields to mutagen tag keys
+
+---
+
 ## Cleanup
 - [ ] Remove stray `print()` statements
 - [ ] Remove unused import `from idlelib.searchengine import search_reverse` in `main.py`

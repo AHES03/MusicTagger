@@ -4,43 +4,42 @@
 
 import SwiftUI
 
-// TODO: Create a SpotifySearchView struct conforming to View.
-//       Receives:
-//         - a binding or callback to pass the selected Track back to MetadataEditorView
-//         - dismiss environment value to close the sheet on selection
+struct SpotifySearchView: View {
+    @Binding var file: MusicFile?
+    @Environment(\.dismiss) var dismiss
+    @State private var query: String = ""
+    @State private var results: [Track] = []
+    @State private var isLoading: Bool = false
+    @State private var errorMessage: String? = nil
 
-// MARK: - Search Bar
+    var body: some View {
+        VStack {
+            // MARK: - Search Bar
+            // Pre-filled with file title + artist on appear.
+            HStack {
+                TextField("Search", text: $query)
+                Button("Search") {
+                    Task {
+                        do {
+                            isLoading = true
+                            results = try await APIClient.shared.searchTracks(query: query)
+                        } catch {
+                            errorMessage = error.localizedDescription
+                        }
+                        isLoading = false
+                    }
+                }
+            }
 
-// TODO: A TextField at the top for the search query.
-//       Bound to a local @State var query: String.
-//       Trigger APIClient.searchTracks(query:) on:
-//         - pressing Return/Enter
-//         - or a "Search" button next to the field
-
-// MARK: - Results List
-
-// TODO: Display results as a List of Track items.
-//       Each row should show:
-//         - Artwork thumbnail (loaded asynchronously from track.artworkUrl using AsyncImage)
-//         - Title (bold)
-//         - Artist — Album (secondary text)
-//         - Date (year, trailing)
-
-// TODO: Show a loading indicator (ProgressView) while the search request is in flight.
-//       Use a @State var isLoading: Bool toggled around the async call.
-
-// TODO: Show an empty state if results is empty and a search has been made:
-//         "No results found for \"\(query)\"."
-
-// TODO: Show an error message if the backend call fails.
-
-// MARK: - Selection
-
-// TODO: On row tap, call the callback/binding with the selected Track and dismiss the sheet.
-//       The caller (MetadataEditorView) maps Track fields → MusicFile fields:
-//         track.title      → file.title
-//         track.artist     → file.artist
-//         track.album      → file.album
-//         track.date       → file.date
-//         track.spotifyId  → file.spotifyId
-//       And calls APIClient.writeArtwork(filePath: file.filePath, artworkPath: track.artworkUrl).
+            // MARK: - Results List
+            // TODO: Show ProgressView when isLoading is true.
+            // TODO: Show errorMessage if non-nil.
+            // TODO: Show "No results for..." if results is empty and query is non-empty.
+            // TODO: List(results) — each row: AsyncImage thumbnail, title (bold), artist — album, date.
+            // TODO: On row tap — map track fields to file, call writeArtwork, dismiss.
+        }
+        .onAppear {
+            query = (file?.title ?? "") + " " + (file?.artist ?? "")
+        }
+    }
+}
