@@ -97,7 +97,9 @@ struct MetadataEditorView: View {
                 Text("No file selected")
             }
         }
-        .sheet(isPresented: $showingSpotifySearch) { SpotifySearchView(file: $file) }
+//        .sheet(isPresented: $showingSpotifySearch) { SpotifySearchView(file: $file) }
+        .popover(isPresented:$showingSpotifySearch) { SpotifySearchView(file: $file) }
+        .fixedSize(horizontal: true, vertical: false)
 
     }
 }

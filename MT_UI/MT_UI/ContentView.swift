@@ -16,10 +16,11 @@ struct ContentView: View {
     var body: some View {
         HSplitView {
             MetadataEditorView(file: $selectedFile)
-                .frame(minWidth: 200, maxWidth: 200)
+                .frame(minWidth: 200, maxWidth: .infinity)
                 .frame(maxHeight: .infinity)
             FileListView(files: $files, onSelect: $selectedFile)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(minWidth: 800)
         }
         // TODO: UI polish — left panel fixed at 200px, fields getting cut off; increase minWidth/maxWidth
         .frame(minWidth: 800, minHeight: 500)

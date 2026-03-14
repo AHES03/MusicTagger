@@ -11,7 +11,20 @@ struct SpotifySearchView: View {
     @State private var results: [Track] = []
     @State private var isLoading: Bool = false
     @State private var errorMessage: String? = nil
-
+    @State private var selectedTrack: Track.ID?
+    
+    func searchSpotify(query:String){
+        Task {
+            do {
+                isLoading = true
+                results = try await APIClient.shared.searchTracks(query: query)
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+            isLoading = false
+        }
+    }
+    
     var body: some View {
         
         VStack {
@@ -19,16 +32,9 @@ struct SpotifySearchView: View {
             // Pre-filled with file title + artist on appear.
             HStack {
                 TextField("Search", text: $query)
+                    .onSubmit { searchSpotify(query: query) }
                 Button("Search") {
-                    Task {
-                        do {
-                            isLoading = true
-                            results = try await APIClient.shared.searchTracks(query: query)
-                        } catch {
-                            errorMessage = error.localizedDescription
-                        }
-                        isLoading = false
-                    }
+                    searchSpotify(query: query)
                 }
             }
 
@@ -41,7 +47,8 @@ struct SpotifySearchView: View {
             if results.isEmpty && !query.isEmpty && !isLoading {
                 Text("No results for \"\(query)\"")
             }
-            List(results) {track in
+            // TODO: Selection highlight — change to List(results, selection: $selectedTrack) to enable single-tap highlight; double-tap confirm remains unchanged.
+            List(results, selection: $selectedTrack) {track in
                 HStack {
                     AsyncImage(url: URL(string: track.artworkUrl)) { phase in
                         switch phase {
@@ -65,26 +72,35 @@ struct SpotifySearchView: View {
                     Spacer()
                     Text(track.date)  // trailing
                 }
-                .onTapGesture(count:2) {
-                    file?.title = track.title
-                    file?.artist = track.artist
-                    file?.album = track.album
-                    file?.date = track.date
-                    file?.spotifyId = track.spotifyId
-                    file?.artworkUrl = track.artworkUrl
-                    Task {
-                        if let url = URL(string: track.artworkUrl),
-                           let (data, _) = try? await URLSession.shared.data(from: url) {
-                            file?.artworkData = data
+                .contentShape(Rectangle())
+                .onTapGesture(count: 1) {
+                    if track.id == selectedTrack {
+                        file?.title = track.title
+                        file?.artist = track.artist
+                        file?.album = track.album
+                        file?.date = track.date
+                        file?.spotifyId = track.spotifyId
+                        file?.artworkUrl = track.artworkUrl
+                        Task {
+                            if let url = URL(string: track.artworkUrl),
+                               let (data, _) = try? await URLSession.shared.data(from: url) {
+                                file?.artworkData = data
+                            }
                         }
-                    }
-                    dismiss()
+                        dismiss()
+                    
+                    }else { selectedTrack = track.id }
                 }
                 
             }
         }
+        .frame(minWidth: 600, minHeight:
+          400)
+        .padding()
         .onAppear {
             query = (file?.title ?? "") + " " + (file?.artist ?? "")
+            searchSpotify(query: query)
+            
         }
 
         
