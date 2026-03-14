@@ -50,7 +50,12 @@ struct FileListView: View {
     @State private var selection: MusicFile.ID?
     var body: some View {
         if files.isEmpty {
-            Text("Drop audio files here or use the toolbar to open files.").frame(maxWidth: .infinity, maxHeight: .infinity)
+            VStack{
+                Image(systemName: "music.note.square.stack").font(Font.system(size: 140))
+                Text("Drop audio files here or use the toolbar to open files.")
+                    .font(.headline)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(
                     FileDropReceiver { urls in
                         for url in urls {
