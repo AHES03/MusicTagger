@@ -10,8 +10,11 @@ struct MetadataEditorView: View {
     var onSave: (MusicFile) -> Void
     
     var body: some View {
+        // TODO: Remove the `if file != nil` / `else` block below.
+        // Move all fields outside so the form is always visible.
+        // All bindings already fall back to "" when file is nil, so no changes needed there.
         VStack(alignment: .leading) {
-            if file != nil {
+            
                 // MARK: - Text Fields
                 
                 LabeledContent("Title") { TextField("", text: Binding(get: { file?.title ?? "" }, set: { file?.title = $0.isEmpty ? nil : $0 })) }
@@ -56,9 +59,10 @@ struct MetadataEditorView: View {
                 Spacer()
                 HStack{
                     // MARK: - Actions
+                    // TODO: Add .disabled(file == nil) to this HStack so buttons are inactive when no file is selected.
                     Button("Search Spotify"){
                         showingSpotifySearch = true
-                    }
+                    }.disabled(file == nil)
                     Button("Save"){
                         Task{
                             do{
@@ -72,11 +76,9 @@ struct MetadataEditorView: View {
                                 
                             }
                         }
-                    }
+                    }.disabled(file == nil)
                 }
-            } else {
-                Text("No file selected")
-            }
+            
 
             
         }
