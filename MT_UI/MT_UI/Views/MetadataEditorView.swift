@@ -42,10 +42,7 @@ struct MetadataEditorView: View {
                 // MARK: - Disc / Compilation Row
                 HStack {
                     // TODO: Convert to LabeledContent("Disc No") to match alignment.
-                    TextField(
-                        "Disc No:",
-                        text: Binding(get: { file?.discNumber.map { String($0) } ?? "" }, set: { file?.discNumber = Int($0) })
-                    )
+                    LabeledContent("Disc No:") { TextField("",text: Binding(get: { file?.discNumber.map { String($0) } ?? "" }, set: { file?.discNumber = Int($0) })) }
                     Toggle("Compilation", isOn: Binding(get: { file?.isCompilation ?? false }, set: { file?.isCompilation = $0 }))
                 }
                 
@@ -56,11 +53,12 @@ struct MetadataEditorView: View {
                     Image(nsImage: nsImage)
                         .resizable()
                         .scaledToFit()
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity,maxHeight: .infinity)
 
                 } else {
                     Image(systemName: "opticaldisc")
                 }
+                Spacer()
                 HStack{
                     // MARK: - Actions
                     Button("Search Spotify"){

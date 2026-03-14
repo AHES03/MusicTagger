@@ -30,10 +30,18 @@ struct ContentView: View {
                 Button("Open Files") {
                     let panel = NSOpenPanel()
                     panel.allowsMultipleSelection = true
+                    // TODO: Set canChooseDirectories = true and canChooseFiles = true so user can pick a folder or individual files.
                     panel.canChooseDirectories = false
                     panel.allowedContentTypes = [.audio]
                     guard panel.runModal() == .OK else { return }
                     for url in panel.urls {
+                        // TODO: Replace this loop body with a call to a recursive helper function.
+                        // The helper should:
+                        //   - Accept a URL and a current depth (Int), max depth = 2
+                        //   - Use FileManager.default.contentsOfDirectory(at:) to list contents
+                        //   - For each item: if it's an audio file (check pathExtension against ["flac","mp3","m4a","aac","wav"]), call readMetadata and append to files
+                        //   - If it's a directory and depth < 2, recurse with depth + 1
+                        //   - If the picked URL is a file (not a directory), call readMetadata directly without recursing
                         Task {
                             do {
                                 files.append(try await APIClient.shared.readMetadata(filePath: url.path))
