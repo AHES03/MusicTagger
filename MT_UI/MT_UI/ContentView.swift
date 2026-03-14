@@ -57,24 +57,23 @@ struct ContentView: View {
                         for url in panel.urls {
                             importURL(url, depth: 0)
                         }
-                    }) {
+                    }){
                         Image(systemName: "folder.badge.plus")
-                    }
+                    }.padding(.horizontal,8)
             }
             ToolbarItem{
                 Button(action: {
                     // TODO: Set showingBatchSearch = true, and add .sheet(isPresented: $showingBatchSearch) for the batch search view (to be built).
                 }) {
                     Image(systemName: "wand.and.stars")
-                }
+                }.padding(.horizontal,8)
             }
         }
             ToolbarItem {
-                HStack(spacing: 8) {
-                    
-                    
+                HStack {
                     
                     TextField("Search ...", text: $searchQuery)
+                        .padding(.horizontal, 8)
                         .frame(width: isSearching ? 200 : 0)
                         .clipped()
                         .onSubmit { withAnimation(.easeInOut) { isSearching = false } }
@@ -83,7 +82,7 @@ struct ContentView: View {
                             withAnimation(.easeInOut) { isSearching.toggle() }
                         }) {
                             Image(systemName: "magnifyingglass")
-                        }
+                        }.padding(.horizontal, 8)
                     }
                     if isSearching {
                         Button(action: {
@@ -91,10 +90,10 @@ struct ContentView: View {
                             withAnimation(.easeInOut) { isSearching.toggle() }
                         }) {
                             Image(systemName: "xmark.circle.fill")
-                        }
+                        }.padding(.horizontal, 8)
                     }
                 }
-                .padding(.horizontal, 4)
+                
             }
         }
         // TODO: Pass searchQuery down to FileListView and filter the displayed files there.
