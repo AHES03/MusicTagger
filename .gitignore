@@ -25,4 +25,5 @@ test_files/
 *.aac
 *.wav
 .cache/
+Backend/.cache
 Example.png
