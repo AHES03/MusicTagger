@@ -2,6 +2,7 @@
 // Matches the two-panel layout visible in Example.png.
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 
 // State: files (imported file list) and selectedFile (current selection) owned here
@@ -18,11 +19,29 @@ struct ContentView: View {
                 .frame(minWidth: 200, maxWidth: 200)
                 .frame(maxHeight: .infinity)
             FileListView(files: $files, onSelect: $selectedFile)
-                .frame(maxWidth:
-                  .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        // TODO: UI polish — left panel fixed at 200px, fields getting cut off; increase minWidth/maxWidth
         .frame(minWidth: 800, minHeight: 500)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .toolbar {
+            ToolbarItem {
+                Button("Open Files") {
+                    let panel = NSOpenPanel()
+                    panel.allowsMultipleSelection = true
+                    panel.canChooseDirectories = false
+                    panel.allowedContentTypes = [.audio]
+                    guard panel.runModal() == .OK else { return }
+                    for url in panel.urls {
+                        Task {
+                            do {
+                                files.append(try await APIClient.shared.readMetadata(filePath: url.path))
+                            } catch {}
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

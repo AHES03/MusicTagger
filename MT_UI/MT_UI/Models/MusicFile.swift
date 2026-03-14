@@ -34,6 +34,7 @@ struct MusicFile: Identifiable, Hashable, Codable {
     var isCompilation : Bool?
     var spotifyId : String?
     var artworkData : Data? = nil   // UI-only — loaded separately, not part of JSON.
+    var artworkUrl : String? = nil  // UI-only — stored from Spotify selection for Save to use.
     var id: String {filePath}
     func hash(into hasher: inout Hasher) {
         hasher.combine(filePath)

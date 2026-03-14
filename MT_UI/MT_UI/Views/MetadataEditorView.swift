@@ -26,6 +26,7 @@ struct MetadataEditorView: View {
                 )
                 
                 // MARK: - Inline Row (Date / Track # / Genre)
+                // TODO: UI polish — HStack rows cramped at narrow panel width; consider stacking vertically or increasing panel min width.
                 HStack {
                     TextField(
                         "Date",
@@ -66,7 +67,8 @@ struct MetadataEditorView: View {
                 
                 // MARK: - Album Artwork
                 // Shows artwork from file?.artworkData, or a placeholder disc icon.
-                // TODO: Tap/drop to open file picker, then call APIClient.writeArtwork(filePath:artworkPath:).
+                // TODO: Artwork tap/drop — open NSOpenPanel, call APIClient.writeArtwork(filePath:artworkPath:), update file?.artworkData for preview.
+                // TODO: UI polish — artwork area unstyled; add fixed frame, corner radius, and border.
                 if let data = file?.artworkData, let nsImage = NSImage(data: data) {
                     Image(nsImage: nsImage)
                 } else {
@@ -80,6 +82,9 @@ struct MetadataEditorView: View {
                     Task{
                         do{
                             try await APIClient.shared.writeMetadata(file: file!)
+                            if file?.artworkUrl != nil {
+                                try await APIClient.shared.writeArtwork(filePath: file!.filePath, artworkPath: file!.artworkUrl!)
+                            }
                         }
                         catch{
                             
