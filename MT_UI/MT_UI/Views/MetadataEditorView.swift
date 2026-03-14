@@ -21,10 +21,7 @@ struct MetadataEditorView: View {
                 LabeledContent("Album") { TextField("", text: Binding(get: { file?.album ?? "" }, set: { file?.album = $0.isEmpty ? nil : $0 })) }
                 
                 // MARK: - Inline Row (Date / Track # / Genre)
-                // TODO: UI polish — HStack rows cramped at narrow panel width; consider stacking vertically or increasing panel min width.
                 LabeledContent("Date") { TextField("", text: Binding(get: { file?.date ?? "" }, set: { file?.date = $0.isEmpty ? nil : $0 })) }
-                // TODO: Track/Genre HStack — LabeledContent inside HStack won't align with outer VStack labels.
-                // Consider replacing with plain TextFields using short placeholders ("Track", "Genre") to avoid misalignment.
                 HStack {
                     LabeledContent("Track No:") { TextField("", text: Binding(get: { file?.trackNumber.map { String($0) } ?? "" }, set: { file?.trackNumber = Int($0) })) }
 
@@ -34,14 +31,12 @@ struct MetadataEditorView: View {
                 // MARK: - More Text Fields
                 LabeledContent("Comment") { TextField("", text: Binding(get: { file?.comment ?? "" }, set: { file?.comment = $0.isEmpty ? nil : $0 }))}
 
-                // TODO: Fix binding — currently bound to file?.genre, should be file?.albumArtist.
-                LabeledContent("Album Artist") { TextField("", text: Binding(get: { file?.genre ?? "" }, set: { file?.genre = $0.isEmpty ? nil : $0 })) }
+                LabeledContent("Album Artist") { TextField("", text: Binding(get: { file?.albumArtist ?? "" }, set: { file?.albumArtist = $0.isEmpty ? nil : $0 })) }
 
                 LabeledContent("Composer") { TextField("",text: Binding(get: { file?.composer ?? "" }, set: { file?.composer = $0.isEmpty ? nil : $0 })) }
                 
                 // MARK: - Disc / Compilation Row
                 HStack {
-                    // TODO: Convert to LabeledContent("Disc No") to match alignment.
                     LabeledContent("Disc No:") { TextField("",text: Binding(get: { file?.discNumber.map { String($0) } ?? "" }, set: { file?.discNumber = Int($0) })) }
                     Toggle("Compilation", isOn: Binding(get: { file?.isCompilation ?? false }, set: { file?.isCompilation = $0 }))
                 }

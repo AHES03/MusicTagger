@@ -30,23 +30,30 @@ struct ContentView: View {
                 Button("Open Files") {
                     let panel = NSOpenPanel()
                     panel.allowsMultipleSelection = true
-                    // TODO: Set canChooseDirectories = true and canChooseFiles = true so user can pick a folder or individual files.
-                    panel.canChooseDirectories = false
+                    panel.canChooseDirectories = true
                     panel.allowedContentTypes = [.audio]
                     guard panel.runModal() == .OK else { return }
-                    for url in panel.urls {
-                        // TODO: Replace this loop body with a call to a recursive helper function.
-                        // The helper should:
-                        //   - Accept a URL and a current depth (Int), max depth = 2
-                        //   - Use FileManager.default.contentsOfDirectory(at:) to list contents
-                        //   - For each item: if it's an audio file (check pathExtension against ["flac","mp3","m4a","aac","wav"]), call readMetadata and append to files
-                        //   - If it's a directory and depth < 2, recurse with depth + 1
-                        //   - If the picked URL is a file (not a directory), call readMetadata directly without recursing
-                        Task {
-                            do {
-                                files.append(try await APIClient.shared.readMetadata(filePath: url.path))
-                            } catch {}
+                    func importURL(_ url: URL, depth: Int){
+                        let isDirectory =  (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
+                        let isAudio =  ["flac", "mp3", "m4a", "aac",
+                                        "wav"].contains(url.pathExtension.lowercased())
+                        if isDirectory && depth < 2{
+                            let childUrls = (try? FileManager.default.contentsOfDirectory(at:
+                                                                                            url, includingPropertiesForKeys: [.isDirectoryKey])) ?? []
+                            for childUrl in childUrls{
+                                importURL(childUrl, depth: depth + 1)
+                            }
+                        }else if  isAudio {
+                                Task {@MainActor in
+                                    do {
+                                        files.append(try await APIClient.shared.readMetadata(filePath: url.path))
+                                    } catch {}
+                                }
+                            }
                         }
+                    
+                    for url in panel.urls {
+                        importURL(url, depth: 0)
                     }
                 }
             }
