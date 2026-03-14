@@ -26,19 +26,12 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		984F740D2F64FC39002DEB42 /* Exceptions for "MT_UI" folder in "MT_UITests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				MT_UITests/APIClientIntegrationTests.swift,
-				MT_UITests/ModelDecodingTests.swift,
-			);
-			target = 984F73FC2F64FC15002DEB42 /* MT_UITests */;
-		};
 		984F74122F650043002DEB42 /* Exceptions for "MT_UI" folder in "MT_UI" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				MT_UITests/APIClientIntegrationTests.swift,
 				MT_UITests/ModelDecodingTests.swift,
+				MT_UITests/run_tests.swift,
 			);
 			target = 986D70BC2F47EA7E00FCA14F /* MT_UI */;
 		};
@@ -49,7 +42,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				984F74122F650043002DEB42 /* Exceptions for "MT_UI" folder in "MT_UI" target */,
-				984F740D2F64FC39002DEB42 /* Exceptions for "MT_UI" folder in "MT_UITests" target */,
 			);
 			path = MT_UI;
 			sourceTree = "<group>";

@@ -49,48 +49,54 @@ struct FileListView: View {
     @Binding var onSelect: MusicFile?
     @State private var selection: MusicFile.ID?
     var body: some View {
-        Table(files, selection: $selection) {
-            TableColumn("Title")  { file in Text(file.title ?? "(no title)") }
-            TableColumn("Track #") { file in Text(file.trackNumber.map { String($0) } ?? "") }
-            TableColumn("Artist") { file in Text(file.artist ?? "") }
-            TableColumn("Album")  { file in Text(file.album ?? "") }
-        }
-        .alternatingRowBackgrounds(.enabled)
-        .contextMenu {
-            Button("Remove from list") {
-                guard let id = selection else { return }
-                files.removeAll(where: { $0.id == id })
-            }
-            Button("Show in Finder") {
-                guard let id = selection else { return }
-                guard let file = files.first(where: { $0.id == id }) else { return }
-                NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: file.filePath)])
-            }
-        }
-        .onChange(of: selection) { _, newValue in
-            guard let id = newValue else { return }
-            guard let file = files.first(where: { $0.id == id }) else { return }
-            Task {
-                do {
-                    onSelect = try await APIClient.shared.readMetadata(filePath: file.filePath)
-                } catch {}
-            }
-        }
-        .overlay { if files.isEmpty { Text("Drop audio files here or use the toolbar to open files.").frame(maxWidth: .infinity, maxHeight: .infinity) } }
-        .background(
-            FileDropReceiver { urls in
-                for url in urls {
-                    let ext = url.pathExtension.lowercased()
-                    if ["flac", "mp3", "m4a", "aac", "wav"].contains(ext) {
-                        Task { @MainActor in
-                            do {
-                                files.append(try await APIClient.shared.readMetadata(filePath: url.path))
-                            } catch {}
+        // TODO: Empty state — replace .overlay with a conditional: show plain Text placeholder when files.isEmpty, Table only when files exist (avoids rendering the scroll view when empty).
+        if files.isEmpty {
+            Text("Drop audio files here or use the toolbar to open files.").frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(
+                    FileDropReceiver { urls in
+                        for url in urls {
+                            let ext = url.pathExtension.lowercased()
+                            if ["flac", "mp3", "m4a", "aac", "wav"].contains(ext) {
+                                Task { @MainActor in
+                                    do {
+                                        files.append(try await APIClient.shared.readMetadata(filePath: url.path))
+                                    } catch {}
+                                }
+                            }
                         }
                     }
+                )
+        }
+        else{
+            Table(files, selection: $selection) {
+                TableColumn("Title")  { file in Text(file.title ?? "(no title)") }
+                TableColumn("Track #") { file in Text(file.trackNumber.map { String($0) } ?? "") }
+                TableColumn("Artist") { file in Text(file.artist ?? "") }
+                TableColumn("Album")  { file in Text(file.album ?? "") }
+            }
+            .alternatingRowBackgrounds(.enabled)
+            .contextMenu {
+                Button("Remove from list") {
+                    guard let id = selection else { return }
+                    files.removeAll(where: { $0.id == id })
+                }
+                Button("Show in Finder") {
+                    guard let id = selection else { return }
+                    guard let file = files.first(where: { $0.id == id }) else { return }
+                    NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: file.filePath)])
                 }
             }
-        )
+            .onChange(of: selection) { _, newValue in
+                guard let id = newValue else { return }
+                guard let file = files.first(where: { $0.id == id }) else { return }
+                Task {
+                    do {
+                        onSelect = try await APIClient.shared.readMetadata(filePath: file.filePath)
+                    } catch {}
+                }
+            }
+        }
+
     }
 
     // Single selection (MusicFile.ID?) — multi-selection can be added later via Set<MusicFile.ID>.
