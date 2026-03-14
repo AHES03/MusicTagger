@@ -36,6 +36,7 @@ struct SpotifySearchView: View {
                 Button("Search") {
                     searchSpotify(query: query)
                 }
+                Button("Cancel") { dismiss() }
             }
 
             if isLoading{
