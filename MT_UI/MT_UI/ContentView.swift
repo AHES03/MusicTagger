@@ -11,6 +11,11 @@ import UniformTypeIdentifiers
 struct ContentView: View {
     @State private var selectedFile: MusicFile?
     @State private var files: [MusicFile] = []
+    // TODO: Add @State var searchQuery: String = "" for list search filtering.
+    // TODO: Add @State var showingBatchSearch: Bool = false for batch search sheet.
+    @State var searchQuery: String = ""
+    @State var isSearching: Bool = false
+    @State var showingBatchSearch: Bool = false
     var body: some View {
         HSplitView {
             MetadataEditorView(file: $selectedFile, onSave:{ updated in
@@ -26,8 +31,9 @@ struct ContentView: View {
         .frame(minWidth: 800, minHeight: 500)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {
+            // TODO: Replace button label with Image(systemName: "folder.badge.plus") for Add Files icon.
             ToolbarItem {
-                Button("Open Files") {
+                Button(action:{
                     let panel = NSOpenPanel()
                     panel.allowsMultipleSelection = true
                     panel.canChooseDirectories = true
@@ -56,7 +62,27 @@ struct ContentView: View {
                         importURL(url, depth: 0)
                     }
                 }
+                ) {
+                    Image(systemName: "folder.badge.plus")
+                }
             }
+            ToolbarItem{
+                if isSearching{
+                    TextField("Search",
+                              text:$searchQuery)
+                }else {
+                    Button(action:{
+                        isSearching = true
+                    }){
+                        Image(systemName: "magnifyingglass")
+                    }
+                }
+            }
+            // TODO: Add search field ToolbarItem — TextField bound to searchQuery, with Image(systemName: "magnifyingglass") prefix icon.
+            // Pass searchQuery down to FileListView and filter the displayed files there.
+
+            // TODO: Add batch search ToolbarItem — Button with Image(systemName: "wand.and.stars") that sets showingBatchSearch = true.
+            // Add .sheet(isPresented: $showingBatchSearch) for the batch search view (to be built).
         }
     }
 }
