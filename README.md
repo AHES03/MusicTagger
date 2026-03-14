@@ -1,6 +1,6 @@
 # MusicTag
 
-A native macOS app for editing music file metadata using the Spotify API as a source of truth.
+A native macOS app for editing music file metadata with Spotify integration.
 
 Browse your local music library, search Spotify for the correct track, and write clean metadata — title, artist, album, artwork, and more — directly to your audio files.
 
@@ -8,11 +8,11 @@ Browse your local music library, search Spotify for the correct track, and write
 
 ## Features
 
-- Browse and select local music files (MP3, FLAC, AAC)
-- Search Spotify for track metadata
-- View and edit existing file tags
-- Write metadata and embed album artwork directly to files
-- Supports multiple audio formats via automatic format detection
+- Import local music files individually or by folder (recursive, up to 2 levels deep)
+- View and edit existing file tags (title, artist, album, track, disc, genre, artwork, and more)
+- Search Spotify to auto-fill metadata for a selected file
+- Embed album artwork directly into audio files
+- Supports FLAC, MP3, AAC, M4A, and WAV via automatic format detection
 
 ---
 
@@ -93,7 +93,7 @@ SPOTIFY_CLIENT_SECRET=your_client_secret
 Start the backend:
 
 ```bash
-uvicorn main:app --reload
+venv/bin/python3 -m uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
 ### Frontend Setup
