@@ -7,6 +7,8 @@ struct MetadataEditorView: View {
     @Binding var file: MusicFile?
     @State var showingSpotifySearch = false
     var onSave: (MusicFile) -> Void
+    // TODO: Add @Environment(\.undoManager) var undoManager to access the system UndoManager.
+    // Must be captured as a local constant before entering any async Task (not Sendable).
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -117,6 +119,10 @@ struct MetadataEditorView: View {
                         showingSpotifySearch = true
                     }.disabled(file == nil)
                     Button("Save"){
+                        // TODO: Capture snapshot and undoManager before the Task:
+                        //   let snapshot = file
+                        //   let um = undoManager
+
                         Task{
                             do{
                                 try await APIClient.shared.writeMetadata(file: file!)
@@ -124,9 +130,12 @@ struct MetadataEditorView: View {
                                     try await APIClient.shared.writeArtwork(filePath: file!.filePath, artworkPath: file!.artworkUrl!)
                                 }
                                 onSave(file!)
+
+                                // TODO: After successful write, call:
+                                //   MetadataUndoService.shared.registerSave(before: snapshot!, after: file!, undoManager: um)
                             }
                             catch{
-                                
+
                             }
                         }
                     }.disabled(file == nil)
