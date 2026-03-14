@@ -49,7 +49,6 @@ struct FileListView: View {
     @Binding var onSelect: MusicFile?
     @State private var selection: MusicFile.ID?
     var body: some View {
-        // TODO: Empty state — replace .overlay with a conditional: show plain Text placeholder when files.isEmpty, Table only when files exist (avoids rendering the scroll view when empty).
         if files.isEmpty {
             Text("Drop audio files here or use the toolbar to open files.").frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(
@@ -111,8 +110,6 @@ struct FileListView: View {
 
     // Single selection (MusicFile.ID?) — multi-selection can be added later via Set<MusicFile.ID>.
     // Selection changes call APIClient.readMetadata and update onSelect with fresh metadata.
-    // TODO: Drag-and-drop — SwiftUI Table consumes all drag events; requires AppKit NSTableView integration to implement reliably.
-    // Empty state overlay shown when no files have been imported yet.
 
 }
 

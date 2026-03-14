@@ -7,7 +7,8 @@ import SwiftUI
 struct MetadataEditorView: View {
     @Binding var file: MusicFile?
     @State var showingSpotifySearch = false
-
+    var onSave: (MusicFile) -> Void
+    
     var body: some View {
         Form {
             if file != nil {
@@ -71,6 +72,9 @@ struct MetadataEditorView: View {
                 // TODO: UI polish — artwork area unstyled; add fixed frame, corner radius, and border.
                 if let data = file?.artworkData, let nsImage = NSImage(data: data) {
                     Image(nsImage: nsImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame (width: 200, height: 200)
                 } else {
                     Image(systemName: "opticaldisc")
                 }
@@ -85,11 +89,15 @@ struct MetadataEditorView: View {
                             if file?.artworkUrl != nil {
                                 try await APIClient.shared.writeArtwork(filePath: file!.filePath, artworkPath: file!.artworkUrl!)
                             }
+                            onSave(file!)
                         }
                         catch{
                             
                         }
                     }
+                    
+                        
+                    
 
                 }
                 

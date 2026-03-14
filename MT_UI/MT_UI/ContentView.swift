@@ -7,22 +7,22 @@ import UniformTypeIdentifiers
 
 // State: files (imported file list) and selectedFile (current selection) owned here
 // and passed down as bindings to child views.
-// TODO: Add toolbar — open files button, save button.
-// TODO: Handle drag-and-drop at this level or delegate to FileListView.
 
 struct ContentView: View {
     @State private var selectedFile: MusicFile?
     @State private var files: [MusicFile] = []
     var body: some View {
         HSplitView {
-            MetadataEditorView(file: $selectedFile)
+            MetadataEditorView(file: $selectedFile, onSave:{ updated in
+                     guard let index = files.firstIndex(where: { $0.id == updated.id }) else { return }
+                     files[index] = updated
+                 })
                 .frame(minWidth: 200, maxWidth: .infinity)
                 .frame(maxHeight: .infinity)
             FileListView(files: $files, onSelect: $selectedFile)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .frame(minWidth: 800)
         }
-        // TODO: UI polish — left panel fixed at 200px, fields getting cut off; increase minWidth/maxWidth
         .frame(minWidth: 800, minHeight: 500)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {

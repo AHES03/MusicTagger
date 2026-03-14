@@ -7,7 +7,7 @@ import Foundation
 // Conforms to Identifiable (for SwiftUI Table/List), Hashable (for selection sets),
 // and Codable (for JSON encoding/decoding with the backend).
 // CodingKeys maps snake_case JSON keys to camelCase Swift properties.
-// artworkData is UI-only and excluded from CodingKeys — never sent to the backend.
+// artworkData is decoded from the backend response (base64 string → Data) but excluded from write requests.
 
 struct MusicFile: Identifiable, Hashable, Codable {
     enum CodingKeys: String, CodingKey {
@@ -17,6 +17,7 @@ struct MusicFile: Identifiable, Hashable, Codable {
              albumArtist = "album_artist",
              discNumber = "disc_number",
              isCompilation = "is_compilation",
+             artworkData = "artwork_data",
              title, artist, album, date, genre, comment, composer
     }
 
@@ -33,7 +34,7 @@ struct MusicFile: Identifiable, Hashable, Codable {
     var discNumber : Int?
     var isCompilation : Bool?
     var spotifyId : String?
-    var artworkData : Data? = nil   // UI-only — loaded separately, not part of JSON.
+    var artworkData : Data? = nil   // Decoded from backend base64 response; not sent on writes.
     var artworkUrl : String? = nil  // UI-only — stored from Spotify selection for Save to use.
     var id: String {filePath}
     func hash(into hasher: inout Hasher) {
@@ -55,7 +56,7 @@ struct MusicFile: Identifiable, Hashable, Codable {
         self.discNumber = try container.decodeIfPresent(Int.self, forKey: .discNumber)
         self.isCompilation = try container.decodeIfPresent(Bool.self, forKey: .isCompilation)
         self.spotifyId = try container.decodeIfPresent(String.self, forKey: .spotifyId)
-        self.artworkData = nil
+        self.artworkData = try container.decodeIfPresent(Data.self, forKey: .artworkData)
     }
     
 }

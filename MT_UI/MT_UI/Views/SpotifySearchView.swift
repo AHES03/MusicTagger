@@ -48,7 +48,6 @@ struct SpotifySearchView: View {
             if results.isEmpty && !query.isEmpty && !isLoading {
                 Text("No results for \"\(query)\"")
             }
-            // TODO: Selection highlight — change to List(results, selection: $selectedTrack) to enable single-tap highlight; double-tap confirm remains unchanged.
             List(results, selection: $selectedTrack) {track in
                 HStack {
                     AsyncImage(url: URL(string: track.artworkUrl)) { phase in
