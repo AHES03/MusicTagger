@@ -11,8 +11,6 @@ import UniformTypeIdentifiers
 struct ContentView: View {
     @State private var selectedFile: MusicFile?
     @State private var files: [MusicFile] = []
-    // TODO: Add @State var searchQuery: String = "" for list search filtering.
-    // TODO: Add @State var showingBatchSearch: Bool = false for batch search sheet.
     @State var searchQuery: String = ""
     @State var isSearching: Bool = false
     @State var showingBatchSearch: Bool = false
@@ -31,61 +29,84 @@ struct ContentView: View {
         .frame(minWidth: 800, minHeight: 500)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {
-            // TODO: Replace button label with Image(systemName: "folder.badge.plus") for Add Files icon.
-            ToolbarItem {
-                Button(action:{
-                    let panel = NSOpenPanel()
-                    panel.allowsMultipleSelection = true
-                    panel.canChooseDirectories = true
-                    panel.allowedContentTypes = [.audio]
-                    guard panel.runModal() == .OK else { return }
-                    func importURL(_ url: URL, depth: Int){
-                        let isDirectory =  (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
-                        let isAudio =  ["flac", "mp3", "m4a", "aac",
-                                        "wav"].contains(url.pathExtension.lowercased())
-                        if isDirectory && depth < 2{
-                            let childUrls = (try? FileManager.default.contentsOfDirectory(at:
-                                                                                            url, includingPropertiesForKeys: [.isDirectoryKey])) ?? []
-                            for childUrl in childUrls{
-                                importURL(childUrl, depth: depth + 1)
-                            }
-                        }else if  isAudio {
-                                Task {@MainActor in
-                                    do {
-                                        files.append(try await APIClient.shared.readMetadata(filePath: url.path))
-                                    } catch {}
+            if !isSearching{
+                ToolbarItem {
+                    Button(action:{
+                        let panel = NSOpenPanel()
+                        panel.allowsMultipleSelection = true
+                        panel.canChooseDirectories = true
+                        panel.allowedContentTypes = [.audio]
+                        guard panel.runModal() == .OK else { return }
+                        func importURL(_ url: URL, depth: Int){
+                            let isDirectory =  (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
+                            let isAudio =  ["flac", "mp3", "m4a", "aac",
+                                            "wav"].contains(url.pathExtension.lowercased())
+                            if isDirectory && depth < 2{
+                                let childUrls = (try? FileManager.default.contentsOfDirectory(at:
+                                                                                                url, includingPropertiesForKeys: [.isDirectoryKey])) ?? []
+                                for childUrl in childUrls{
+                                    importURL(childUrl, depth: depth + 1)
+                                }
+                            }else if  isAudio {
+                                    Task {@MainActor in
+                                        do {
+                                            files.append(try await APIClient.shared.readMetadata(filePath: url.path))
+                                        } catch {}
+                                    }
                                 }
                             }
+                        
+                        for url in panel.urls {
+                            importURL(url, depth: 0)
                         }
-                    
-                    for url in panel.urls {
-                        importURL(url, depth: 0)
+                    }
+                    ) {
+                        Image(systemName: "folder.badge.plus")
                     }
                 }
-                ) {
-                    Image(systemName: "folder.badge.plus")
-                }
-            }
-            ToolbarItem{
-                if isSearching{
-                    TextField("Search",
-                              text:$searchQuery)
-                }else {
+                ToolbarItem{
                     Button(action:{
-                        isSearching = true
+                        
                     }){
-                        Image(systemName: "magnifyingglass")
+                        Image(systemName: "wand.and.stars")
                     }
                 }
+                // TODO: Set showingBatchSearch = true in the button action above, and add .sheet(isPresented: $showingBatchSearch) for the batch search view (to be built).
             }
-            // TODO: Add search field ToolbarItem — TextField bound to searchQuery, with Image(systemName: "magnifyingglass") prefix icon.
-            // Pass searchQuery down to FileListView and filter the displayed files there.
+            
+            ToolbarItem{
+                HStack{
+                    
+                    TextField("Search ...",text:$searchQuery).frame(width: isSearching ? 200 : 0).clipped()
+                        .onSubmit { withAnimation(.easeInOut) { isSearching = false } }
+                    if !isSearching {
+                        Button(action:{
+                            withAnimation(.easeInOut) { isSearching.toggle() }
+                        }){
+                            Image(systemName: "magnifyingglass")
+                        }
+                    }
+                    
+                    if isSearching{
+                        Button(action:{
+                            searchQuery = ""
+                            withAnimation(.easeInOut) { isSearching.toggle() }
+                        }){
+                            Image(systemName: "xmark.circle.fill")
+                        }
+                    }
+                    
+                    
+                }
+                }
 
-            // TODO: Add batch search ToolbarItem — Button with Image(systemName: "wand.and.stars") that sets showingBatchSearch = true.
-            // Add .sheet(isPresented: $showingBatchSearch) for the batch search view (to be built).
+            
+            // TODO: Pass searchQuery down to FileListView and filter the displayed files there.
+
         }
     }
 }
+
 
 #Preview {
     ContentView()
