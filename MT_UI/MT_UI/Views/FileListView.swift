@@ -69,6 +69,16 @@ struct FileListView: View {
         }
         else{
             Table(files, selection: $selection) {
+                TableColumn("") { file in
+                    if let data = file.artworkData, let nsImage = NSImage(data: data) {
+                        Image(nsImage: nsImage)
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                    } else {
+                        Image(systemName: "music.note")
+                    }
+                }
+                .width(40)
                 TableColumn("Title")  { file in Text(file.title ?? "(no title)") }
                 TableColumn("Track #") { file in Text(file.trackNumber.map { String($0) } ?? "") }
                 TableColumn("Artist") { file in Text(file.artist ?? "") }
