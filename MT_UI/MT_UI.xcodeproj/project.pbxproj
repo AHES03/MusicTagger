@@ -6,19 +6,65 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		984F74112F64FD3E002DEB42 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 984F74102F64FD3E002DEB42 /* AsyncAlgorithms */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		984F74012F64FC15002DEB42 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 986D70B52F47EA7E00FCA14F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 986D70BC2F47EA7E00FCA14F;
+			remoteInfo = MT_UI;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		984F73FD2F64FC15002DEB42 /* MT_UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MT_UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		986D70BD2F47EA7E00FCA14F /* MT_UI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MT_UI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		984F740D2F64FC39002DEB42 /* Exceptions for "MT_UI" folder in "MT_UITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				MT_UITests/APIClientIntegrationTests.swift,
+				MT_UITests/ModelDecodingTests.swift,
+			);
+			target = 984F73FC2F64FC15002DEB42 /* MT_UITests */;
+		};
+		984F74122F650043002DEB42 /* Exceptions for "MT_UI" folder in "MT_UI" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				MT_UITests/APIClientIntegrationTests.swift,
+				MT_UITests/ModelDecodingTests.swift,
+			);
+			target = 986D70BC2F47EA7E00FCA14F /* MT_UI */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		986D70BF2F47EA7E00FCA14F /* MT_UI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				984F74122F650043002DEB42 /* Exceptions for "MT_UI" folder in "MT_UI" target */,
+				984F740D2F64FC39002DEB42 /* Exceptions for "MT_UI" folder in "MT_UITests" target */,
+			);
 			path = MT_UI;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		984F73FA2F64FC15002DEB42 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				984F74112F64FD3E002DEB42 /* AsyncAlgorithms in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		986D70BA2F47EA7E00FCA14F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -41,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				986D70BD2F47EA7E00FCA14F /* MT_UI.app */,
+				984F73FD2F64FC15002DEB42 /* MT_UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +95,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		984F73FC2F64FC15002DEB42 /* MT_UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 984F74032F64FC15002DEB42 /* Build configuration list for PBXNativeTarget "MT_UITests" */;
+			buildPhases = (
+				984F73F92F64FC15002DEB42 /* Sources */,
+				984F73FA2F64FC15002DEB42 /* Frameworks */,
+				984F73FB2F64FC15002DEB42 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				984F74022F64FC15002DEB42 /* PBXTargetDependency */,
+			);
+			name = MT_UITests;
+			packageProductDependencies = (
+				984F74102F64FD3E002DEB42 /* AsyncAlgorithms */,
+			);
+			productName = MT_UITests;
+			productReference = 984F73FD2F64FC15002DEB42 /* MT_UITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		986D70BC2F47EA7E00FCA14F /* MT_UI */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 986D70C82F47EA7F00FCA14F /* Build configuration list for PBXNativeTarget "MT_UI" */;
@@ -77,9 +145,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2620;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
+					984F73FC2F64FC15002DEB42 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = 986D70BC2F47EA7E00FCA14F;
+					};
 					986D70BC2F47EA7E00FCA14F = {
 						CreatedOnToolsVersion = 26.2;
 					};
@@ -94,17 +166,28 @@
 			);
 			mainGroup = 986D70B42F47EA7E00FCA14F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				984F740F2F64FD3E002DEB42 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 986D70BE2F47EA7E00FCA14F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				986D70BC2F47EA7E00FCA14F /* MT_UI */,
+				984F73FC2F64FC15002DEB42 /* MT_UITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		984F73FB2F64FC15002DEB42 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		986D70BB2F47EA7E00FCA14F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +198,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		984F73F92F64FC15002DEB42 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		986D70B92F47EA7E00FCA14F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +214,53 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		984F74022F64FC15002DEB42 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 986D70BC2F47EA7E00FCA14F /* MT_UI */;
+			targetProxy = 984F74012F64FC15002DEB42 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		984F74042F64FC15002DEB42 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AHES.MT-UITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MT_UI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MT_UI";
+			};
+			name = Debug;
+		};
+		984F74052F64FC15002DEB42 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "AHES.MT-UITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MT_UI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MT_UI";
+			};
+			name = Release;
+		};
 		986D70C62F47EA7F00FCA14F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -312,6 +448,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		984F74032F64FC15002DEB42 /* Build configuration list for PBXNativeTarget "MT_UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				984F74042F64FC15002DEB42 /* Debug */,
+				984F74052F64FC15002DEB42 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		986D70B82F47EA7E00FCA14F /* Build configuration list for PBXProject "MT_UI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -331,6 +476,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		984F740F2F64FD3E002DEB42 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		984F74102F64FD3E002DEB42 /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 984F740F2F64FD3E002DEB42 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 986D70B52F47EA7E00FCA14F /* Project object */;
 }
