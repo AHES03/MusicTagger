@@ -1,12 +1,7 @@
-// Root view. Composes the file list panel and metadata editor panel side by side.
-// Matches the two-panel layout visible in Example.png.
+// Root view. Composes the metadata editor panel and file list panel side by side.
 
 import SwiftUI
 import UniformTypeIdentifiers
-
-
-// State: files (imported file list) and selectedFile (current selection) owned here
-// and passed down as bindings to child views.
 
 struct ContentView: View {
     @State private var selectedFile: MusicFile?

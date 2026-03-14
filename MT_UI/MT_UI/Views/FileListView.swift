@@ -93,6 +93,8 @@ struct FileListView: View {
                 Button("Remove from list") {
                     guard let id = selection else { return }
                     files.removeAll(where: { $0.id == id })
+                    selection = nil
+                    onSelect = nil
                 }
                 Button("Show in Finder") {
                     guard let id = selection else { return }
@@ -101,7 +103,7 @@ struct FileListView: View {
                 }
             }
             .onChange(of: selection) { _, newValue in
-                guard let id = newValue else { return }
+                guard let id = newValue else { onSelect = nil; return }
                 guard let file = files.first(where: { $0.id == id }) else { return }
                 Task {
                     do {
@@ -112,9 +114,6 @@ struct FileListView: View {
         }
 
     }
-
-    // Single selection (MusicFile.ID?) — multi-selection can be added later via Set<MusicFile.ID>.
-    // Selection changes call APIClient.readMetadata and update onSelect with fresh metadata.
 
 }
 

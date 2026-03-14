@@ -1,6 +1,5 @@
 // Shows editable fields for a selected file's metadata.
-// Left panel in the two-panel layout. Matches the form in Example.png.
-// Includes a "Search Spotify" button to auto-fill from API results.
+// Left panel in the two-panel layout.
 
 import SwiftUI
 
@@ -13,8 +12,6 @@ struct MetadataEditorView: View {
         VStack(alignment: .leading) {
             
                 // MARK: - Text Fields
-                // TODO: Replace each LabeledContent below with a VStack(alignment: .leading) { Text("Label").font(.caption) ; TextField(...) }
-                // This places the label above the field instead of inline to the left.
             VStack(alignment: .leading){
                 Text("Title:").font(.body)
                 TextField("", text: Binding(get: { file?.title ?? "" }, set: { file?.title = $0.isEmpty ? nil : $0 }))
@@ -41,7 +38,6 @@ struct MetadataEditorView: View {
                         TextField("", text: Binding(get: { file?.date ?? "" }, set: { file?.date = $0.isEmpty ? nil : $0 }))
                     }
                     .disabled(file == nil)
-                    // TODO: These two can stay side-by-side in the HStack, just convert each to VStack(alignment: .leading) label-above-field style.
                     VStack(alignment: .leading){
                         Text("Track No:").font(.body)
                         TextField("", text: Binding(get: { file?.trackNumber.map { String($0) } ?? "" }, set: { file?.trackNumber = Int($0) }))
@@ -73,7 +69,6 @@ struct MetadataEditorView: View {
 
                 // MARK: - Disc / Compilation Row
                 HStack {
-                    // TODO: Disc No: convert to VStack label-above-field. Toggle can stay as-is.
                     VStack(alignment: .leading){
                         Text("Disc No:").font(.body)
                         TextField("",text: Binding(get: { file?.discNumber.map { String($0) } ?? "" }, set: { file?.discNumber = Int($0) }))
