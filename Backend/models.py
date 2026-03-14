@@ -22,6 +22,12 @@ class MetadataPayload(BaseModel):
     date: Optional[str] = None
     genre: Optional[str] = None
     spotify_id: Optional[str] = None  # Used to fetch and embed artwork
+    comment: Optional[str] = None
+    album_artist: Optional[str] = None
+    composer: Optional[str] = None
+    disc_number: Optional[int] = None
+    is_compilation: Optional[bool] = None
+    artwork_data: Optional[str] = None
 
 
 class SearchRequest(BaseModel):
