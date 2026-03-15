@@ -48,11 +48,11 @@ struct FileListView: View {
     @Binding var files: [MusicFile]
     @Binding var onSelect: MusicFile?
     var displayedFiles: [MusicFile]
-    // TODO: Add var displayedFiles: [MusicFile] parameter — used for Table display and empty state check.
-    // files binding is kept for drop/remove mutations; displayedFiles is what's actually shown.
+    @State private var sortOrder: [KeyPathComparator<MusicFile>] = []
+    @State private var previousSortOrder: [KeyPathComparator<MusicFile>] = []
     @State private var selection: MusicFile.ID?
+
     var body: some View {
-        // TODO: Replace files.isEmpty with displayedFiles.isEmpty once parameter is added.
         if displayedFiles.isEmpty {
             VStack{
                 Image(systemName: "music.note.square.stack").font(Font.system(size: 140))
@@ -76,22 +76,25 @@ struct FileListView: View {
                 )
         }
         else{
-            // TODO: Replace files with displayedFiles once parameter is added.
-            Table(displayedFiles, selection: $selection) {
-                TableColumn("") { file in
+            let artworkCol = TableColumn("") { (file: MusicFile) in
+                Group {
                     if let data = file.artworkData, let nsImage = NSImage(data: data) {
-                        Image(nsImage: nsImage)
-                            .resizable()
-                            .frame(width: 30, height: 30)
+                        Image(nsImage: nsImage).resizable().frame(width: 30, height: 30)
                     } else {
                         Image(systemName: "music.note")
                     }
                 }
-                .width(40)
-                TableColumn("Title")  { file in Text(file.title ?? "(no title)") }
-                TableColumn("Track #") { file in Text(file.trackNumber.map { String($0) } ?? "") }
-                TableColumn("Artist") { file in Text(file.artist ?? "") }
-                TableColumn("Album")  { file in Text(file.album ?? "") }
+            }
+            let titleCol = TableColumn("Title", value: \MusicFile.sortTitle) { (file: MusicFile) in Text(file.title ?? "(no title)") }
+            let trackCol = TableColumn("Track #", value: \MusicFile.sortTrackNumber) { (file: MusicFile) in Text(file.trackNumber.map { String($0) } ?? "") }
+            let artistCol = TableColumn("Artist", value: \MusicFile.sortArtist) { (file: MusicFile) in Text(file.artist ?? "") }
+            let albumCol = TableColumn("Album", value: \MusicFile.sortAlbum) { (file: MusicFile) in Text(file.album ?? "") }
+            Table(displayedFiles.sorted(using: sortOrder), selection: $selection, sortOrder: $sortOrder) {
+                artworkCol.width(40)
+                titleCol
+                trackCol
+                artistCol
+                albumCol
             }
             .alternatingRowBackgrounds(.enabled)
             .contextMenu {
@@ -107,6 +110,14 @@ struct FileListView: View {
                     NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: file.filePath)])
                 }
             }
+            // TODO: Add .onChange(of: sortOrder) to detect third click (new order is .forward and previous was .reverse for same column).
+            // If third click detected, set sortOrder = [] to clear. Otherwise set previousSortOrder = sortOrder.
+            .onChange(of: sortOrder) {oldValue, newValue in
+                if newValue.first?.order == .forward && oldValue.first?.order == .reverse{
+                    sortOrder = []
+                }else{
+                    previousSortOrder = newValue
+                } }
             .onChange(of: selection) { _, newValue in
                 guard let id = newValue else { onSelect = nil; return }
                 guard let file = files.first(where: { $0.id == id }) else { return }

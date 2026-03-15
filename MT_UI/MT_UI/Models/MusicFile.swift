@@ -37,6 +37,12 @@ struct MusicFile: Identifiable, Hashable, Codable {
     var artworkData : Data? = nil   // Decoded from backend base64 response; not sent on writes.
     var artworkUrl : String? = nil  // UI-only — stored from Spotify selection for Save to use.
     var id: String {filePath}
+
+    // Non-optional sort keys for TableColumn value: comparators.
+    var sortTitle: String { title ?? "" }
+    var sortArtist: String { artist ?? "" }
+    var sortAlbum: String { album ?? "" }
+    var sortTrackNumber: Int { trackNumber ?? 0 }
     func hash(into hasher: inout Hasher) {
         hasher.combine(filePath)
     }
