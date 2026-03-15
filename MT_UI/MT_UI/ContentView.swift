@@ -89,7 +89,7 @@ struct ContentView: View {
             }
             ToolbarItem{
                 Button(action: {
-                    // TODO: Set showingBatchSearch = true, and add .sheet(isPresented: $showingBatchSearch) for the batch search view (to be built).
+                    showingBatchSearch = true
                 }) {
                     Image(systemName: "wand.and.stars")
                 }.padding(.horizontal,8)
@@ -123,6 +123,15 @@ struct ContentView: View {
             }
         }
         // TODO: Pass searchQuery down to FileListView and filter the displayed files there.
+        .sheet(isPresented: $showingBatchSearch) {
+            BatchSearchView(
+                files: $files,
+                undoManager: undoManager,
+                onApply: { before, after in
+                    // TODO: Phase 3 — zip before/after, update files and selectedFile, register each save via MetadataUndoService inside a beginUndoGrouping/endUndoGrouping pair.
+                }
+            )
+        }
     }
 }
 
