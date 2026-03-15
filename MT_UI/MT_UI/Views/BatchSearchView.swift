@@ -46,6 +46,8 @@ struct BatchSearchView: View {
                     HStack {
                         Toggle(isOn: $matches[i].confirmed, label: { Text("") })
                         Text(URL(fileURLWithPath: matches[i].original.filePath).lastPathComponent)
+                            .frame(width: 200)
+                            .clipped()
                         if let proposed = matches[i].proposed {
                             AsyncImage(url: URL(string: proposed.artworkUrl ?? "")) { phase in
                                 switch phase {
@@ -112,7 +114,6 @@ struct BatchSearchView: View {
                             proposed?.album = bestMatch.album
                             proposed?.trackNumber = bestMatch.trackNumber
                             proposed?.date = bestMatch.date
-                            // TODO: Add Album artist proposed?.albumArtist = bestMatch
                             proposed?.albumArtist = bestMatch.albumArtist
                             proposed?.spotifyId = bestMatch.id
                             proposed?.artworkUrl = bestMatch.artworkUrl

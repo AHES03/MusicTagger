@@ -2,14 +2,65 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import AppKit
+
+// NSViewRepresentable wrapper around NSTextField that calls becomeFirstResponder
+// when isFocused is true — needed because SwiftUI @FocusState is unreliable in toolbar items on macOS.
+private struct FocusableTextField: NSViewRepresentable {
+    @Binding var text: String
+    var isFocused: Bool
+    var onSubmit: () -> Void
+
+    func makeNSView(context: Context) -> NSTextField {
+        let field = NSTextField()
+        field.placeholderString = "Search ..."
+        field.delegate = context.coordinator
+        field.bezelStyle = .roundedBezel
+        return field
+    }
+
+    func updateNSView(_ nsView: NSTextField, context: Context) {
+        if nsView.stringValue != text {
+            nsView.stringValue = text
+        }
+        if isFocused {
+            DispatchQueue.main.async {
+                nsView.window?.makeFirstResponder(nsView)
+            }
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    class Coordinator: NSObject, NSTextFieldDelegate {
+        var parent: FocusableTextField
+        init(_ parent: FocusableTextField) { self.parent = parent }
+
+        func controlTextDidChange(_ obj: Notification) {
+            if let field = obj.object as? NSTextField {
+                parent.text = field.stringValue
+            }
+        }
+
+        func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+            if commandSelector == #selector(NSResponder.insertNewline(_:)) {
+                parent.onSubmit()
+                return true
+            }
+            return false
+        }
+    }
+}
 
 struct ContentView: View {
-    @State private var selectedFile: MusicFile?
+    
+@State private var selectedFile: MusicFile?
     @State private var files: [MusicFile] = []
     @State private var editorRefreshID = UUID()
     @State var searchQuery: String = ""
     @State var isSearching: Bool = false
     @State var showingBatchSearch: Bool = false
+    
     var filteredFiles: [MusicFile] { searchQuery.isEmpty ? files : files.filter { file in
         (file.title ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.album ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.artist ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.filePath).localizedCaseInsensitiveContains(searchQuery)
     } }
@@ -102,14 +153,15 @@ struct ContentView: View {
             ToolbarItem {
                 HStack {
                     
-                    TextField("Search ...", text: $searchQuery)
-                        .padding(.horizontal, 8)
-                        .frame(width: isSearching ? 200 : 0)
-                        .clipped()
-                        .onSubmit { withAnimation(.easeInOut) { isSearching = false } }
+                    FocusableTextField(text: $searchQuery, isFocused: isSearching) {
+                        withAnimation(.easeInOut) { isSearching = false }
+                    }
+                    .frame(width: isSearching ? 200 : 0)
+                    .clipped()
                     if !isSearching {
                         Button(action: {
-                            withAnimation(.easeInOut) { isSearching.toggle() }
+                            searchQuery = ""
+                            withAnimation(.easeInOut) { isSearching.toggle()}
                         }) {
                             Image(systemName: "magnifyingglass")
                         }.padding(.horizontal, 8)
@@ -117,7 +169,7 @@ struct ContentView: View {
                     if isSearching {
                         Button(action: {
                             searchQuery = ""
-                            withAnimation(.easeInOut) { isSearching.toggle() }
+                            withAnimation(.easeInOut) { isSearching.toggle()}
                         }) {
                             Image(systemName: "xmark.circle.fill")
                         }.padding(.horizontal, 8)
