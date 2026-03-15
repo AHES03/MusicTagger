@@ -79,6 +79,7 @@ struct SpotifySearchView: View {
                         file?.artist = track.artist
                         file?.album = track.album
                         file?.date = track.date
+                        file?.trackNumber = track.trackNumber
                         file?.spotifyId = track.spotifyId
                         file?.artworkUrl = track.artworkUrl
                         Task {

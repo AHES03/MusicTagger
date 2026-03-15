@@ -110,7 +110,7 @@ struct BatchSearchView: View {
                             proposed?.title = bestMatch.title
                             proposed?.artist = bestMatch.artist
                             proposed?.album = bestMatch.album
-                            // TODO: populate proposed?.trackNumber once backend /search returns track_number in SpotifyTrack.
+                            proposed?.trackNumber = bestMatch.trackNumber
                             proposed?.date = bestMatch.date
                             // TODO: Add Album artist proposed?.albumArtist = bestMatch
                             proposed?.spotifyId = bestMatch.id

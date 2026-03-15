@@ -10,7 +10,7 @@ class SpotifyTrack(BaseModel):
     album: str
     date: str
     artwork_url: str
-    # TODO: add track_number: Optional[int] = None and populate it from track['track_number'] in spotify_client.py search_track and get_track_metadata.
+    track_number: int
 
 
 class MetadataPayload(BaseModel):

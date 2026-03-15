@@ -45,6 +45,7 @@ class SpotifyClient:
                 "artist": (", ".join(artist["name"] for artist in track["artists"])),
                 "album": track['album']['name'],
                 "date": track['album']['release_date'],
+                "track_number":track["track_number"],
                 "artwork_url": track['album']['images'][0]['url']
             }
             temp = SpotifyTrack(**mapped_dict)
@@ -71,6 +72,7 @@ class SpotifyClient:
             "artist": (", ".join(artist["name"] for artist in track["artists"])),
             "album": track['album']['name'],
             "date": track['album']['release_date'],
+            "track_number": track["track_number"],
             "artwork_url": track['album']['images'][0]['url']
         }
         return SpotifyTrack(**mapped_dict)
