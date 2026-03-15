@@ -122,7 +122,7 @@ struct ContentView: View {
                         func importURL(_ url: URL, depth: Int) {
                             let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
                             let isAudio = ["flac", "mp3", "m4a", "aac", "wav"].contains(url.pathExtension.lowercased())
-                            if isDirectory && depth < 2 {
+                            if isDirectory && depth < 3 {
                                 let childUrls = (try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isDirectoryKey])) ?? []
                                 for childUrl in childUrls {
                                     importURL(childUrl, depth: depth + 1)

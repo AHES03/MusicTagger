@@ -50,7 +50,7 @@ struct FileListView: View {
     var displayedFiles: [MusicFile]
     @State private var sortOrder: [KeyPathComparator<MusicFile>] = []
     @State private var previousSortOrder: [KeyPathComparator<MusicFile>] = []
-    @State private var selection: MusicFile.ID?
+    @State private var selection:  Set<MusicFile.ID> = []
 
     var body: some View {
         if displayedFiles.isEmpty {
@@ -99,19 +99,18 @@ struct FileListView: View {
             .alternatingRowBackgrounds(.enabled)
             .contextMenu {
                 Button("Remove from list") {
-                    guard let id = selection else { return }
-                    files.removeAll(where: { $0.id == id })
-                    selection = nil
+//                    guard let id = selection.first else { return }
+                    guard !selection.isEmpty else { return }
+                    files.removeAll(where: { selection.contains($0.id) })
+                    selection = []
                     onSelect = nil
                 }
                 Button("Show in Finder") {
-                    guard let id = selection else { return }
+                    guard let id = selection.first, selection.count == 1 else { return }
                     guard let file = files.first(where: { $0.id == id }) else { return }
                     NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: file.filePath)])
                 }
             }
-            // TODO: Add .onChange(of: sortOrder) to detect third click (new order is .forward and previous was .reverse for same column).
-            // If third click detected, set sortOrder = [] to clear. Otherwise set previousSortOrder = sortOrder.
             .onChange(of: sortOrder) {oldValue, newValue in
                 if newValue.first?.order == .forward && oldValue.first?.order == .reverse{
                     sortOrder = []
@@ -119,7 +118,7 @@ struct FileListView: View {
                     previousSortOrder = newValue
                 } }
             .onChange(of: selection) { _, newValue in
-                guard let id = newValue else { onSelect = nil; return }
+                guard let id = selection.first,selection.count == 1  else { onSelect = nil; return }
                 guard let file = files.first(where: { $0.id == id }) else { return }
                 Task {
                     do {

@@ -4,6 +4,11 @@
 
 import SwiftUI
 
+// Identifiable wrapper for a row index — used with .popover(item:) to anchor the popover to the tapped row.
+struct PopoverMatch: Identifiable, Equatable {
+    let id: Int
+}
+
 // Holds the original file alongside its best Spotify match and whether the user has confirmed it.
 struct BatchMatch {
     var original: MusicFile
@@ -22,7 +27,7 @@ struct BatchSearchView: View {
     @State private var searchedCount: Int = 0
     @State private var isSearching: Bool = false
     @State private var selectedMatch: Int? = nil
-    @State private var showingPopover: Bool = false
+    @State private var popoverItem: PopoverMatch? = nil
     @State private var popoverFile: MusicFile? = nil
 
     var body: some View {
@@ -44,47 +49,58 @@ struct BatchSearchView: View {
             }
 
             // Review table — one row per file showing original filename, proposed Spotify match, and a confirmation toggle.
-            List {
-                ForEach(matches.indices, id: \.self) { i in
-                    Button(action: {
-                        selectedMatch = i
-                        popoverFile = matches[i].proposed ?? matches[i].original
-                        showingPopover = true
-                    }) {
-                        HStack {
-                            Toggle(isOn: $matches[i].confirmed, label: { Text("") })
-                                .buttonStyle(.plain)
-                            Text(URL(fileURLWithPath: matches[i].original.filePath).lastPathComponent)
-                                .frame(width: 200)
-                                .clipped()
-                            if let proposed = matches[i].proposed {
-                                AsyncImage(url: URL(string: proposed.artworkUrl ?? "")) { phase in
-                                    switch phase {
-                                    case .empty:
-                                        ProgressView()
-                                    case .success(let image):
-                                        image.resizable().frame(width: 50, height: 50)
-                                    case .failure:
-                                        Image(systemName: "music.note")
-                                    @unknown default:
-                                        Image(systemName: "music.note")
+            ScrollView {
+                VStack(spacing: 0) {
+                    ForEach(matches.indices, id: \.self) { i in
+                        Button(action: {
+                            selectedMatch = i
+                            popoverFile = matches[i].proposed ?? matches[i].original
+                            popoverItem = PopoverMatch(id: i)
+                        }) {
+                            HStack {
+                                Toggle(isOn: $matches[i].confirmed, label: { Text("") })
+                                Text(URL(fileURLWithPath: matches[i].original.filePath).lastPathComponent)
+                                    .frame(width: 200)
+                                    .clipped()
+                                if let proposed = matches[i].proposed {
+                                    AsyncImage(url: URL(string: proposed.artworkUrl ?? "")) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            ProgressView()
+                                        case .success(let image):
+                                            image.resizable().frame(width: 50, height: 50)
+                                        case .failure:
+                                            Image(systemName: "music.note")
+                                        @unknown default:
+                                            Image(systemName: "music.note")
+                                        }
                                     }
+                                    VStack(alignment: .leading) {
+                                        Text(proposed.title ?? "")
+                                        Text(proposed.artist ?? "")
+                                        Text(proposed.album ?? "")
+                                    }
+                                } else {
+                                    Text("No result found").foregroundStyle(.secondary)
                                 }
-                                VStack(alignment: .leading) {
-                                    Text(proposed.title ?? "")
-                                    Text(proposed.artist ?? "")
-                                    Text(proposed.album ?? "")
-                                }
-                            } else {
-                                Text("No result found").foregroundStyle(.secondary)
+                                Spacer()
                             }
+                            .padding(.horizontal)
+                            .padding(.vertical, 6)
+                            .background(selectedMatch == i ? Color.accentColor.opacity(0.2) : (i % 2 == 0 ? Color.clear : Color.primary.opacity(0.04)))
                         }
-                        .background(selectedMatch == i ? Color.accentColor.opacity(0.2) : Color.clear)
+                        .buttonStyle(.plain)
+                        .popover(item: $popoverItem) { _ in
+                            SpotifySearchView(file: $popoverFile)
+                        }
+                        Divider()
                     }
-                    .buttonStyle(.plain)
                 }
             }
-
+            .frame(maxWidth: .infinity)
+            .frame(height: 500)
+            .border(Color.primary.opacity(0.1))
+            .layoutPriority(1)
             // MARK: - Actions
             HStack {
                 Spacer()
@@ -109,12 +125,9 @@ struct BatchSearchView: View {
                 }
                 .disabled(isSearching || matches.isEmpty)
             }
-        } 
-        .popover(isPresented: $showingPopover) {
-            SpotifySearchView(file: $popoverFile)
         }
-        .onChange(of: showingPopover) { _, isOpen in
-            if !isOpen, let idx = selectedMatch, let updated = popoverFile {
+        .onChange(of: popoverItem) { _, item in
+            if item == nil, let idx = selectedMatch, let updated = popoverFile {
                 matches[idx].proposed = updated
             }
         }
