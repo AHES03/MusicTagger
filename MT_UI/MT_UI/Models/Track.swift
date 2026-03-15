@@ -14,6 +14,7 @@ struct Track: Identifiable, Decodable {
         case spotifyId = "spotify_id"
         case artworkUrl = "artwork_url"
         case trackNumber = "track_number"
+        case albumArtist = "album_artist"
         case title, artist, album, date
     }
 
@@ -23,6 +24,7 @@ struct Track: Identifiable, Decodable {
     let album: String
     let date: String
     let trackNumber: Int
+    let albumArtist: String
     let artworkUrl: String  // Passed to /write-artwork as artwork_path when user confirms a result.
     var id: String{spotifyId}
     init(from decoder: any Decoder) throws {
@@ -32,6 +34,7 @@ struct Track: Identifiable, Decodable {
         self.artist = try container.decode(String.self, forKey: .artist)
         self.album = try container.decode(String.self, forKey: .album)
         self.date = try container.decode(String.self, forKey: .date)
+        self.albumArtist = try container.decode(String.self, forKey: .albumArtist)
         self.trackNumber = try container.decode(Int.self, forKey: .trackNumber)
         self.artworkUrl = try container.decode(String.self, forKey: .artworkUrl)
     }

@@ -11,6 +11,7 @@ class SpotifyTrack(BaseModel):
     date: str
     artwork_url: str
     track_number: int
+    album_artist: str
 
 
 class MetadataPayload(BaseModel):

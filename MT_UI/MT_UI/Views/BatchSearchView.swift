@@ -113,6 +113,7 @@ struct BatchSearchView: View {
                             proposed?.trackNumber = bestMatch.trackNumber
                             proposed?.date = bestMatch.date
                             // TODO: Add Album artist proposed?.albumArtist = bestMatch
+                            proposed?.albumArtist = bestMatch.albumArtist
                             proposed?.spotifyId = bestMatch.id
                             proposed?.artworkUrl = bestMatch.artworkUrl
                         }
