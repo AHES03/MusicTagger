@@ -6,15 +6,30 @@ import UniformTypeIdentifiers
 struct ContentView: View {
     @State private var selectedFile: MusicFile?
     @State private var files: [MusicFile] = []
+    @State private var editorRefreshID = UUID()
     @State var searchQuery: String = ""
     @State var isSearching: Bool = false
     @State var showingBatchSearch: Bool = false
+    @Environment(\.undoManager) var undoManager
     var body: some View {
         HSplitView {
-            MetadataEditorView(file: $selectedFile, onSave:{ updated in
-                     guard let index = files.firstIndex(where: { $0.id == updated.id }) else { return }
-                     files[index] = updated
-                 })
+            MetadataEditorView(file: $selectedFile, onSave:{ before, after in
+
+                guard let index = files.firstIndex(where: { $0.id == after.id }) else { return }
+                files[index] = after
+                selectedFile = after
+                MetadataUndoService.shared.registerSave(
+                    before: before,
+                    after: after,
+                    onComplete: { restored in
+                        guard let index = files.firstIndex(where: { $0.id == restored.id }) else { return }
+                        files[index] = restored
+                        selectedFile = restored
+                        editorRefreshID = UUID()
+                    },
+                    undoManager: undoManager
+                )
+            }, refreshID: editorRefreshID)
                 .frame(minWidth: 200, maxWidth: .infinity)
                 .frame(maxHeight: .infinity)
             FileListView(files: $files, onSelect: $selectedFile)
@@ -25,6 +40,22 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {
         if !isSearching {
+            ToolbarItem(placement: .navigation){
+                Button(action:{
+                    undoManager?.undo()
+                }){
+                    Image(systemName: "arrow.uturn.backward")
+                }
+                
+            }
+            ToolbarItem(placement: .navigation){
+                Button(action:{
+                    undoManager?.redo()
+                }){
+                    Image(systemName: "arrow.uturn.forward")
+                }
+                
+            }
             ToolbarItem{
                
                     Button(action: {
