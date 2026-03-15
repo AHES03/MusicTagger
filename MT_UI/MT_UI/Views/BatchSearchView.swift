@@ -7,7 +7,6 @@ import SwiftUI
 // Holds the original file alongside its best Spotify match and whether the user has confirmed it.
 struct BatchMatch {
     var original: MusicFile
-    // TODO: Phase 1 — populate proposed with the first result from APIClient.searchTracks.
     var proposed: MusicFile?
     var confirmed: Bool = true
 }
@@ -19,12 +18,7 @@ struct BatchSearchView: View {
     var onApply: (_ before: [MusicFile], _ after: [MusicFile]) -> Void
     @Environment(\.dismiss) var dismiss
 
-    // TODO: Phase 1 — replace with @State private var matches: [BatchMatch] = []
-    // Populated during auto-search on appear.
     @State private var matches: [BatchMatch] = []
-
-    // TODO: Phase 1 — track search progress for the progress indicator.
-    // Increment after each file's search completes.
     @State private var searchedCount: Int = 0
     @State private var isSearching: Bool = false
 
@@ -39,8 +33,6 @@ struct BatchSearchView: View {
             }
 
             // MARK: - Progress
-            // TODO: Phase 1 — show this while isSearching is true.
-            // Display "Searching \(searchedCount) / \(files.count)..." and a ProgressView.
             if isSearching {
                 HStack {
                     ProgressView()
@@ -48,20 +40,65 @@ struct BatchSearchView: View {
                 }
             }
 
-            // TODO: Phase 2 — replace with a review table showing each match row.
-            // For now, just a placeholder.
-            Spacer()
-            Text("Results will appear here after search.")
-                .foregroundStyle(.secondary)
-            Spacer()
+            // Review table — one row per file showing original filename, proposed Spotify match, and a confirmation toggle.
+            List {
+                ForEach(matches.indices, id: \.self) { i in
+                    HStack {
+                        Toggle(isOn: $matches[i].confirmed, label: { Text("") })
+                        Text(URL(fileURLWithPath: matches[i].original.filePath).lastPathComponent)
+                        if let proposed = matches[i].proposed {
+                            AsyncImage(url: URL(string: proposed.artworkUrl ?? "")) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                case .success(let image):
+                                    image.resizable().frame(width: 50, height: 50)
+                                case .failure:
+                                    Image(systemName: "music.note")
+                                @unknown default:
+                                    Image(systemName: "music.note")
+                                }
+                            }
+                            VStack(alignment: .leading) {
+                                Text(proposed.title ?? "")
+                                Text(proposed.artist ?? "")
+                                Text(proposed.album ?? "")
+                            }
+                        } else {
+                            Text("No result found").foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
 
             // MARK: - Actions
-            // TODO: Phase 3 — implement Apply: call undoManager?.beginUndoGrouping(), write each confirmed match,
-            // register undo for each via MetadataUndoService.shared.registerSave, call endUndoGrouping(), then onApply + dismiss.
             HStack {
                 Spacer()
                 Button("Apply") {
-                    // TODO: Phase 3
+                    undoManager?.beginUndoGrouping()
+                    Task{
+                        for i in matches{
+                            if i.confirmed && i.proposed != nil{
+                                do{
+                                    try await APIClient.shared.writeMetadata(file: i.proposed!)
+                                    if i.proposed?.artworkUrl != nil {
+                                        try await APIClient.shared.writeArtwork(filePath: i.proposed!.filePath, artworkPath: i.proposed!.artworkUrl!)
+                                    }
+                                }catch{
+                                    
+                                }
+                                
+                                MetadataUndoService.shared.registerSave(before: i.original,after: i.proposed!,onComplete: { _ in }, undoManager: undoManager)
+                            }
+                        }
+                        let confirmed = matches.filter { $0.confirmed && $0.proposed != nil }
+                        let before = confirmed.map { $0.original }
+                        let after = confirmed.map { $0.proposed! }
+                        undoManager?.endUndoGrouping()
+                        
+                        onApply(before, after )
+                        dismiss()
+                    }
                 }
                 .disabled(isSearching || matches.isEmpty)
             }
@@ -69,11 +106,29 @@ struct BatchSearchView: View {
         .padding()
         .frame(minWidth: 700, minHeight: 500)
         .onAppear {
-            // TODO: Phase 1 — kick off auto-search here.
-            // Loop through files, call searchTracks(query: title + artist) for each,
-            // take the first result, build a proposed MusicFile from the Track,
-            // append a BatchMatch to matches, and increment searchedCount.
-            // Set isSearching = true before the loop and false when done.
+            isSearching = true
+            Task {
+                for file in files {
+                    do {
+                        let results = try await APIClient.shared.searchTracks(query: (file.title ?? "") + " " + (file.artist ?? ""))
+                        var proposed: MusicFile? = nil
+                        if let bestMatch = results.first {
+                            proposed = file
+                            proposed?.title = bestMatch.title
+                            proposed?.artist = bestMatch.artist
+                            proposed?.album = bestMatch.album
+                            // TODO: populate proposed?.trackNumber once backend /search returns track_number in SpotifyTrack.
+                            proposed?.date = bestMatch.date
+                            // TODO: Add Album artist proposed?.albumArtist = bestMatch
+                            proposed?.spotifyId = bestMatch.id
+                            proposed?.artworkUrl = bestMatch.artworkUrl
+                        }
+                        matches.append(BatchMatch(original: file, proposed: proposed))
+                        searchedCount += 1
+                    } catch {}
+                }
+                isSearching = false
+            }
         }
     }
 }

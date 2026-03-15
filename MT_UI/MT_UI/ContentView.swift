@@ -128,7 +128,11 @@ struct ContentView: View {
                 files: $files,
                 undoManager: undoManager,
                 onApply: { before, after in
-                    // TODO: Phase 3 — zip before/after, update files and selectedFile, register each save via MetadataUndoService inside a beginUndoGrouping/endUndoGrouping pair.
+                    for (_, newFile) in zip(before, after) {
+                        guard let idx = files.firstIndex(where: { $0.id == newFile.id }) else { continue }
+                        files[idx] = newFile
+                        if selectedFile?.id == newFile.id { selectedFile = newFile }
+                    }
                 }
             )
         }
