@@ -75,28 +75,21 @@ struct BatchSearchView: View {
             HStack {
                 Spacer()
                 Button("Apply") {
-                    undoManager?.beginUndoGrouping()
-                    Task{
-                        for i in matches{
-                            if i.confirmed && i.proposed != nil{
-                                do{
+                    Task {
+                        for i in matches {
+                            if i.confirmed && i.proposed != nil {
+                                do {
                                     try await APIClient.shared.writeMetadata(file: i.proposed!)
                                     if i.proposed?.artworkUrl != nil {
                                         try await APIClient.shared.writeArtwork(filePath: i.proposed!.filePath, artworkPath: i.proposed!.artworkUrl!)
                                     }
-                                }catch{
-                                    
-                                }
-                                
-                                MetadataUndoService.shared.registerSave(before: i.original,after: i.proposed!,onComplete: { _ in }, undoManager: undoManager)
+                                } catch {}
                             }
                         }
                         let confirmed = matches.filter { $0.confirmed && $0.proposed != nil }
                         let before = confirmed.map { $0.original }
                         let after = confirmed.map { $0.proposed! }
-                        undoManager?.endUndoGrouping()
-                        
-                        onApply(before, after )
+                        onApply(before, after)
                         dismiss()
                     }
                 }

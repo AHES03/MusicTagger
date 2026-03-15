@@ -128,11 +128,24 @@ struct ContentView: View {
                 files: $files,
                 undoManager: undoManager,
                 onApply: { before, after in
-                    for (_, newFile) in zip(before, after) {
+                    undoManager?.beginUndoGrouping()
+                    for (oldFile, newFile) in zip(before, after) {
                         guard let idx = files.firstIndex(where: { $0.id == newFile.id }) else { continue }
                         files[idx] = newFile
                         if selectedFile?.id == newFile.id { selectedFile = newFile }
+                        MetadataUndoService.shared.registerSave(
+                            before: oldFile,
+                            after: newFile,
+                            onComplete: { restored in
+                                guard let idx = files.firstIndex(where: { $0.id == restored.id }) else { return }
+                                files[idx] = restored
+                                if selectedFile?.id == restored.id { selectedFile = restored }
+                                editorRefreshID = UUID()
+                            },
+                            undoManager: undoManager
+                        )
                     }
+                    undoManager?.endUndoGrouping()
                 }
             )
         }
