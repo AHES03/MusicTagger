@@ -10,6 +10,9 @@ struct ContentView: View {
     @State var searchQuery: String = ""
     @State var isSearching: Bool = false
     @State var showingBatchSearch: Bool = false
+    var filteredFiles: [MusicFile] { searchQuery.isEmpty ? files : files.filter { file in
+        (file.title ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.album ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.artist ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.filePath).localizedCaseInsensitiveContains(searchQuery)
+    } }
     @Environment(\.undoManager) var undoManager
     var body: some View {
         HSplitView {
@@ -32,7 +35,8 @@ struct ContentView: View {
             }, refreshID: editorRefreshID)
                 .frame(minWidth: 200, maxWidth: .infinity)
                 .frame(maxHeight: .infinity)
-            FileListView(files: $files, onSelect: $selectedFile)
+            // TODO: Add displayedFiles: filteredFiles parameter to FileListView once the parameter is added to its signature.
+            FileListView(files: $files, onSelect: $selectedFile, displayedFiles: filteredFiles)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .frame(minWidth: 800)
         }
@@ -122,7 +126,8 @@ struct ContentView: View {
                 
             }
         }
-        // TODO: Pass searchQuery down to FileListView and filter the displayed files there.
+        // TODO: Add a computed var filteredFiles: [MusicFile] that returns files filtered by searchQuery
+        // (match title, artist, or album case-insensitively). Return all files when searchQuery is empty.
         .sheet(isPresented: $showingBatchSearch) {
             BatchSearchView(
                 files: $files,

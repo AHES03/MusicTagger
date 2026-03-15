@@ -47,9 +47,13 @@ private struct FileDropReceiver: NSViewRepresentable {
 struct FileListView: View {
     @Binding var files: [MusicFile]
     @Binding var onSelect: MusicFile?
+    var displayedFiles: [MusicFile]
+    // TODO: Add var displayedFiles: [MusicFile] parameter — used for Table display and empty state check.
+    // files binding is kept for drop/remove mutations; displayedFiles is what's actually shown.
     @State private var selection: MusicFile.ID?
     var body: some View {
-        if files.isEmpty {
+        // TODO: Replace files.isEmpty with displayedFiles.isEmpty once parameter is added.
+        if displayedFiles.isEmpty {
             VStack{
                 Image(systemName: "music.note.square.stack").font(Font.system(size: 140))
                 Text("Drop audio files here or use the toolbar to open files.")
@@ -72,7 +76,8 @@ struct FileListView: View {
                 )
         }
         else{
-            Table(files, selection: $selection) {
+            // TODO: Replace files with displayedFiles once parameter is added.
+            Table(displayedFiles, selection: $selection) {
                 TableColumn("") { file in
                     if let data = file.artworkData, let nsImage = NSImage(data: data) {
                         Image(nsImage: nsImage)
