@@ -81,6 +81,7 @@ struct SpotifySearchView: View {
                         file?.date = track.date
                         file?.trackNumber = track.trackNumber
                         file?.spotifyId = track.spotifyId
+                        file?.albumArtist = track.albumArtist
                         file?.artworkUrl = track.artworkUrl
                         Task {
                             if let url = URL(string: track.artworkUrl),
