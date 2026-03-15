@@ -10,7 +10,7 @@ struct PopoverMatch: Identifiable, Equatable {
 }
 
 // Holds the original file alongside its best Spotify match and whether the user has confirmed it.
-struct BatchMatch {
+struct BatchMatch: Sendable {
     var original: MusicFile
     var proposed: MusicFile?
     var confirmed: Bool = true
@@ -106,6 +106,9 @@ struct BatchSearchView: View {
                 Spacer()
                 Button("Apply") {
                     Task {
+                        // TODO: Replace sequential for loop with withTaskGroup(of: Void.self) to run all writes concurrently.
+                        // Each child task handles one confirmed match: writeMetadata then writeArtwork if artworkUrl is set.
+                        // onApply and dismiss() stay after the group — withTaskGroup waits for all child tasks before continuing.
                         for i in matches {
                             if i.confirmed && i.proposed != nil {
                                 do {
@@ -136,24 +139,43 @@ struct BatchSearchView: View {
         .onAppear {
             isSearching = true
             Task {
-                for file in files {
-                    do {
-                        let results = try await APIClient.shared.searchTracks(query: (file.title ?? "") + " " + (file.artist ?? ""))
-                        var proposed: MusicFile? = nil
-                        if let bestMatch = results.first {
-                            proposed = file
-                            proposed?.title = bestMatch.title
-                            proposed?.artist = bestMatch.artist
-                            proposed?.album = bestMatch.album
-                            proposed?.trackNumber = bestMatch.trackNumber
-                            proposed?.date = bestMatch.date
-                            proposed?.albumArtist = bestMatch.albumArtist
-                            proposed?.spotifyId = bestMatch.id
-                            proposed?.artworkUrl = bestMatch.artworkUrl
+                // TODO: Replace sequential for loop with withTaskGroup to run all searches concurrently.
+                // Each child task searches one file and returns a BatchMatch.
+                // Append each result to matches and increment searchedCount as results arrive.
+                // Set isSearching = false after all child tasks complete (after the group loop)
+                await withTaskGroup(of: BatchMatch.self) { group in
+                    for file in files{
+                        group.addTask {
+                            do {
+                                let results = try await APIClient.shared.searchTracks(query: (file.title ?? "") + " " + (file.artist ?? ""))
+                                var proposed: MusicFile? = nil
+                                if let bestMatch = results.first {
+                                    proposed = file
+                                    proposed?.title = bestMatch.title
+                                    proposed?.artist = bestMatch.artist
+                                    proposed?.album = bestMatch.album
+                                    proposed?.trackNumber = bestMatch.trackNumber
+                                    proposed?.date = bestMatch.date
+                                    proposed?.albumArtist = bestMatch.albumArtist
+                                    proposed?.spotifyId = await bestMatch.id
+                                    proposed?.artworkUrl = bestMatch.artworkUrl
+                                }
+                                return BatchMatch(original: file, proposed: proposed)
+     
+                                
+                            } catch {
+                                return BatchMatch(original: file, proposed: nil)
+                            }
                         }
-                        matches.append(BatchMatch(original: file, proposed: proposed))
+                        
+                    }
+                    for await result in group {
+                        matches.append(result)
                         searchedCount += 1
-                    } catch {}
+                    }
+                        
+            
+                    
                 }
                 isSearching = false
             }

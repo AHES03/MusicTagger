@@ -9,7 +9,7 @@ import Foundation
 // CodingKeys maps snake_case JSON keys to camelCase Swift properties.
 // artworkData is decoded from the backend response (base64 string → Data) but excluded from write requests.
 
-struct MusicFile: Identifiable, Hashable, Codable {
+struct MusicFile: Identifiable, Hashable, Codable, Sendable {
     enum CodingKeys: String, CodingKey {
         case filePath = "file_path",
          trackNumber = "track_number",
