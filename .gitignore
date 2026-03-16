@@ -16,6 +16,8 @@ Doxyfile
 # macOS
 .DS_Store
 
+UI_v2/
+
 # Distribution
 *.dmg
 *.zip
