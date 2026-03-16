@@ -43,7 +43,7 @@ class TestReadMetadataRoute:
 
     def test_read_returns_200_with_valid_file(self, api_client):
         """POST /read-metadata with a valid file path should return 200."""
-        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
         response = api_client.post("/read-metadata", json={"file_path": file_path})
         assert response.status_code == 200
 
@@ -54,7 +54,7 @@ class TestReadMetadataRoute:
 
     def test_read_returns_error_for_invalid_path(self, api_client):
         """POST /read-metadata with a bad file path should return an error response."""
-        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/ - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/ - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
         response = api_client.post("/read-metadata", json={"file_path": file_path})
         assert response.status_code == 404
 
@@ -63,7 +63,7 @@ class TestWriteMetadataRoute:
 
     def test_write_returns_200_with_valid_payload(self, api_client):
         """POST /write-metadata with a full valid payload should return 200."""
-        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
         metadata_file = api_client.post("/read-metadata", json={"file_path": file_path})
         MT = metadata_file.json()['Metadata']
         MT['title'] = "Hello"
@@ -78,7 +78,7 @@ class TestWriteMetadataRoute:
 
     def test_write_returns_error_for_invalid_path(self, api_client):
         """POST /write-metadata with a bad file path should return 404."""
-        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
         metadata_file = api_client.post("/read-metadata", json={"file_path": file_path})
         MT = metadata_file.json()['Metadata']
         MT['file_path'] = ""
@@ -90,8 +90,8 @@ class TestWriteArtworkRoute:
 
     def test_write_artwork_returns_200_with_valid_payload(self, api_client):
         """POST /write-artwork with valid file and artwork paths should return 200."""
-        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
-        img_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/196873704166.jpg'
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        img_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/196873704166.jpg'
         metadata_file = api_client.post("/write-artwork", json={"file_path": file_path,"artwork_path":img_path})
 
         assert metadata_file.status_code == 200
@@ -104,21 +104,21 @@ class TestWriteArtworkRoute:
 
     def test_write_artwork_returns_error_for_invalid_audio_path(self, api_client):
         """POST /write-artwork with a bad audio file path should return 404."""
-        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/ - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
-        img_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/196873704166.jpg'
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/ - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        img_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/196873704166.jpg'
         metadata_file = api_client.post("/write-artwork", json={"file_path": file_path, "artwork_path": img_path})
         assert metadata_file.status_code == 404
 
     def test_write_artwork_returns_error_for_invalid_artwork_path(self, api_client):
         """POST /write-artwork with a bad artwork path should return 404."""
-        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
-        img_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/gue.jpg'
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        img_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/gue.jpg'
         metadata_file = api_client.post("/write-artwork", json={"file_path": file_path, "artwork_path": img_path})
         assert metadata_file.status_code == 404
 
     def test_write_artwork_returns_error_for_invalid_image_format(self, api_client):
         """POST /write-artwork with a non-image file as artwork should return 422."""
-        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
-        img_path = "REDACTED_USER_PATH/Documents/1 Projects/MT_UI/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-03 KISS ME.flac"
+        file_path = 'REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac'
+        img_path = "REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-03 KISS ME.flac"
         metadata_file = api_client.post("/write-artwork", json={"file_path": file_path, "artwork_path": img_path})
         assert metadata_file.status_code == 422

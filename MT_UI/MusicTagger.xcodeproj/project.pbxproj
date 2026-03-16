@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		98929A092F678D73002B1F1C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98929A062F678D73002B1F1C /* Assets.xcassets */; };
+		98929A162F678D73002B1F1C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A072F678D73002B1F1C /* ContentView.swift */; };
+		98929A172F678D73002B1F1C /* MusicTaggerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A082F678D73002B1F1C /* MusicTaggerApp.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		984F74012F64FC15002DEB42 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -17,29 +23,58 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		984F73FD2F64FC15002DEB42 /* MT_UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MT_UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		986D70BD2F47EA7E00FCA14F /* MusicTagger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicTagger.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		984F73FD2F64FC15002DEB42 /* MusicTaggerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = MusicTaggerTests.xctest; path = "REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/MT_UI/build/Debug/MusicTagger.app/Contents/PlugIns/MusicTaggerTests.xctest"; sourceTree = "<absolute>"; };
+		986D70BD2F47EA7E00FCA14F /* MusicTagger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MusicTagger.app; path = "REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/MT_UI/build/Debug/MusicTagger.app"; sourceTree = "<absolute>"; };
+		98929A062F678D73002B1F1C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		98929A072F678D73002B1F1C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		98929A082F678D73002B1F1C /* MusicTaggerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicTaggerApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		984F74122F650043002DEB42 /* Exceptions for "MT_UI" folder in "MT_UI" target */ = {
+		98929A312F678DA7002B1F1C /* Exceptions for "Models" folder in "MusicTagger" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				MT_UITests/APIClientIntegrationTests.swift,
-				MT_UITests/ModelDecodingTests.swift,
-				MT_UITests/run_tests.swift,
+				MusicFile.swift,
+				Track.swift,
 			);
-			target = 986D70BC2F47EA7E00FCA14F /* MT_UI */;
+			target = 986D70BC2F47EA7E00FCA14F /* MusicTagger */;
+		};
+		98929A322F678DA7002B1F1C /* Exceptions for "Services" folder in "MusicTagger" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				APIClient.swift,
+				BackendLauncher.swift,
+				MetadataUndoService.swift,
+			);
+			target = 986D70BC2F47EA7E00FCA14F /* MusicTagger */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		986D70BF2F47EA7E00FCA14F /* MT_UI */ = {
+		98929A1A2F678DA7002B1F1C /* Models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				984F74122F650043002DEB42 /* Exceptions for "MT_UI" folder in "MT_UI" target */,
+				98929A312F678DA7002B1F1C /* Exceptions for "Models" folder in "MusicTagger" target */,
 			);
-			path = MT_UI;
+			path = Models;
+			sourceTree = "<group>";
+		};
+		98929A1E2F678DA7002B1F1C /* MusicTaggerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MusicTaggerTests;
+			sourceTree = "<group>";
+		};
+		98929A222F678DA7002B1F1C /* Services */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				98929A322F678DA7002B1F1C /* Exceptions for "Services" folder in "MusicTagger" target */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		98929A272F678DA7002B1F1C /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -65,26 +100,22 @@
 		986D70B42F47EA7E00FCA14F = {
 			isa = PBXGroup;
 			children = (
-				986D70BF2F47EA7E00FCA14F /* MT_UI */,
-				986D70BE2F47EA7E00FCA14F /* Products */,
+				98929A1A2F678DA7002B1F1C /* Models */,
+				98929A1E2F678DA7002B1F1C /* MusicTaggerTests */,
+				98929A222F678DA7002B1F1C /* Services */,
+				98929A272F678DA7002B1F1C /* Views */,
+				98929A062F678D73002B1F1C /* Assets.xcassets */,
+				98929A072F678D73002B1F1C /* ContentView.swift */,
+				98929A082F678D73002B1F1C /* MusicTaggerApp.swift */,
 			);
-			sourceTree = "<group>";
-		};
-		986D70BE2F47EA7E00FCA14F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				986D70BD2F47EA7E00FCA14F /* MusicTagger.app */,
-				984F73FD2F64FC15002DEB42 /* MT_UITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		984F73FC2F64FC15002DEB42 /* MT_UITests */ = {
+		984F73FC2F64FC15002DEB42 /* MusicTaggerTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 984F74032F64FC15002DEB42 /* Build configuration list for PBXNativeTarget "MT_UITests" */;
+			buildConfigurationList = 984F74032F64FC15002DEB42 /* Build configuration list for PBXNativeTarget "MusicTaggerTests" */;
 			buildPhases = (
 				984F73F92F64FC15002DEB42 /* Sources */,
 				984F73FA2F64FC15002DEB42 /* Frameworks */,
@@ -95,16 +126,16 @@
 			dependencies = (
 				984F74022F64FC15002DEB42 /* PBXTargetDependency */,
 			);
-			name = MT_UITests;
+			name = MusicTaggerTests;
 			packageProductDependencies = (
 			);
 			productName = MT_UITests;
-			productReference = 984F73FD2F64FC15002DEB42 /* MT_UITests.xctest */;
+			productReference = 984F73FD2F64FC15002DEB42 /* MusicTaggerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		986D70BC2F47EA7E00FCA14F /* MT_UI */ = {
+		986D70BC2F47EA7E00FCA14F /* MusicTagger */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 986D70C82F47EA7F00FCA14F /* Build configuration list for PBXNativeTarget "MT_UI" */;
+			buildConfigurationList = 986D70C82F47EA7F00FCA14F /* Build configuration list for PBXNativeTarget "MusicTagger" */;
 			buildPhases = (
 				986D70B92F47EA7E00FCA14F /* Sources */,
 				986D70BA2F47EA7E00FCA14F /* Frameworks */,
@@ -115,9 +146,9 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				986D70BF2F47EA7E00FCA14F /* MT_UI */,
+				98929A272F678DA7002B1F1C /* Views */,
 			);
-			name = MT_UI;
+			name = MusicTagger;
 			packageProductDependencies = (
 			);
 			productName = MT_UI;
@@ -143,7 +174,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 986D70B82F47EA7E00FCA14F /* Build configuration list for PBXProject "MT_UI" */;
+			buildConfigurationList = 986D70B82F47EA7E00FCA14F /* Build configuration list for PBXProject "MusicTagger" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -155,12 +186,12 @@
 			packageReferences = (
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 986D70BE2F47EA7E00FCA14F /* Products */;
+			productRefGroup = 986D70B42F47EA7E00FCA14F;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				986D70BC2F47EA7E00FCA14F /* MT_UI */,
-				984F73FC2F64FC15002DEB42 /* MT_UITests */,
+				986D70BC2F47EA7E00FCA14F /* MusicTagger */,
+				984F73FC2F64FC15002DEB42 /* MusicTaggerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -177,6 +208,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98929A092F678D73002B1F1C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +226,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98929A162F678D73002B1F1C /* ContentView.swift in Sources */,
+				98929A172F678D73002B1F1C /* MusicTaggerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,7 +236,7 @@
 /* Begin PBXTargetDependency section */
 		984F74022F64FC15002DEB42 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 986D70BC2F47EA7E00FCA14F /* MT_UI */;
+			target = 986D70BC2F47EA7E00FCA14F /* MusicTagger */;
 			targetProxy = 984F74012F64FC15002DEB42 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -223,7 +257,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MT_UI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MT_UI";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MusicTagger.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MusicTagger";
 			};
 			name = Debug;
 		};
@@ -242,7 +276,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MT_UI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MT_UI";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MusicTagger.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MusicTagger";
 			};
 			name = Release;
 		};
@@ -441,7 +475,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		984F74032F64FC15002DEB42 /* Build configuration list for PBXNativeTarget "MT_UITests" */ = {
+		984F74032F64FC15002DEB42 /* Build configuration list for PBXNativeTarget "MusicTaggerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				984F74042F64FC15002DEB42 /* Debug */,
@@ -450,7 +484,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		986D70B82F47EA7E00FCA14F /* Build configuration list for PBXProject "MT_UI" */ = {
+		986D70B82F47EA7E00FCA14F /* Build configuration list for PBXProject "MusicTagger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				986D70C62F47EA7F00FCA14F /* Debug */,
@@ -459,7 +493,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		986D70C82F47EA7F00FCA14F /* Build configuration list for PBXNativeTarget "MT_UI" */ = {
+		986D70C82F47EA7F00FCA14F /* Build configuration list for PBXNativeTarget "MusicTagger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				986D70C92F47EA7F00FCA14F /* Debug */,

@@ -1,4 +1,8 @@
-# MusicTag
+# MusicTagger
+
+<p align="center">
+  <img src="Frame.png" width="150" alt="MusicTagger icon">
+</p>
 
 A native macOS app for editing music file metadata with Spotify integration.
 
@@ -18,7 +22,7 @@ Browse your local music library, search Spotify for the correct track, and write
 
 ## Architecture
 
-MusicTag is split into two components:
+MusicTagger is split into two components:
 
 **SwiftUI Frontend (`MT_UI/`)**
 - Native macOS UI built with SwiftUI
@@ -35,7 +39,7 @@ MusicTag is split into two components:
 ## Project Structure
 
 ```
-MusicTag/
+MusicTagger/
 ├── MT_UI/                        # Xcode project
 │   └── MT_UI/                    # SwiftUI macOS app source
 │       ├── MT_UIApp.swift        # App entry point
