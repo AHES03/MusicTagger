@@ -16,6 +16,13 @@ Doxyfile
 # macOS
 .DS_Store
 
+# Distribution
+*.dmg
+*.zip
+Backend/dist/
+Backend/build/
+Backend/*.spec
+
 # Test audio files
 test_files/
 **/test_files/
