@@ -18,7 +18,6 @@ class BackendLauncher: ObservableObject {
         path.deleteLastPathComponent()
         path.deleteLastPathComponent()
         path.deleteLastPathComponent()
-        path.deleteLastPathComponent()
         return path.appendingPathComponent("Backend")
     }
 

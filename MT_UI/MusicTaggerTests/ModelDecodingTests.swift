@@ -4,7 +4,7 @@
 // Run via Product > Test in Xcode (requires MT_UITests target).
 
 import XCTest
-@testable import MT_UI
+@testable import MusicTagger
 
 final class ModelDecodingTests: XCTestCase {
 

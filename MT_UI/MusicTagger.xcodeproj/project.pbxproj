@@ -10,6 +10,15 @@
 		98929A092F678D73002B1F1C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98929A062F678D73002B1F1C /* Assets.xcassets */; };
 		98929A162F678D73002B1F1C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A072F678D73002B1F1C /* ContentView.swift */; };
 		98929A172F678D73002B1F1C /* MusicTaggerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A082F678D73002B1F1C /* MusicTaggerApp.swift */; };
+		98929A772F679B2F002B1F1C /* MusicFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A672F679B2F002B1F1C /* MusicFile.swift */; };
+		98929A782F679B2F002B1F1C /* SpotifySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A752F679B2F002B1F1C /* SpotifySearchView.swift */; };
+		98929A792F679B2F002B1F1C /* BatchSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A722F679B2F002B1F1C /* BatchSearchView.swift */; };
+		98929A7B2F679B2F002B1F1C /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A6E2F679B2F002B1F1C /* APIClient.swift */; };
+		98929A7C2F679B2F002B1F1C /* MetadataEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A742F679B2F002B1F1C /* MetadataEditorView.swift */; };
+		98929A7D2F679B2F002B1F1C /* MetadataUndoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A702F679B2F002B1F1C /* MetadataUndoService.swift */; };
+		98929A7E2F679B2F002B1F1C /* FileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A732F679B2F002B1F1C /* FileListView.swift */; };
+		98929A802F679B2F002B1F1C /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A682F679B2F002B1F1C /* Track.swift */; };
+		98929A822F679B2F002B1F1C /* BackendLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A6F2F679B2F002B1F1C /* BackendLauncher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,35 +32,24 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		984F73FD2F64FC15002DEB42 /* MusicTaggerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = MusicTaggerTests.xctest; path = "REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/MT_UI/build/Debug/MusicTagger.app/Contents/PlugIns/MusicTaggerTests.xctest"; sourceTree = "<absolute>"; };
-		986D70BD2F47EA7E00FCA14F /* MusicTagger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MusicTagger.app; path = "REDACTED_USER_PATH/Documents/1 Projects/MusicTagger/MT_UI/build/Debug/MusicTagger.app"; sourceTree = "<absolute>"; };
 		98929A062F678D73002B1F1C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		98929A072F678D73002B1F1C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		98929A082F678D73002B1F1C /* MusicTaggerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicTaggerApp.swift; sourceTree = "<group>"; };
+		98929A552F679A79002B1F1C /* MusicTagger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicTagger.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		98929A562F679A79002B1F1C /* MusicTaggerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MusicTaggerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		98929A672F679B2F002B1F1C /* MusicFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicFile.swift; sourceTree = "<group>"; };
+		98929A682F679B2F002B1F1C /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
+		98929A6A2F679B2F002B1F1C /* APIClientIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientIntegrationTests.swift; sourceTree = "<group>"; };
+		98929A6B2F679B2F002B1F1C /* ModelDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDecodingTests.swift; sourceTree = "<group>"; };
+		98929A6C2F679B2F002B1F1C /* run_tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = run_tests.swift; sourceTree = "<group>"; };
+		98929A6E2F679B2F002B1F1C /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		98929A6F2F679B2F002B1F1C /* BackendLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendLauncher.swift; sourceTree = "<group>"; };
+		98929A702F679B2F002B1F1C /* MetadataUndoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataUndoService.swift; sourceTree = "<group>"; };
+		98929A722F679B2F002B1F1C /* BatchSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchSearchView.swift; sourceTree = "<group>"; };
+		98929A732F679B2F002B1F1C /* FileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
+		98929A742F679B2F002B1F1C /* MetadataEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEditorView.swift; sourceTree = "<group>"; };
+		98929A752F679B2F002B1F1C /* SpotifySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifySearchView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		98929A1A2F678DA7002B1F1C /* Models */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Models;
-			sourceTree = "<group>";
-		};
-		98929A1E2F678DA7002B1F1C /* MusicTaggerTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MusicTaggerTests;
-			sourceTree = "<group>";
-		};
-		98929A222F678DA7002B1F1C /* Services */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Services;
-			sourceTree = "<group>";
-		};
-		98929A272F678DA7002B1F1C /* Views */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Views;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		984F73FA2F64FC15002DEB42 /* Frameworks */ = {
@@ -74,14 +72,56 @@
 		986D70B42F47EA7E00FCA14F = {
 			isa = PBXGroup;
 			children = (
-				98929A1A2F678DA7002B1F1C /* Models */,
-				98929A1E2F678DA7002B1F1C /* MusicTaggerTests */,
-				98929A222F678DA7002B1F1C /* Services */,
-				98929A272F678DA7002B1F1C /* Views */,
+				98929A692F679B2F002B1F1C /* Models */,
+				98929A6D2F679B2F002B1F1C /* MusicTaggerTests */,
+				98929A712F679B2F002B1F1C /* Services */,
+				98929A762F679B2F002B1F1C /* Views */,
 				98929A062F678D73002B1F1C /* Assets.xcassets */,
 				98929A072F678D73002B1F1C /* ContentView.swift */,
 				98929A082F678D73002B1F1C /* MusicTaggerApp.swift */,
+				98929A552F679A79002B1F1C /* MusicTagger.app */,
+				98929A562F679A79002B1F1C /* MusicTaggerTests.xctest */,
 			);
+			sourceTree = "<group>";
+		};
+		98929A692F679B2F002B1F1C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				98929A672F679B2F002B1F1C /* MusicFile.swift */,
+				98929A682F679B2F002B1F1C /* Track.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		98929A6D2F679B2F002B1F1C /* MusicTaggerTests */ = {
+			isa = PBXGroup;
+			children = (
+				98929A6A2F679B2F002B1F1C /* APIClientIntegrationTests.swift */,
+				98929A6B2F679B2F002B1F1C /* ModelDecodingTests.swift */,
+				98929A6C2F679B2F002B1F1C /* run_tests.swift */,
+			);
+			path = MusicTaggerTests;
+			sourceTree = "<group>";
+		};
+		98929A712F679B2F002B1F1C /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				98929A6E2F679B2F002B1F1C /* APIClient.swift */,
+				98929A6F2F679B2F002B1F1C /* BackendLauncher.swift */,
+				98929A702F679B2F002B1F1C /* MetadataUndoService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		98929A762F679B2F002B1F1C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				98929A722F679B2F002B1F1C /* BatchSearchView.swift */,
+				98929A732F679B2F002B1F1C /* FileListView.swift */,
+				98929A742F679B2F002B1F1C /* MetadataEditorView.swift */,
+				98929A752F679B2F002B1F1C /* SpotifySearchView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -104,7 +144,7 @@
 			packageProductDependencies = (
 			);
 			productName = MT_UITests;
-			productReference = 984F73FD2F64FC15002DEB42 /* MusicTaggerTests.xctest */;
+			productReference = 98929A562F679A79002B1F1C /* MusicTaggerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		986D70BC2F47EA7E00FCA14F /* MusicTagger */ = {
@@ -119,14 +159,11 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				98929A272F678DA7002B1F1C /* Views */,
-			);
 			name = MusicTagger;
 			packageProductDependencies = (
 			);
 			productName = MT_UI;
-			productReference = 986D70BD2F47EA7E00FCA14F /* MusicTagger.app */;
+			productReference = 98929A552F679A79002B1F1C /* MusicTagger.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -200,6 +237,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98929A772F679B2F002B1F1C /* MusicFile.swift in Sources */,
+				98929A782F679B2F002B1F1C /* SpotifySearchView.swift in Sources */,
+				98929A792F679B2F002B1F1C /* BatchSearchView.swift in Sources */,
+				98929A7B2F679B2F002B1F1C /* APIClient.swift in Sources */,
+				98929A7C2F679B2F002B1F1C /* MetadataEditorView.swift in Sources */,
+				98929A7D2F679B2F002B1F1C /* MetadataUndoService.swift in Sources */,
+				98929A7E2F679B2F002B1F1C /* FileListView.swift in Sources */,
+				98929A802F679B2F002B1F1C /* Track.swift in Sources */,
+				98929A822F679B2F002B1F1C /* BackendLauncher.swift in Sources */,
 				98929A162F678D73002B1F1C /* ContentView.swift in Sources */,
 				98929A172F678D73002B1F1C /* MusicTaggerApp.swift in Sources */,
 			);
