@@ -30,32 +30,9 @@
 		98929A082F678D73002B1F1C /* MusicTaggerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicTaggerApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		98929A312F678DA7002B1F1C /* Exceptions for "Models" folder in "MusicTagger" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				MusicFile.swift,
-				Track.swift,
-			);
-			target = 986D70BC2F47EA7E00FCA14F /* MusicTagger */;
-		};
-		98929A322F678DA7002B1F1C /* Exceptions for "Services" folder in "MusicTagger" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				APIClient.swift,
-				BackendLauncher.swift,
-				MetadataUndoService.swift,
-			);
-			target = 986D70BC2F47EA7E00FCA14F /* MusicTagger */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		98929A1A2F678DA7002B1F1C /* Models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				98929A312F678DA7002B1F1C /* Exceptions for "Models" folder in "MusicTagger" target */,
-			);
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -66,9 +43,6 @@
 		};
 		98929A222F678DA7002B1F1C /* Services */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				98929A322F678DA7002B1F1C /* Exceptions for "Services" folder in "MusicTagger" target */,
-			);
 			path = Services;
 			sourceTree = "<group>";
 		};
