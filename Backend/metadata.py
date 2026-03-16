@@ -12,6 +12,9 @@ class MetadataReader:
         ## @param file_path Absolute path to the local audio file.
         ## @throws ValueError if the file does not exist or format is unsupported.
         self.file_path = file_path
+        # TODO: Replace mutagen.File() with music_tag.load_file() for unified format support.
+        # music_tag raises an exception if the file doesn't exist or format is unsupported,
+        # so keep the same try/except + None check pattern but map to music_tag's exceptions.
         try:
             self.audio = File(self.file_path)
         except:
@@ -25,8 +28,14 @@ class MetadataReader:
         @brief Read and return all existing metadata fields from the file.
         @return A MetadataPayload containing title, artist, album, track_number, date, genre, spotify_id.
         """
+        # TODO: Replace all self.audio.get(...) calls with music_tag field access:
+        #   e.g. self.audio['title'].value  — works the same across FLAC, MP3, MP4, OGG.
         track_number_raw = self.audio.get('tracknumber', [None])[0]
         disc_namer_raw =  self.audio.get('discnumber', [None])[0]
+
+        # TODO: Replace the mutagen pictures block with music_tag artwork access:
+        #   self.audio['artwork'].value gives raw image bytes directly (or None if absent).
+        #   Then base64-encode as before.
         pictures = self.audio.pictures
         picture =None
         image_encoded = None
@@ -35,6 +44,10 @@ class MetadataReader:
                 picture = i.data
         if picture is not None:
             image_encoded = base64.b64encode(picture).decode('utf-8')
+
+        # TODO: Update each key below to use music_tag field names:
+        #   title, artist, album, tracknumber, year, genre, comment, albumartist,
+        #   composer, discnumber, compilation, artwork — check music_tag docs for exact names.
         mapped_dict = {
             "file_path": self.file_path,
             "title": self.audio.get('title', [None])[0],
@@ -64,6 +77,7 @@ class MetadataWriter:
         ## @param file_path Absolute path to the local audio file.
         ## @throws ValueError if the file does not exist or format is unsupported.
         self.file_path = file_path
+        # TODO: Replace mutagen.File() with music_tag.load_file() — same as MetadataReader.__init__.
         try:
             self.audio = File(self.file_path)
         except:
@@ -77,6 +91,9 @@ class MetadataWriter:
         @param metadata A MetadataPayload containing the fields to write.
         Handles MP3 (ID3), MP4/AAC, and FLAC formats.
         """
+        # TODO: Replace all self.audio['key'] = value assignments with music_tag equivalents:
+        #   self.audio['title'] = metadata.title  (music_tag uses the same syntax, just different key names).
+        #   Call self.audio.save() at the end as before — music_tag uses the same save() call.
         self.audio['title'] = metadata.title
         self.audio["artist"] = metadata.artist
         self.audio['album'] = metadata.album
@@ -108,6 +125,11 @@ class MetadataWriter:
         """
         if b'\xff\xd8\xff' not in image_bytes:
             raise ValueError("Invalid cover file type")
+
+        # TODO: Replace the mutagen Picture block with music_tag artwork writing:
+        #   Wrap image_bytes in a music_tag.core.ArtworkCollection or assign directly:
+        #   self.audio['artwork'] = image_bytes  then self.audio.save().
+        #   Remove the mutagen Picture, clear_pictures(), and add_picture() calls entirely.
         picture = Picture()
         picture.type = 3
         picture.mime = "image/jpeg"
