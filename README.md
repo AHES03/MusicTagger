@@ -15,6 +15,8 @@ Browse your local music library, search Spotify for the correct track, and write
 - Import local music files individually or by folder (recursive, up to 2 levels deep)
 - View and edit existing file tags (title, artist, album, track, disc, genre, artwork, and more)
 - Search Spotify to auto-fill metadata for a selected file
+- Batch mode: search and apply Spotify metadata to multiple files in parallel
+- Undo/redo support for all edits including batch operations
 - Embed album artwork directly into audio files
 - Supports FLAC, MP3, AAC, M4A, and WAV via automatic format detection
 
@@ -32,7 +34,7 @@ MusicTagger is split into two components:
 **Python Backend (`Backend/`)**
 - FastAPI server running locally
 - Integrates with the Spotify Web API via `spotipy`
-- Reads and writes audio file tags via `mutagen`
+- Reads and writes audio file tags via `music-tag` and `mutagen`
 
 ---
 
@@ -47,13 +49,15 @@ MusicTagger/
 │       ├── Views/
 │       │   ├── FileListView.swift
 │       │   ├── MetadataEditorView.swift
-│       │   └── SpotifySearchView.swift
+│       │   ├── SpotifySearchView.swift
+│       │   └── BatchSearchView.swift
 │       ├── Models/
 │       │   ├── Track.swift
 │       │   └── MusicFile.swift
 │       └── Services/
 │           ├── APIClient.swift
-│           └── BackendLauncher.swift
+│           ├── BackendLauncher.swift
+│           └── MetadataUndoService.swift
 └── Backend/                      # Python FastAPI server
     ├── main.py                   # API routes
     ├── spotify_client.py         # Spotify API integration
@@ -134,5 +138,5 @@ pytest
 | Frontend | SwiftUI (macOS) |
 | Backend | Python, FastAPI |
 | Spotify Integration | spotipy |
-| Audio Tag Editing | mutagen |
+| Audio Tag Editing | music-tag, mutagen |
 | Testing | pytest |
