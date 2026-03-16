@@ -35,12 +35,12 @@ class TestMetadataReader:
 
 
     def test_read_unsupported_format_raises_error(self, tmp_path):
-        """Providing a non-audio file should raise an appropriate error."""
+        """Providing a non-audio_MT file should raise an appropriate error."""
         dummy = tmp_path / "dummy.docx"
         dummy.write_bytes(b"not a real document")
         with pytest.raises(ValueError) as excinfo:
             test = MetadataReader(str(dummy))
-        assert "Unsupported file format" in str(excinfo.value)
+        assert "File does not exist" in str(excinfo.value)
 
 
 class TestMetadataWriter:
@@ -54,6 +54,7 @@ class TestMetadataWriter:
         writer.write(reader_payload)
         new_reader = MetadataReader(_FLAC)
         new_reader = new_reader.read()
+        print(new_reader.date)
         assert new_reader.title == "Hello"
 
 

@@ -101,7 +101,7 @@ class TestWriteArtworkRoute:
         assert metadata_file.status_code == 422
 
     def test_write_artwork_returns_error_for_invalid_audio_path(self, api_client):
-        """POST /write-artwork with a bad audio file path should return 404."""
+        """POST /write-artwork with a bad audio_MT file path should return 404."""
         metadata_file = api_client.post("/write-artwork", json={"file_path": _FLAC_INVALID, "artwork_path": _JPG})
         assert metadata_file.status_code == 404
 

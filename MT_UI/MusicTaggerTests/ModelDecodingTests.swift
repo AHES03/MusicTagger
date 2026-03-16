@@ -24,8 +24,7 @@ final class ModelDecodingTests: XCTestCase {
             "album_artist": "MARO",
             "composer": "MARO",
             "disc_number": 1,
-            "is_compilation": false,
-            "spotify_id": "abc123"
+            "is_compilation": false
         }
         """.data(using: .utf8)!
 
@@ -43,7 +42,6 @@ final class ModelDecodingTests: XCTestCase {
         XCTAssertEqual(file.composer, "MARO")
         XCTAssertEqual(file.discNumber, 1)
         XCTAssertEqual(file.isCompilation, false)
-        XCTAssertEqual(file.spotifyId, "abc123")
         XCTAssertNil(file.artworkData)   // UI-only — never decoded from JSON
         XCTAssertNil(file.artworkUrl)    // UI-only — never decoded from JSON
     }
@@ -69,7 +67,6 @@ final class ModelDecodingTests: XCTestCase {
         XCTAssertNil(file.composer)
         XCTAssertNil(file.discNumber)
         XCTAssertNil(file.isCompilation)
-        XCTAssertNil(file.spotifyId)
     }
 
     func testMusicFileIDEqualsFilePath() throws {
@@ -88,8 +85,7 @@ final class ModelDecodingTests: XCTestCase {
             "track_number": 3,
             "album_artist": "Various",
             "disc_number": 2,
-            "is_compilation": true,
-            "spotify_id": "xyz"
+            "is_compilation": true
         }
         """.data(using: .utf8)!
 
@@ -102,7 +98,6 @@ final class ModelDecodingTests: XCTestCase {
         XCTAssertEqual(dict["album_artist"] as? String, "Various")
         XCTAssertEqual(dict["disc_number"] as? Int, 2)
         XCTAssertEqual(dict["is_compilation"] as? Bool, true)
-        XCTAssertEqual(dict["spotify_id"] as? String, "xyz")
         // UI-only fields must not appear in encoded output
         XCTAssertNil(dict["artworkData"])
         XCTAssertNil(dict["artworkUrl"])

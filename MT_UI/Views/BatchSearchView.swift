@@ -163,7 +163,6 @@ struct BatchSearchView: View {
                                         proposed?.trackNumber = bestMatch.trackNumber
                                         proposed?.date = bestMatch.date
                                         proposed?.albumArtist = bestMatch.albumArtist
-                                        proposed?.spotifyId = await bestMatch.id
                                         proposed?.artworkUrl = bestMatch.artworkUrl
                                     }
                                     return BatchMatch(original: file, proposed: proposed)

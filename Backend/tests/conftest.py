@@ -14,7 +14,7 @@ def spotify_client():
 @pytest.fixture
 def sample_audio_file():
     """
-    Provide a path to a small real audio file used in metadata tests.
+    Provide a path to a small real audio_MT file used in metadata tests.
     Place a test file at tests/fixtures/sample.mp3
     """
     pass

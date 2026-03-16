@@ -2,6 +2,7 @@ fastapi
 uvicorn[standard]
 spotipy
 mutagen
+music-tag
 python-dotenv
 pydantic
 

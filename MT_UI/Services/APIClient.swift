@@ -55,6 +55,9 @@ class APIClient{
         let body: [String:String] = ["query":query]
         request.httpBody = try JSONEncoder().encode(body)
         
+            // TODO: Check the HTTP status code before decoding. If it's not 200,
+            // decode the error detail from the response body and throw APIError.invalidResponse(_)
+            // instead of attempting to decode SearchResponse — which will always fail on error responses.
             let (data, _) = try await URLSession.shared.data(for: request)
             let decoded = try JSONDecoder().decode(SearchResponse.self, from: data)
             return decoded.tracks
@@ -74,8 +77,13 @@ class APIClient{
         let body: [String:String] = ["file_path":filePath]
         request.httpBody = try JSONEncoder().encode(body)
 
+           // TODO: Check the HTTP status code before decoding. If it's not 200,
+           // decode the error detail from the response body and throw APIError.invalidResponse(_)
+           // instead of attempting to decode ReadMetadataResponse — which will always fail on error responses.
+        
            let (data, _) = try await URLSession.shared.data(for: request)
            let decoded = try JSONDecoder().decode(ReadMetadataResponse.self, from: data)
+        print (decoded)
            return decoded.file
            
         }

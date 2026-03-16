@@ -23,7 +23,6 @@ class MetadataPayload(BaseModel):
     track_number: Optional[int] = None
     date: Optional[str] = None
     genre: Optional[str] = None
-    spotify_id: Optional[str] = None  # Used to fetch and embed artwork
     comment: Optional[str] = None
     album_artist: Optional[str] = None
     composer: Optional[str] = None
@@ -43,6 +42,6 @@ class ReadMetadataRequest(BaseModel):
 
 
 class WriteArtworkRequest(BaseModel):
-    """Request body for writing artwork to a local audio file."""
+    """Request body for writing artwork to a local audio_MT file."""
     file_path: str
     artwork_path: str

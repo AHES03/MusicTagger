@@ -13,7 +13,6 @@ struct MusicFile: Identifiable, Hashable, Codable, Sendable {
     enum CodingKeys: String, CodingKey {
         case filePath = "file_path",
          trackNumber = "track_number",
-             spotifyId = "spotify_id",
              albumArtist = "album_artist",
              discNumber = "disc_number",
              isCompilation = "is_compilation",
@@ -33,7 +32,6 @@ struct MusicFile: Identifiable, Hashable, Codable, Sendable {
     var composer : String?
     var discNumber : Int?
     var isCompilation : Bool?
-    var spotifyId : String?
     var artworkData : Data? = nil   // Decoded from backend base64 response; not sent on writes.
     var artworkUrl : String? = nil  // UI-only — stored from Spotify selection for Save to use.
     var id: String {filePath}
@@ -61,7 +59,6 @@ struct MusicFile: Identifiable, Hashable, Codable, Sendable {
         self.composer = try container.decodeIfPresent(String.self, forKey: .composer)
         self.discNumber = try container.decodeIfPresent(Int.self, forKey: .discNumber)
         self.isCompilation = try container.decodeIfPresent(Bool.self, forKey: .isCompilation)
-        self.spotifyId = try container.decodeIfPresent(String.self, forKey: .spotifyId)
         self.artworkData = try container.decodeIfPresent(Data.self, forKey: .artworkData)
     }
     

@@ -38,7 +38,7 @@ def search(request: SearchRequest):
 @app.post("/read-metadata",status_code=200)
 def read_metadata(request: ReadMetadataRequest):
     """
-    @brief Read and return existing metadata from a local audio file.
+    @brief Read and return existing metadata from a local audio_MT file.
     @param request ReadMetadataRequest containing the file path.
     @return JSON with a MetadataPayload under key 'Metadata'.
     @throws HTTPException 404 if file does not exist.
@@ -61,7 +61,7 @@ def read_metadata(request: ReadMetadataRequest):
 @app.post("/write-metadata", status_code=200)
 def write_metadata(payload: MetadataPayload):
     """
-    @brief Write metadata tags to a local audio file.
+    @brief Write metadata tags to a local audio_MT file.
     @param payload MetadataPayload containing the file path and tag fields.
     @return JSON with success status.
     @throws HTTPException 404 if file does not exist.
@@ -84,8 +84,8 @@ def write_metadata(payload: MetadataPayload):
 @app.post("/write-artwork", status_code=200)
 def write_artwork(request: WriteArtworkRequest):
     """
-    @brief Read artwork from a local image path and embed it into an audio file.
-    @param request WriteArtworkRequest containing the audio file path and artwork image path.
+    @brief Read artwork from a local image path and embed it into an audio_MT file.
+    @param request WriteArtworkRequest containing the audio_MT file path and artwork image path.
     @return JSON with success status.
     @throws HTTPException 404 if either file path does not exist.
     @throws HTTPException 422 if the image file is not a valid format.
