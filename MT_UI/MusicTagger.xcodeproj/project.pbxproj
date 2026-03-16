@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		984F74112F64FD3E002DEB42 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 984F74102F64FD3E002DEB42 /* AsyncAlgorithms */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		984F74012F64FC15002DEB42 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -22,7 +18,7 @@
 
 /* Begin PBXFileReference section */
 		984F73FD2F64FC15002DEB42 /* MT_UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MT_UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		986D70BD2F47EA7E00FCA14F /* MT_UI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MT_UI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		986D70BD2F47EA7E00FCA14F /* MusicTagger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicTagger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -53,7 +49,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				984F74112F64FD3E002DEB42 /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +73,7 @@
 		986D70BE2F47EA7E00FCA14F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				986D70BD2F47EA7E00FCA14F /* MT_UI.app */,
+				986D70BD2F47EA7E00FCA14F /* MusicTagger.app */,
 				984F73FD2F64FC15002DEB42 /* MT_UITests.xctest */,
 			);
 			name = Products;
@@ -102,7 +97,6 @@
 			);
 			name = MT_UITests;
 			packageProductDependencies = (
-				984F74102F64FD3E002DEB42 /* AsyncAlgorithms */,
 			);
 			productName = MT_UITests;
 			productReference = 984F73FD2F64FC15002DEB42 /* MT_UITests.xctest */;
@@ -127,7 +121,7 @@
 			packageProductDependencies = (
 			);
 			productName = MT_UI;
-			productReference = 986D70BD2F47EA7E00FCA14F /* MT_UI.app */;
+			productReference = 986D70BD2F47EA7E00FCA14F /* MusicTagger.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -159,7 +153,6 @@
 			mainGroup = 986D70B42F47EA7E00FCA14F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				984F740F2F64FD3E002DEB42 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 986D70BE2F47EA7E00FCA14F /* Products */;
@@ -257,7 +250,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -311,6 +306,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = MusicTagger;
 				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -322,7 +318,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -369,6 +367,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = MusicTagger;
 				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -388,6 +387,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MT-UI-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = MusicTagger;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -395,7 +395,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "AHES.MT-UI";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = MusicTagger;
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -419,6 +419,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MT-UI-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = MusicTagger;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -426,7 +427,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "AHES.MT-UI";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = MusicTagger;
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -468,25 +469,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		984F740F2F64FD3E002DEB42 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.3;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		984F74102F64FD3E002DEB42 /* AsyncAlgorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 984F740F2F64FD3E002DEB42 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
-			productName = AsyncAlgorithms;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 986D70B52F47EA7E00FCA14F /* Project object */;
 }
