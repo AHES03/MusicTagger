@@ -20,7 +20,6 @@
 		98929A802F679B2F002B1F1C /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A682F679B2F002B1F1C /* Track.swift */; };
 		98929A822F679B2F002B1F1C /* BackendLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A6F2F679B2F002B1F1C /* BackendLauncher.swift */; };
 		98929A962F67B765002B1F1C /* backend in Resources */ = {isa = PBXBuildFile; fileRef = 98929A952F67B765002B1F1C /* backend */; };
-		98E2041C2F68B2DD001F3E54 /* MusicTagger.app in Resources */ = {isa = PBXBuildFile; fileRef = 98929A552F679A79002B1F1C /* MusicTagger.app */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +51,7 @@
 		98929A742F679B2F002B1F1C /* MetadataEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEditorView.swift; sourceTree = "<group>"; };
 		98929A752F679B2F002B1F1C /* SpotifySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifySearchView.swift; sourceTree = "<group>"; };
 		98929A952F67B765002B1F1C /* backend */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = backend; path = ../Backend/dist/backend; sourceTree = "<group>"; };
+		98E2041D2F68B32F001F3E54 /* playground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = playground.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +120,7 @@
 		98929A762F679B2F002B1F1C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				98E2041D2F68B32F001F3E54 /* playground.swift */,
 				98929A722F679B2F002B1F1C /* BatchSearchView.swift */,
 				98929A732F679B2F002B1F1C /* FileListView.swift */,
 				98929A742F679B2F002B1F1C /* MetadataEditorView.swift */,
@@ -155,6 +156,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 986D70C82F47EA7F00FCA14F /* Build configuration list for PBXNativeTarget "MusicTagger" */;
 			buildPhases = (
+				98E2041F2F68C917001F3E54 /* ShellScript */,
 				986D70B92F47EA7E00FCA14F /* Sources */,
 				986D70BA2F47EA7E00FCA14F /* Frameworks */,
 				986D70BB2F47EA7E00FCA14F /* Resources */,
@@ -223,13 +225,32 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				98E2041C2F68B2DD001F3E54 /* MusicTagger.app in Resources */,
 				98929A962F67B765002B1F1C /* backend in Resources */,
 				98929A092F678D73002B1F1C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		98E2041F2F68C917001F3E54 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which /opt/homebrew/bin/swiftformat > /dev/null; then\n  /opt/homebrew/bin/swiftformat\nelse\n  echo \"warning: SwiftFormat not installed\"\nfi\nif which /opt/homebrew/bin/swiftlint > /dev/null; then\n  /opt/homebrew/bin/swiftlint\nelse\n  echo \"warning: SwiftLint not installed\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		984F73F92F64FC15002DEB42 /* Sources */ = {

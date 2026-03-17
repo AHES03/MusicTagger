@@ -66,32 +66,36 @@ struct ContentView: View {
     } }
     @Environment(\.undoManager) var undoManager
     var body: some View {
-        HSplitView {
-            MetadataEditorView(file: $selectedFile, onSave:{ before, after in
-
-                guard let index = files.firstIndex(where: { $0.id == after.id }) else { return }
-                files[index] = after
-                selectedFile = after
-                MetadataUndoService.shared.registerSave(
-                    before: before,
-                    after: after,
-                    onComplete: { restored in
-                        guard let index = files.firstIndex(where: { $0.id == restored.id }) else { return }
-                        files[index] = restored
-                        selectedFile = restored
-                        editorRefreshID = UUID()
-                    },
-                    undoManager: undoManager
-                )
-            }, refreshID: editorRefreshID)
-                .frame(minWidth: 200, maxWidth: .infinity)
+        GeometryReader { geo in
+            HSplitView {
+                MetadataEditorView(file: $selectedFile, onSave:{ before, after in
+                    
+                    guard let index = files.firstIndex(where: { $0.id == after.id }) else { return }
+                    files[index] = after
+                    selectedFile = after
+                    MetadataUndoService.shared.registerSave(
+                        before: before,
+                        after: after,
+                        onComplete: { restored in
+                            guard let index = files.firstIndex(where: { $0.id == restored.id }) else { return }
+                            files[index] = restored
+                            selectedFile = restored
+                            editorRefreshID = UUID()
+                        },
+                        undoManager: undoManager
+                    )
+                }, refreshID: editorRefreshID)
+                .frame(minWidth: geo.size.width / 10, alignment: .leading)
+                .frame(maxWidth: geo.size.width / 5, alignment: .leading)
                 .frame(maxHeight: .infinity)
-            // TODO: Add displayedFiles: filteredFiles parameter to FileListView once the parameter is added to its signature.
-            FileListView(files: $files, onSelect: $selectedFile, displayedFiles: filteredFiles)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .frame(minWidth: 800)
+                
+                // TODO: Add displayedFiles: filteredFiles parameter to FileListView once the parameter is added to its signature.
+                FileListView(files: $files, onSelect: $selectedFile, displayedFiles: filteredFiles)
+                    .frame(minWidth: geo.size.width * 0.9, alignment: .leading)
+                    .frame(maxWidth: geo.size.width * 0.8, alignment: .leading)
+                    .frame(maxHeight: .infinity)
+            }
         }
-        .frame(minWidth: 800, minHeight: 500)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {
         if !isSearching {
