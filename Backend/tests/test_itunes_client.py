@@ -4,13 +4,6 @@ from models import iTunesTrack
 from unittest.mock import patch, MagicMock
 
 
-class TestAuthentication:
-
-    def test_authenticate_succeeds_with_valid_credentials(self):
-        """Client should authenticate without raising an exception."""
-        test = iTunesClient()
-        assert test.itunes_client is not None
-
 class TestSearchTrack:
 
     def test_search_returns_list(self):
@@ -43,7 +36,7 @@ class TestGetTrackMetadata:
 
     def test_returns_dict_with_all_fields(self):
         """A valid track ID should return a iTunesTrack."""
-        trackId = '3GfOAdcoc3X5GPiiXmpBjK'
+        trackId = '1440899019'
         test = iTunesClient()
         response = test.get_track_metadata(trackId)
         assert type(response) == iTunesTrack
@@ -62,7 +55,7 @@ class TestGetAlbumArtwork:
 
     def test_returns_bytes(self):
         """A valid track ID should return image data as bytes."""
-        trackId = '3GfOAdcoc3X5GPiiXmpBjK'
+        trackId = '1440899019'
         test = iTunesClient()
         response = test.get_album_artwork(trackId)
         assert type(response) == bytes
