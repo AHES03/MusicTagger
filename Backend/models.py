@@ -10,11 +10,11 @@ class Track (BaseModel):
     track_number: int
     album_artist: str
 
-class iTunesTrack(BaseModel,Track):
+class iTunesTrack(Track):
     """A single iTunes track search result."""
     itunes_id: str
 
-class SpotifyTrack(BaseModel,Track):
+class SpotifyTrack(Track):
     """A single Spotify track search result."""
     spotify_id: str
 
