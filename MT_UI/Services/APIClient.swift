@@ -83,7 +83,6 @@ class APIClient{
         
            let (data, _) = try await URLSession.shared.data(for: request)
            let decoded = try JSONDecoder().decode(ReadMetadataResponse.self, from: data)
-        print (decoded)
            return decoded.file
            
         }
