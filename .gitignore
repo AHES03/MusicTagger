@@ -17,6 +17,8 @@ Doxyfile
 # macOS
 .DS_Store
 
+.ideas/
+
 UI_v2/
 
 # Distribution
