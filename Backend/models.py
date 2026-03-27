@@ -1,10 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
-
-class SpotifyTrack(BaseModel):
-    """A single Spotify track search result."""
-    spotify_id: str
+class Track (BaseModel):
     title: str
     artist: str
     album: str
@@ -12,6 +9,14 @@ class SpotifyTrack(BaseModel):
     artwork_url: str
     track_number: int
     album_artist: str
+
+class iTunesTrack(BaseModel,Track):
+    """A single iTunes track search result."""
+    itunes_id: str
+
+class SpotifyTrack(BaseModel,Track):
+    """A single Spotify track search result."""
+    spotify_id: str
 
 
 class MetadataPayload(BaseModel):
