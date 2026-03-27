@@ -120,7 +120,7 @@ def write_artwork(request: WriteArtworkRequest):
         img = Image.open(buffer)
     except UnidentifiedImageError as e:
         raise HTTPException(status_code=422, detail=str(e))
-    img.thumbnail((500, 500))
+
     output = io.BytesIO()
     img.save(output, format='JPEG')
     compressed_bytes = output.getvalue()
