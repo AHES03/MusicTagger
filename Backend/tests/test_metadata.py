@@ -31,7 +31,7 @@ class TestMetadataReader:
         """Providing a non-existent file path should raise an error."""
         with pytest.raises(ValueError) as excinfo:
             test = MetadataReader(_FLAC_INVALID)
-        assert "File does not exist" in str(excinfo.value)
+        assert "No such file or directory" in str(excinfo.value)
 
 
     def test_read_unsupported_format_raises_error(self, tmp_path):
@@ -40,7 +40,7 @@ class TestMetadataReader:
         dummy.write_bytes(b"not a real document")
         with pytest.raises(ValueError) as excinfo:
             test = MetadataReader(str(dummy))
-        assert "File does not exist" in str(excinfo.value)
+        assert "not implemented" in str(excinfo.value)
 
 
 class TestMetadataWriter:
@@ -62,7 +62,7 @@ class TestMetadataWriter:
         """Providing a non-existent file path should raise an error."""
         with pytest.raises(ValueError) as excinfo:
             test = MetadataWriter(_FLAC_INVALID)
-        assert "File does not exist" in str(excinfo.value)
+        assert "No such file or directory" in str(excinfo.value)
 
 
     def test_write_artwork_embeds_image(self, sample_audio_file):

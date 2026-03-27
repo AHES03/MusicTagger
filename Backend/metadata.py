@@ -1,5 +1,6 @@
 from music_tag import load_file
 from mutagen import File
+from mutagen import MutagenError
 import base64
 from models import MetadataPayload
 
@@ -15,8 +16,8 @@ class MetadataReader:
         try:
             self.audio_MT = load_file(self.file_path)
             self.audio_mutagen = File(self.file_path)
-        except:
-            raise ValueError("File does not exist")
+        except (FileNotFoundError, OSError,MutagenError,NotImplementedError) as e:
+            raise ValueError(e)
         if self.audio_MT is None:
             raise ValueError("Unsupported file format")
 
@@ -64,8 +65,9 @@ class MetadataWriter:
         self.file_path = file_path
         try:
             self.audio_MT = load_file(self.file_path)
-        except:
-            raise ValueError("File does not exist")
+        except (FileNotFoundError, OSError, MutagenError,NotImplementedError) as e:
+            print(e)
+            raise ValueError(e)
         if self.audio_MT is None:
             raise ValueError("Unsupported file format")
 
@@ -94,12 +96,13 @@ class MetadataWriter:
         self.audio_MT.save()
         try:
             self.audio_mutagen = File(self.file_path)
+            if self.audio_mutagen is None:
+                raise ValueError("Unsupported file format")
             self.audio_mutagen["date"] = metadata.date
             self.audio_mutagen.save()
-        except:
-            raise ValueError("File does not exist")
-        if self.audio_mutagen is None:
-            raise ValueError("Unsupported file format")
+        except (FileNotFoundError, OSError, MutagenError,NotImplementedError) as e:
+            raise ValueError(e)
+
 
 
 

@@ -48,7 +48,7 @@ def read_metadata(request: ReadMetadataRequest):
     try:
         metadata_reader = MetadataReader(path)
     except ValueError as e:
-        if "File does not exist" in str(e):
+        if "No such file or directory" in str(e):
             raise HTTPException(status_code=404, detail=str(e))
         elif "Unsupported file format" in str(e):
             raise HTTPException(status_code=422, detail=str(e))
@@ -71,7 +71,7 @@ def write_metadata(payload: MetadataPayload):
         path = payload.file_path
         metadata_writer = MetadataWriter(path)
     except ValueError as e:
-        if "File does not exist" in str(e):
+        if "No such file or directory" in str(e):
             raise HTTPException(status_code=404, detail=str(e))
         elif "Unsupported file format" in str(e):
             raise HTTPException(status_code=422, detail=str(e))
@@ -95,7 +95,7 @@ def write_artwork(request: WriteArtworkRequest):
         path = request.file_path
         metadata_writer = MetadataWriter(path)
     except ValueError as e:
-        if "File does not exist" in str(e):
+        if "No such file or directory" in str(e):
             raise HTTPException(status_code=404, detail=str(e))
         elif "Unsupported file format" in str(e):
             raise HTTPException(status_code=422, detail=str(e))
