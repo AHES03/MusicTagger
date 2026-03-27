@@ -12,14 +12,14 @@ spotify = SpotifyClient()
 
 
 
-@app.get("/health",status_code=200)
+@app.get('/health',status_code=200)
 def health_check():
     """@brief Confirm the backend is running. @return JSON with Health status."""
-    resp = {"Health":"ok"}
+    resp = {'Health':'ok'}
     return resp
 
 
-@app.post("/search",status_code=200)
+@app.post('/search',status_code=200)
 def search(request: SearchRequest):
     """
     @brief Search Spotify for tracks matching the query.
@@ -35,7 +35,7 @@ def search(request: SearchRequest):
     return {'Tracks': resp}
 
 
-@app.post("/read-metadata",status_code=200)
+@app.post('/read-metadata',status_code=200)
 def read_metadata(request: ReadMetadataRequest):
     """
     @brief Read and return existing metadata from a local audio_MT file.
@@ -48,9 +48,9 @@ def read_metadata(request: ReadMetadataRequest):
     try:
         metadata_reader = MetadataReader(path)
     except ValueError as e:
-        if "No such file or directory" in str(e):
+        if 'No such file or directory' in str(e):
             raise HTTPException(status_code=404, detail=str(e))
-        elif "Unsupported file format" in str(e):
+        elif 'Unsupported file format' in str(e):
             raise HTTPException(status_code=422, detail=str(e))
         else:
             raise HTTPException(status_code=400, detail=str(e))
@@ -58,7 +58,7 @@ def read_metadata(request: ReadMetadataRequest):
     return {'Metadata': metadata}
 
 
-@app.post("/write-metadata", status_code=200)
+@app.post('/write-metadata', status_code=200)
 def write_metadata(payload: MetadataPayload):
     """
     @brief Write metadata tags to a local audio_MT file.
@@ -71,17 +71,17 @@ def write_metadata(payload: MetadataPayload):
         path = payload.file_path
         metadata_writer = MetadataWriter(path)
     except ValueError as e:
-        if "No such file or directory" in str(e):
+        if 'No such file or directory' in str(e):
             raise HTTPException(status_code=404, detail=str(e))
-        elif "Unsupported file format" in str(e):
+        elif 'Unsupported file format' in str(e):
             raise HTTPException(status_code=422, detail=str(e))
         else:
             raise HTTPException(status_code=400, detail=str(e))
     metadata_writer.write(payload)
-    return {'status': "success"}
+    return {'status': 'success'}
 
 
-@app.post("/write-artwork", status_code=200)
+@app.post('/write-artwork', status_code=200)
 def write_artwork(request: WriteArtworkRequest):
     """
     @brief Read artwork from a local image path and embed it into an audio_MT file.
@@ -95,17 +95,17 @@ def write_artwork(request: WriteArtworkRequest):
         path = request.file_path
         metadata_writer = MetadataWriter(path)
     except ValueError as e:
-        if "No such file or directory" in str(e):
+        if 'No such file or directory' in str(e):
             raise HTTPException(status_code=404, detail=str(e))
-        elif "Unsupported file format" in str(e):
+        elif 'Unsupported file format' in str(e):
             raise HTTPException(status_code=422, detail=str(e))
         else:
             raise HTTPException(status_code=400, detail=str(e))
 
-    if request.artwork_path.startswith(("http://", "https://")):
+    if request.artwork_path.startswith(('http://', 'https://')):
         image = httpx.get(request.artwork_path)
         if image.status_code != 200:
-            raise HTTPException(status_code=502, detail="Failed to fetch remote artwork")
+            raise HTTPException(status_code=502, detail='Failed to fetch remote artwork')
         image_content = image.content
         buffer = io.BytesIO(image_content)
     else:
@@ -125,4 +125,4 @@ def write_artwork(request: WriteArtworkRequest):
     img.save(output, format='JPEG')
     compressed_bytes = output.getvalue()
     metadata_writer.write_artwork(compressed_bytes)
-    return {'status': "success"}
+    return {'status': 'success'}

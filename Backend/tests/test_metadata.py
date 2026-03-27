@@ -31,16 +31,16 @@ class TestMetadataReader:
         """Providing a non-existent file path should raise an error."""
         with pytest.raises(ValueError) as excinfo:
             test = MetadataReader(_FLAC_INVALID)
-        assert "No such file or directory" in str(excinfo.value)
+        assert 'No such file or directory' in str(excinfo.value)
 
 
     def test_read_unsupported_format_raises_error(self, tmp_path):
         """Providing a non-audio_MT file should raise an appropriate error."""
-        dummy = tmp_path / "dummy.docx"
-        dummy.write_bytes(b"not a real document")
+        dummy = tmp_path / 'dummy.docx'
+        dummy.write_bytes(b'not a real document')
         with pytest.raises(ValueError) as excinfo:
             test = MetadataReader(str(dummy))
-        assert "not implemented" in str(excinfo.value)
+        assert 'not implemented' in str(excinfo.value)
 
 
 class TestMetadataWriter:
@@ -55,14 +55,14 @@ class TestMetadataWriter:
         new_reader = MetadataReader(_FLAC)
         new_reader = new_reader.read()
         print(new_reader.date)
-        assert new_reader.title == "Hello"
+        assert new_reader.title == 'Hello'
 
 
     def test_write_invalid_path_raises_error(self):
         """Providing a non-existent file path should raise an error."""
         with pytest.raises(ValueError) as excinfo:
             test = MetadataWriter(_FLAC_INVALID)
-        assert "No such file or directory" in str(excinfo.value)
+        assert 'No such file or directory' in str(excinfo.value)
 
 
     def test_write_artwork_embeds_image(self, sample_audio_file):
@@ -70,7 +70,7 @@ class TestMetadataWriter:
         sp = SpotifyClient()
         test = MetadataWriter(_FLAC)
         sp.authenticate()
-        pict = sp.get_album_artwork("6vvhhwl8XabfZJBq5d1iIB")
+        pict = sp.get_album_artwork('6vvhhwl8XabfZJBq5d1iIB')
         test.write_artwork(pict)
         test_audio = mutagen.File(_FLAC)
         assert len(test_audio.pictures) > 0
@@ -80,5 +80,5 @@ class TestMetadataWriter:
         """Passing non-image bytes as artwork should raise an appropriate error."""
         reader = MetadataWriter(_FLAC)
         with pytest.raises(ValueError) as excinfo:
-            reader.write_artwork(b"this is not an image")
-        assert "Invalid cover file type" in str(excinfo.value)
+            reader.write_artwork(b'this is not an image')
+        assert 'Invalid cover file type' in str(excinfo.value)

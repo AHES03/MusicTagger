@@ -19,7 +19,7 @@ class MetadataReader:
         except (FileNotFoundError, OSError,MutagenError,NotImplementedError) as e:
             raise ValueError(e)
         if self.audio_MT is None:
-            raise ValueError("Unsupported file format")
+            raise ValueError('Unsupported file format')
 
 
     def read(self) -> MetadataPayload:
@@ -37,19 +37,19 @@ class MetadataReader:
             image_encoded = base64.b64encode(artwork.first.data).decode('utf-8')
 
         mapped_dict = {
-            "file_path": self.file_path,
-            "title": self.audio_MT['tracktitle'].first,
-            "artist": self.audio_MT['artist'].first,
-            "album": self.audio_MT['album'].first,
-            "track_number": int(track_number_raw) if track_number_raw is not None else None,
-            "date": self.audio_mutagen.get('date', [None])[0],
-            "genre": self.audio_MT['genre'].first,
-            "comment": self.audio_MT['comment'].first,
-            "album_artist": self.audio_MT['albumartist'].first,
-            "composer": self.audio_MT['composer'].first,
-            "disc_number": int(disc_namer_raw) if disc_namer_raw is not None else None,
-            "is_compilation": self.audio_MT['compilation'].first,
-            "artwork_data": image_encoded
+            'file_path': self.file_path,
+            'title': self.audio_MT['tracktitle'].first,
+            'artist': self.audio_MT['artist'].first,
+            'album': self.audio_MT['album'].first,
+            'track_number': int(track_number_raw) if track_number_raw is not None else None,
+            'date': self.audio_mutagen.get('date', [None])[0],
+            'genre': self.audio_MT['genre'].first,
+            'comment': self.audio_MT['comment'].first,
+            'album_artist': self.audio_MT['albumartist'].first,
+            'composer': self.audio_MT['composer'].first,
+            'disc_number': int(disc_namer_raw) if disc_namer_raw is not None else None,
+            'is_compilation': self.audio_MT['compilation'].first,
+            'artwork_data': image_encoded
         }
         return MetadataPayload(**mapped_dict)
 
@@ -69,7 +69,7 @@ class MetadataWriter:
             print(e)
             raise ValueError(e)
         if self.audio_MT is None:
-            raise ValueError("Unsupported file format")
+            raise ValueError('Unsupported file format')
 
     def write(self, metadata: MetadataPayload) -> None:
         """
@@ -78,27 +78,27 @@ class MetadataWriter:
         Handles MP3 (ID3), MP4/AAC, and FLAC formats.
         """
         self.audio_MT['tracktitle'] = metadata.title
-        self.audio_MT["artist"] = metadata.artist
+        self.audio_MT['artist'] = metadata.artist
         self.audio_MT['album'] = metadata.album
-        self.audio_MT["tracknumber"] = str(metadata.track_number)
+        self.audio_MT['tracknumber'] = str(metadata.track_number)
         if metadata.comment is not None:
-            self.audio_MT["comment"] = metadata.comment
+            self.audio_MT['comment'] = metadata.comment
         if metadata.album_artist is not None:
-            self.audio_MT["albumartist"] = metadata.album_artist
+            self.audio_MT['albumartist'] = metadata.album_artist
         if metadata.composer is not None:
-            self.audio_MT["composer"] = metadata.composer
+            self.audio_MT['composer'] = metadata.composer
         if metadata.disc_number is not None:
-            self.audio_MT["discnumber"] = str(metadata.disc_number)
+            self.audio_MT['discnumber'] = str(metadata.disc_number)
         if metadata.is_compilation is not None:
-            self.audio_MT["compilation"] = metadata.is_compilation
+            self.audio_MT['compilation'] = metadata.is_compilation
         if metadata.genre is not None:
             self.audio_MT['genre'] = metadata.genre
         self.audio_MT.save()
         try:
             self.audio_mutagen = File(self.file_path)
             if self.audio_mutagen is None:
-                raise ValueError("Unsupported file format")
-            self.audio_mutagen["date"] = metadata.date
+                raise ValueError('Unsupported file format')
+            self.audio_mutagen['date'] = metadata.date
             self.audio_mutagen.save()
         except (FileNotFoundError, OSError, MutagenError,NotImplementedError) as e:
             raise ValueError(e)
@@ -114,7 +114,7 @@ class MetadataWriter:
         @throws ValueError if the bytes are not a valid JPEG image.
         """
         if b'\xff\xd8\xff' not in image_bytes:
-            raise ValueError("Invalid cover file type")
+            raise ValueError('Invalid cover file type')
 
         self.audio_MT['artwork'] = image_bytes
         self.audio_MT.save()

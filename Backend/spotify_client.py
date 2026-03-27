@@ -36,19 +36,19 @@ class SpotifyClient:
         @throws ValueError if query is empty.
         """
         if not query:
-            raise ValueError("Query must not be empty")
+            raise ValueError('Query must not be empty')
         search_results = []
         results = self.sp_client.search(query)
         for track in results['tracks']['items']:
             mapped_dict = {
-                "spotify_id":track['id'] ,
-                "title": track['name'],
-                "artist": (", ".join(artist["name"] for artist in track["artists"])),
-                "album": track['album']['name'],
-                "date": track['album']['release_date'],
-                "track_number":track["track_number"],
-                "album_artist":track['album']['artists'][0]['name'],
-                "artwork_url": track['album']['images'][0]['url']
+                'spotify_id':track['id'] ,
+                'title': track['name'],
+                'artist': (', '.join(artist['name'] for artist in track['artists'])),
+                'album': track['album']['name'],
+                'date': track['album']['release_date'],
+                'track_number':track['track_number'],
+                'album_artist':track['album']['artists'][0]['name'],
+                'artwork_url': track['album']['images'][0]['url']
             }
             temp = SpotifyTrack(**mapped_dict)
             search_results.append(temp)
@@ -66,17 +66,17 @@ class SpotifyClient:
         try:
             track = self.sp_client.track(track_id)
         except spotipy.exceptions.SpotifyException:
-            raise ValueError("Invalid Spotify Track ID")
+            raise ValueError('Invalid Spotify Track ID')
 
         mapped_dict = {
-            "spotify_id": track['id'],
-            "title": track['name'],
-            "artist": (", ".join(artist["name"] for artist in track["artists"])),
-            "album": track['album']['name'],
-            "date": track['album']['release_date'],
-            "track_number": track["track_number"],
-            "album_artist":track['album']['artists'][0]['name'],
-            "artwork_url": track['album']['images'][0]['url']
+            'spotify_id': track['id'],
+            'title': track['name'],
+            'artist': (', '.join(artist['name'] for artist in track['artists'])),
+            'album': track['album']['name'],
+            'date': track['album']['release_date'],
+            'track_number': track['track_number'],
+            'album_artist':track['album']['artists'][0]['name'],
+            'artwork_url': track['album']['images'][0]['url']
         }
         return SpotifyTrack(**mapped_dict)
 
@@ -93,5 +93,5 @@ class SpotifyClient:
         if image.status_code ==200:
             return image.content
         else:
-            raise ValueError("Invalid album URL")
+            raise ValueError('Invalid album URL')
 
