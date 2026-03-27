@@ -36,7 +36,7 @@ class SpotifyClient:
         """
         if not query:
             raise ValueError("Query must not be empty")
-        search_results = list()
+        search_results = []
         results = self.sp_client.search(query)
         for track in results['tracks']['items']:
             mapped_dict = {
