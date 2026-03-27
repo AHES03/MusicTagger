@@ -10,18 +10,17 @@ class TestAuthentication:
     def test_authenticate_succeeds_with_valid_credentials(self):
         """Client should authenticate without raising an exception."""
         test = SpotifyClient()
-        test.authenticate()
         assert test.sp_client is not None
 
-
-
-    def test_authenticate_fails_with_missing_credentials(self):
+    def test_authenticate_fails_with_missing_credentials(self, monkeypatch):
         """Client should raise an error when env vars are missing."""
-        test = SpotifyClient()
-        test.client_id =""
+        monkeypatch.setattr("spotify_client.load_dotenv", lambda *args, **kwargs: None)
+        monkeypatch.delenv("SPOTIFY_CLIENT_ID", raising=False)
+        monkeypatch.delenv("SPOTIFY_CLIENT_SECRET", raising=False)
 
         with pytest.raises(SpotifyOauthError) as excinfo:
-            test.authenticate()
+            SpotifyClient()
+
         assert "No client_id" in str(excinfo.value)
 
 
@@ -33,7 +32,6 @@ class TestSearchTrack:
         """A valid query should return a list."""
         query = "The Beatles"
         test = SpotifyClient()
-        test.authenticate()
         response = test.search_track(query)
         assert isinstance(response, list)
 
@@ -42,7 +40,6 @@ class TestSearchTrack:
         """Each result should have: spotify_id, title, artist, album, date, artwork_url."""
         query = "The Beatles"
         test = SpotifyClient()
-        test.authenticate()
         response = test.search_track(query)
         assert type(response[0]) == SpotifyTrack
 
@@ -51,7 +48,6 @@ class TestSearchTrack:
         """An empty query string should raise a ValueError."""
         query = ""
         test = SpotifyClient()
-        test.authenticate()
 
         with pytest.raises(ValueError) as excinfo:
             response = test.search_track(query)
@@ -64,7 +60,6 @@ class TestGetTrackMetadata:
         """A valid track ID should return a SpotifyTrack."""
         trackId = '3GfOAdcoc3X5GPiiXmpBjK'
         test = SpotifyClient()
-        test.authenticate()
         response = test.get_track_metadata(trackId)
         assert type(response) == SpotifyTrack
 
@@ -73,7 +68,6 @@ class TestGetTrackMetadata:
         """An invalid track ID should raise an appropriate error."""
         trackId = 'hagyugwegqw73e32f'
         test = SpotifyClient()
-        test.authenticate()
         with pytest.raises(ValueError) as excinfo:
             response = test.get_track_metadata(trackId)
         assert "Invalid Spotify Track ID" in str(excinfo.value)
@@ -85,7 +79,6 @@ class TestGetAlbumArtwork:
         """A valid track ID should return image data as bytes."""
         trackId = '3GfOAdcoc3X5GPiiXmpBjK'
         test = SpotifyClient()
-        test.authenticate()
         response = test.get_album_artwork(trackId)
         assert type(response) == bytes
 
@@ -94,7 +87,6 @@ class TestGetAlbumArtwork:
         """An invalid track ID should raise an appropriate error."""
         trackId = '3GfOAdcoc3X5GPiiXmpBjK'  # valid track
         test = SpotifyClient()
-        test.authenticate()
 
         mock_response = MagicMock()
         mock_response.status_code = 404  # force a bad response

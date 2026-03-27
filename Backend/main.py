@@ -8,7 +8,7 @@ import httpx
 
 app = FastAPI()
 spotify = SpotifyClient()
-spotify.authenticate()
+
 
 
 

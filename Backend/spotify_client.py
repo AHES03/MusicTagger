@@ -15,6 +15,7 @@ class SpotifyClient:
         self.client_id = os.getenv('SPOTIFY_CLIENT_ID')
         self.client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
         self.sp_client =None
+        self.authenticate()
 
     def authenticate(self) -> None:
         """
