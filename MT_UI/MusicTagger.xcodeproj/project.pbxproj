@@ -11,7 +11,7 @@
 		98929A162F678D73002B1F1C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A072F678D73002B1F1C /* ContentView.swift */; };
 		98929A172F678D73002B1F1C /* MusicTaggerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A082F678D73002B1F1C /* MusicTaggerApp.swift */; };
 		98929A772F679B2F002B1F1C /* MusicFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A672F679B2F002B1F1C /* MusicFile.swift */; };
-		98929A782F679B2F002B1F1C /* SpotifySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A752F679B2F002B1F1C /* SpotifySearchView.swift */; };
+		98929A782F679B2F002B1F1C /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A752F679B2F002B1F1C /* SearchView.swift */; };
 		98929A792F679B2F002B1F1C /* BatchSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A722F679B2F002B1F1C /* BatchSearchView.swift */; };
 		98929A7B2F679B2F002B1F1C /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A6E2F679B2F002B1F1C /* APIClient.swift */; };
 		98929A7C2F679B2F002B1F1C /* MetadataEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A742F679B2F002B1F1C /* MetadataEditorView.swift */; };
@@ -50,7 +50,7 @@
 		98929A722F679B2F002B1F1C /* BatchSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchSearchView.swift; sourceTree = "<group>"; };
 		98929A732F679B2F002B1F1C /* FileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
 		98929A742F679B2F002B1F1C /* MetadataEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEditorView.swift; sourceTree = "<group>"; };
-		98929A752F679B2F002B1F1C /* SpotifySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifySearchView.swift; sourceTree = "<group>"; };
+		98929A752F679B2F002B1F1C /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		98929A952F67B765002B1F1C /* backend */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = backend; path = ../Backend/dist/backend; sourceTree = "<group>"; };
 		98B9EB272F858EB00045C387 /* CustomButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtons.swift; sourceTree = "<group>"; };
 		98E2041D2F68B32F001F3E54 /* playground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = playground.swift; sourceTree = "<group>"; };
@@ -127,7 +127,7 @@
 				98929A722F679B2F002B1F1C /* BatchSearchView.swift */,
 				98929A732F679B2F002B1F1C /* FileListView.swift */,
 				98929A742F679B2F002B1F1C /* MetadataEditorView.swift */,
-				98929A752F679B2F002B1F1C /* SpotifySearchView.swift */,
+				98929A752F679B2F002B1F1C /* SearchView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -268,7 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				98929A772F679B2F002B1F1C /* MusicFile.swift in Sources */,
-				98929A782F679B2F002B1F1C /* SpotifySearchView.swift in Sources */,
+				98929A782F679B2F002B1F1C /* SearchView.swift in Sources */,
 				98929A792F679B2F002B1F1C /* BatchSearchView.swift in Sources */,
 				98929A7B2F679B2F002B1F1C /* APIClient.swift in Sources */,
 				98B9EB282F858EB80045C387 /* CustomButtons.swift in Sources */,
