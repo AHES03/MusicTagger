@@ -1,6 +1,6 @@
 // Displays the list of local music files the user has imported.
 // Allows selecting a file to view/edit its metadata.
-// Right panel in the two-panel layout. Matches the table in Example.png.
+// Right panel in the two-panel layout.
 
 import SwiftUI
 import AppKit
@@ -44,38 +44,38 @@ private struct FileDropReceiver: NSViewRepresentable {
         }
     }
 }
+
 struct FileListView: View {
     @Binding var files: [MusicFile]
     @Binding var onSelect: MusicFile?
     var displayedFiles: [MusicFile]
     @State private var sortOrder: [KeyPathComparator<MusicFile>] = []
     @State private var previousSortOrder: [KeyPathComparator<MusicFile>] = []
-    @State private var selection:  Set<MusicFile.ID> = []
+    @State private var selection: Set<MusicFile.ID> = []
 
     var body: some View {
         if displayedFiles.isEmpty {
-            VStack{
+            VStack {
                 Image(systemName: "music.note.square.stack").font(Font.system(size: 140))
                 Text("Drop audio files here or use the toolbar to open files.")
                     .font(.headline)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(
-                    FileDropReceiver { urls in
-                        for url in urls {
-                            let ext = url.pathExtension.lowercased()
-                            if ["flac", "mp3", "m4a", "aac", "wav"].contains(ext) {
-                                Task { @MainActor in
-                                    do {
-                                        files.append(try await APIClient.shared.readMetadata(filePath: url.path))
-                                    } catch {}
-                                }
+            .background(
+                FileDropReceiver { urls in
+                    for url in urls {
+                        let ext = url.pathExtension.lowercased()
+                        if ["flac", "mp3", "m4a", "aac", "wav"].contains(ext) {
+                            Task { @MainActor in
+                                do {
+                                    files.append(try await APIClient.shared.readMetadata(filePath: url.path))
+                                } catch {}
                             }
                         }
                     }
-                )
-        }
-        else{
+                }
+            )
+        } else {
             let artworkCol = TableColumn("") { (file: MusicFile) in
                 Group {
                     if let data = file.artworkData, let nsImage = NSImage(data: data) {
@@ -99,7 +99,6 @@ struct FileListView: View {
             .alternatingRowBackgrounds(.enabled)
             .contextMenu {
                 Button("Remove from list") {
-//                    guard let id = selection.first else { return }
                     guard !selection.isEmpty else { return }
                     files.removeAll(where: { selection.contains($0.id) })
                     selection = []
@@ -111,14 +110,15 @@ struct FileListView: View {
                     NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: file.filePath)])
                 }
             }
-            .onChange(of: sortOrder) {oldValue, newValue in
-                if newValue.first?.order == .forward && oldValue.first?.order == .reverse{
+            .onChange(of: sortOrder) { oldValue, newValue in
+                if newValue.first?.order == .forward && oldValue.first?.order == .reverse {
                     sortOrder = []
-                }else{
+                } else {
                     previousSortOrder = newValue
-                } }
+                }
+            }
             .onChange(of: selection) { _, newValue in
-                guard let id = selection.first,selection.count == 1  else { onSelect = nil; return }
+                guard let id = selection.first, selection.count == 1 else { onSelect = nil; return }
                 guard let file = files.first(where: { $0.id == id }) else { return }
                 Task {
                     do {
@@ -127,8 +127,5 @@ struct FileListView: View {
                 }
             }
         }
-
     }
-
 }
-
