@@ -51,7 +51,6 @@ private struct FocusableTextField: NSViewRepresentable {
         }
     }
 }
-
 struct ContentView: View {
     
 @State private var selectedFile: MusicFile?
@@ -65,98 +64,79 @@ struct ContentView: View {
         (file.title ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.album ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.artist ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.filePath).localizedCaseInsensitiveContains(searchQuery)
     } }
     @Environment(\.undoManager) var undoManager
+
+        
     var body: some View {
-        GeometryReader { geo in
-            HSplitView {
-                MetadataEditorView(file: $selectedFile, onSave:{ before, after in
-                    
-                    guard let index = files.firstIndex(where: { $0.id == after.id }) else { return }
-                    files[index] = after
-                    selectedFile = after
-                    MetadataUndoService.shared.registerSave(
-                        before: before,
-                        after: after,
-                        onComplete: { restored in
-                            guard let index = files.firstIndex(where: { $0.id == restored.id }) else { return }
-                            files[index] = restored
-                            selectedFile = restored
-                            editorRefreshID = UUID()
-                        },
-                        undoManager: undoManager
-                    )
-                }, refreshID: editorRefreshID)
-                .frame(minWidth: geo.size.width / 10, alignment: .leading)
-                .frame(maxWidth: geo.size.width / 5, alignment: .leading)
-                .frame(maxHeight: .infinity)
-                
-                // TODO: Add displayedFiles: filteredFiles parameter to FileListView once the parameter is added to its signature.
-                FileListView(files: $files, onSelect: $selectedFile, displayedFiles: filteredFiles)
-                    .frame(minWidth: geo.size.width * 0.9, alignment: .leading)
-                    .frame(maxWidth: geo.size.width * 0.8, alignment: .leading)
-                    .frame(maxHeight: .infinity)
-            }
+        NavigationSplitView {
+            // Left Pane: Metadata Editor
+            MetadataEditorView(file: $selectedFile, onSave: { before, after in
+                guard let index = files.firstIndex(where: { $0.id == after.id }) else { return }
+                files[index] = after
+                selectedFile = after
+                MetadataUndoService.shared.registerSave(
+                    before: before,
+                    after: after,
+                    onComplete: { restored in
+                        guard let index = files.firstIndex(where: { $0.id == restored.id }) else { return }
+                        files[index] = restored
+                        selectedFile = restored
+                        editorRefreshID = UUID()
+                    },
+                    undoManager: undoManager
+                )
+            }, refreshID: editorRefreshID)
+                .navigationSplitViewColumnWidth(min: 300, ideal: 350, max: 800)
+        } detail: {
+            // Right Pane: File List
+            FileListView(files: $files, onSelect: $selectedFile, displayedFiles: filteredFiles)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .navigationTitle("")
         .toolbar {
-        if !isSearching {
-            ToolbarItem(placement: .navigation){
-                Button(action:{
-                    undoManager?.undo()
-                }){
-                    Image(systemName: "arrow.uturn.backward")
+            if !isSearching {
+                ToolbarItem(placement: .navigation) {
+                    Button(action: { undoManager?.undo() }) {
+                        Image(systemName: "arrow.uturn.backward")
+                    }
                 }
-                
-            }
-            ToolbarItem(placement: .navigation){
-                Button(action:{
-                    undoManager?.redo()
-                }){
-                    Image(systemName: "arrow.uturn.forward")
+                ToolbarItem(placement: .navigation) {
+                    Button(action: { undoManager?.redo() }) {
+                        Image(systemName: "arrow.uturn.forward")
+                    }
                 }
-                
             }
-            ToolbarItem{
-               
-                    Button(action: {
-                        let panel = NSOpenPanel()
-                        panel.allowsMultipleSelection = true
-                        panel.canChooseDirectories = true
-                        panel.allowedContentTypes = [.audio]
-                        guard panel.runModal() == .OK else { return }
-                        func importURL(_ url: URL, depth: Int) {
-                            let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
-                            let isAudio = ["flac", "mp3", "m4a", "aac", "wav"].contains(url.pathExtension.lowercased())
-                            if isDirectory && depth < 3 {
-                                let childUrls = (try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isDirectoryKey])) ?? []
-                                for childUrl in childUrls {
-                                    importURL(childUrl, depth: depth + 1)
-                                }
-                            } else if isAudio {
-                                Task { @MainActor in
-                                    do {
-                                        files.append(try await APIClient.shared.readMetadata(filePath: url.path))
-                                    } catch {}
-                                }
+            ToolbarItemGroup(placement: .primaryAction) {
+                Button(action: {
+                    let panel = NSOpenPanel()
+                    panel.allowsMultipleSelection = true
+                    panel.canChooseDirectories = true
+                    panel.allowedContentTypes = [.audio]
+                    guard panel.runModal() == .OK else { return }
+                    func importURL(_ url: URL, depth: Int) {
+                        let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
+                        let isAudio = ["flac", "mp3", "m4a", "aac", "wav"].contains(url.pathExtension.lowercased())
+                        if isDirectory && depth < 3 {
+                            let childUrls = (try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isDirectoryKey])) ?? []
+                            for childUrl in childUrls {
+                                importURL(childUrl, depth: depth + 1)
+                            }
+                        } else if isAudio {
+                            Task { @MainActor in
+                                do {
+                                    files.append(try await APIClient.shared.readMetadata(filePath: url.path))
+                                } catch {}
                             }
                         }
-                        for url in panel.urls {
-                            importURL(url, depth: 0)
-                        }
-                    }){
-                        Image(systemName: "folder.badge.plus")
-                    }.padding(.horizontal,8)
-            }
-            ToolbarItem{
-                Button(action: {
-                    showingBatchSearch = true
+                    }
+                    for url in panel.urls {
+                        importURL(url, depth: 0)
+                    }
                 }) {
+                    Image(systemName: "folder.badge.plus")
+                }
+                Button(action: { showingBatchSearch = true }) {
                     Image(systemName: "wand.and.stars")
-                }.padding(.horizontal,8)
-            }
-        }
-            ToolbarItem {
+                }
                 HStack {
-                    
                     FocusableTextField(text: $searchQuery, isFocused: isSearching) {
                         withAnimation(.easeInOut) { isSearching = false }
                     }
@@ -165,25 +145,22 @@ struct ContentView: View {
                     if !isSearching {
                         Button(action: {
                             searchQuery = ""
-                            withAnimation(.easeInOut) { isSearching.toggle()}
+                            withAnimation(.easeInOut) { isSearching.toggle() }
                         }) {
                             Image(systemName: "magnifyingglass")
-                        }.padding(.horizontal, 8)
+                        }
                     }
                     if isSearching {
                         Button(action: {
                             searchQuery = ""
-                            withAnimation(.easeInOut) { isSearching.toggle()}
+                            withAnimation(.easeInOut) { isSearching.toggle() }
                         }) {
                             Image(systemName: "xmark.circle.fill")
-                        }.padding(.horizontal, 8)
+                        }
                     }
                 }
-                
             }
         }
-        // TODO: Add a computed var filteredFiles: [MusicFile] that returns files filtered by searchQuery
-        // (match title, artist, or album case-insensitively). Return all files when searchQuery is empty.
         .sheet(isPresented: $showingBatchSearch) {
             BatchSearchView(
                 files: $files,
