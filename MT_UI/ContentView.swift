@@ -67,6 +67,7 @@ struct ContentView: View {
 
         
     var body: some View {
+        VStack(spacing: 0) {
         NavigationSplitView {
             // Left Pane: Metadata Editor
             MetadataEditorView(file: $selectedFile, onSave: { before, after in
@@ -160,6 +161,8 @@ struct ContentView: View {
                     }
                 }
             }
+            }
+        StatusBarView(itemSelected: selectedFile != nil, files: $files, selectedFile: selectedFile)
         }
         .sheet(isPresented: $showingBatchSearch) {
             BatchSearchView(

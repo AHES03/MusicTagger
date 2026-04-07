@@ -93,7 +93,7 @@ struct BatchSearchView: View {
                             }
                             .buttonStyle(.plain)
                             .popover(item: $popoverItem) { _ in
-                                SpotifySearchView(file: $popoverFile)
+                                SearchSheetView(file: $popoverFile)
                             }
                             Divider()
                         }

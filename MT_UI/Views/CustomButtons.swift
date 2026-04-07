@@ -11,10 +11,11 @@ struct PrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-            .background(Color.blue)
+            .padding(.vertical, 8)
+            .background(Color.accentColor)
             .foregroundColor(.white)
-            .cornerRadius(8)
+            .fontWeight(.medium)
+            .cornerRadius(6)
             .opacity(configuration.isPressed ? 0.8 : 1.0)
     }
 }
@@ -23,13 +24,15 @@ struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
+            .padding(.vertical, 8)
             .background(Color(white: 0.2))
-            .foregroundColor(.white)
-            .cornerRadius(8)
+            .foregroundColor(.primary)
+            .fontWeight(.medium)
+            .cornerRadius(6)
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(Color.white.opacity(0.15), lineWidth: 1)
             )
+            .opacity(configuration.isPressed ? 0.8 : 1.0)
     }
 }

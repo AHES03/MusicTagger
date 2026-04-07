@@ -17,7 +17,9 @@ struct MusicFile: Identifiable, Hashable, Codable, Sendable {
              discNumber = "disc_number",
              isCompilation = "is_compilation",
              artworkData = "artwork_data",
-             title, artist, album, date, genre, comment, composer
+             sampleRate = "sample_rate",
+             bitDepth = "bit_depth",
+             title, artist, album, date, genre, comment, composer, format
     }
 
     let filePath : String   // Primary key — sent with every backend request.
@@ -34,6 +36,9 @@ struct MusicFile: Identifiable, Hashable, Codable, Sendable {
     var isCompilation : Bool?
     var artworkData : Data? = nil   // Decoded from backend base64 response; not sent on writes.
     var artworkUrl : String? = nil  // UI-only — stored from Spotify selection for Save to use.
+    var sampleRate: Int?
+    var bitDepth: Int? = nil
+    var format: String?
     var id: String {filePath}
 
     // Non-optional sort keys for TableColumn value: comparators.
@@ -60,6 +65,9 @@ struct MusicFile: Identifiable, Hashable, Codable, Sendable {
         self.discNumber = try container.decodeIfPresent(Int.self, forKey: .discNumber)
         self.isCompilation = try container.decodeIfPresent(Bool.self, forKey: .isCompilation)
         self.artworkData = try container.decodeIfPresent(Data.self, forKey: .artworkData)
+        self.sampleRate = try container.decodeIfPresent(Int.self, forKey: .sampleRate)
+        self.bitDepth = try container.decodeIfPresent(Int.self, forKey: .bitDepth)
+        self.format = try container.decodeIfPresent(String.self, forKey: .format)
     }
     
 }
