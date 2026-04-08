@@ -1,9 +1,9 @@
 //// Shows editable fields for a selected file's metadata.
 //// Left panel in the two-panel layout.
 //
-//import SwiftUI
+// import SwiftUI
 //
-//struct MetadataEditorView: View {
+// struct MetadataEditorView: View {
 //    @Binding var file: MusicFile?
 //    @State var showingSpotifySearch = false
 //    // Tracks the file state as it was when last loaded or saved — used as the "before" snapshot for undo.
@@ -88,7 +88,7 @@
 //                }
 //            }
 //            .id(refreshID)
-//                
+//
 //                // MARK: - Album Artwork
 //                // TODO: Artwork tap/drop — open NSOpenPanel, call APIClient.writeArtwork(filePath:artworkPath:), update file?.artworkData for preview.
 //                if let data = file?.artworkData, let nsImage = NSImage(data: data) {
@@ -116,9 +116,9 @@
 //                            .darkGray).opacity(0.3)))
 //                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.3), lineWidth: 1.0))
 //                    .aspectRatio(1, contentMode: .fit)
-//                    
+//
 //                }
-//             
+//
 //                HStack{
 //                    // MARK: - Actions
 //                    Button("Search Spotify"){
@@ -145,7 +145,7 @@
 //        .frame(maxWidth: .infinity,
 //          maxHeight: .infinity, alignment: .topLeading)
 //        .padding()
-//        
+//
 //        .sheet(isPresented: $showingSpotifySearch) { SpotifySearchView(file: $file) }
 //        // When a new file is selected, capture it as the baseline "before" state for undo.
 //        .onChange(of: file?.id) { _, _ in lastSavedFile = file }
@@ -153,4 +153,4 @@
 //        .onChange(of: refreshID) { _, _ in lastSavedFile = file }
 //
 //    }
-//}
+// }

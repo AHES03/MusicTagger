@@ -1,21 +1,20 @@
 // Manages launching and terminating the bundled Python backend process (uvicorn).
 // Called on app start and on app quit.
 
-import Foundation
 import Combine
+import Foundation
 
-// @MainActor ensures @Published properties are updated on the main thread.
-// ObservableObject allows SwiftUI views to react to isOnline changes.
+/// @MainActor ensures @Published properties are updated on the main thread.
+/// ObservableObject allows SwiftUI views to react to isOnline changes.
 @MainActor
 class BackendLauncher: ObservableObject {
-
-    @Published var isOnline : Bool = false
+    @Published var isOnline: Bool = false
     var process: Process?
 
     // MARK: - Launch
 
-    // Starts the PyInstaller-compiled backend binary bundled in the app's resources.
-    // Polls /health every 500ms until backend responds, then sets isOnline = true.
+    /// Starts the PyInstaller-compiled backend binary bundled in the app's resources.
+    /// Polls /health every 500ms until backend responds, then sets isOnline = true.
     func launch() {
         process = Process()
         let pipe = Pipe()
@@ -30,7 +29,7 @@ class BackendLauncher: ObservableObject {
         }
 
         Task {
-            while (!isOnline) {
+            while !isOnline {
                 do {
                     isOnline = try await APIClient.shared.healthCheck()
                 } catch {
@@ -43,12 +42,11 @@ class BackendLauncher: ObservableObject {
 
     // MARK: - Terminate
 
-    // Terminates the uvicorn process. Hook into app lifecycle via willTerminate notification.
+    /// Terminates the uvicorn process. Hook into app lifecycle via willTerminate notification.
     func terminate() {
         process?.terminate()
     }
 
     // NOTE: During development, start the backend manually in a terminal.
     //       BackendLauncher is primarily needed for the final bundled distribution.
-
 }

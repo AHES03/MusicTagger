@@ -2,23 +2,24 @@
 // Allows selecting a file to view/edit its metadata.
 // Right panel in the two-panel layout.
 
-import SwiftUI
 import AppKit
+import SwiftUI
 import UniformTypeIdentifiers
 
 // MARK: - AppKit drop receiver
-// SwiftUI Table intercepts drag events, so we use an NSViewRepresentable
-// as a background to register for drag types at the AppKit level.
+
+/// SwiftUI Table intercepts drag events, so we use an NSViewRepresentable
+/// as a background to register for drag types at the AppKit level.
 private struct FileDropReceiver: NSViewRepresentable {
     var onDrop: ([URL]) -> Void
 
-    func makeNSView(context: Context) -> DropNSView {
+    func makeNSView(context _: Context) -> DropNSView {
         let view = DropNSView()
         view.onDrop = onDrop
         return view
     }
 
-    func updateNSView(_ nsView: DropNSView, context: Context) {
+    func updateNSView(_ nsView: DropNSView, context _: Context) {
         nsView.onDrop = onDrop
     }
 
@@ -35,7 +36,9 @@ private struct FileDropReceiver: NSViewRepresentable {
             registerForDraggedTypes([.fileURL])
         }
 
-        override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation { .copy }
+        override func draggingEntered(_: NSDraggingInfo) -> NSDragOperation {
+            .copy
+        }
 
         override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
             guard let urls = sender.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL] else { return false }
@@ -68,7 +71,7 @@ struct FileListView: View {
                         if ["flac", "mp3", "m4a", "aac", "wav"].contains(ext) {
                             Task { @MainActor in
                                 do {
-                                    files.append(try await APIClient.shared.readMetadata(filePath: url.path))
+                                    try await files.append(APIClient.shared.readMetadata(filePath: url.path))
                                 } catch {}
                             }
                         }
@@ -111,13 +114,13 @@ struct FileListView: View {
                 }
             }
             .onChange(of: sortOrder) { oldValue, newValue in
-                if newValue.first?.order == .forward && oldValue.first?.order == .reverse {
+                if newValue.first?.order == .forward, oldValue.first?.order == .reverse {
                     sortOrder = []
                 } else {
                     previousSortOrder = newValue
                 }
             }
-            .onChange(of: selection) { _, newValue in
+            .onChange(of: selection) { _, _ in
                 guard let id = selection.first, selection.count == 1 else { onSelect = nil; return }
                 guard let file = files.first(where: { $0.id == id }) else { return }
                 Task {

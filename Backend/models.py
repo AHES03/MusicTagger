@@ -29,9 +29,9 @@ class MetadataPayload(BaseModel):
     disc_number: Optional[int] = None
     is_compilation: Optional[bool] = None
     artwork_data: Optional[str] = None
-    # TODO: add sample_rate: Optional[int] = None  — read from mutagen audio info (e.g. audio_mutagen.info.sample_rate)
-    # TODO: add bit_depth: Optional[int] = None    — read from mutagen audio info (e.g. audio_mutagen.info.bits_per_sample, FLAC/WAV only)
-    # TODO: add format: Optional[str] = None       — derive from file extension or mutagen mime type (audio_mutagen.mime[0])
+    sample_rate: Optional[int] = None
+    bit_depth: Optional[int] = None
+    format: Optional[str] = None
 
 
 class SearchRequest(BaseModel):

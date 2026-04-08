@@ -3,11 +3,10 @@
 // behave correctly when given valid and partial JSON payloads.
 // Run via Product > Test in Xcode (requires MT_UITests target).
 
-import XCTest
 @testable import MusicTagger
+import XCTest
 
 final class ModelDecodingTests: XCTestCase {
-
     // MARK: - MusicFile
 
     func testMusicFileDecodesFullPayload() throws {
@@ -42,8 +41,8 @@ final class ModelDecodingTests: XCTestCase {
         XCTAssertEqual(file.composer, "MARO")
         XCTAssertEqual(file.discNumber, 1)
         XCTAssertEqual(file.isCompilation, false)
-        XCTAssertNil(file.artworkData)   // UI-only — never decoded from JSON
-        XCTAssertNil(file.artworkUrl)    // UI-only — never decoded from JSON
+        XCTAssertNil(file.artworkData) // UI-only — never decoded from JSON
+        XCTAssertNil(file.artworkUrl) // UI-only — never decoded from JSON
     }
 
     func testMusicFileDecodesPartialPayload() throws {
@@ -91,7 +90,7 @@ final class ModelDecodingTests: XCTestCase {
 
         let file = try JSONDecoder().decode(MusicFile.self, from: json)
         let encoded = try JSONEncoder().encode(file)
-        let dict = try JSONSerialization.jsonObject(with: encoded) as! [String: Any]
+        let dict = try XCTUnwrap(try JSONSerialization.jsonObject(with: encoded) as? [String: Any])
 
         XCTAssertEqual(dict["file_path"] as? String, "/music/track.flac")
         XCTAssertEqual(dict["track_number"] as? Int, 3)

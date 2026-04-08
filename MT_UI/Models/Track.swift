@@ -9,7 +9,6 @@ import Foundation
 // All fields are non-optional — the backend always returns values for Spotify tracks.
 
 struct Track: Identifiable, Decodable {
-
     enum CodingKeys: String, CodingKey {
         case spotifyId = "spotify_id"
         case artworkUrl = "artwork_url"
@@ -25,17 +24,20 @@ struct Track: Identifiable, Decodable {
     let date: String
     let trackNumber: Int
     let albumArtist: String
-    let artworkUrl: String  // Passed to /write-artwork as artwork_path when user confirms a result.
-    var id: String{spotifyId}
+    let artworkUrl: String // Passed to /write-artwork as artwork_path when user confirms a result.
+    var id: String {
+        spotifyId
+    }
+
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.spotifyId = try container.decode(String.self, forKey: .spotifyId)
-        self.title = try container.decode(String.self, forKey: .title)
-        self.artist = try container.decode(String.self, forKey: .artist)
-        self.album = try container.decode(String.self, forKey: .album)
-        self.date = try container.decode(String.self, forKey: .date)
-        self.albumArtist = try container.decode(String.self, forKey: .albumArtist)
-        self.trackNumber = try container.decode(Int.self, forKey: .trackNumber)
-        self.artworkUrl = try container.decode(String.self, forKey: .artworkUrl)
+        spotifyId = try container.decode(String.self, forKey: .spotifyId)
+        title = try container.decode(String.self, forKey: .title)
+        artist = try container.decode(String.self, forKey: .artist)
+        album = try container.decode(String.self, forKey: .album)
+        date = try container.decode(String.self, forKey: .date)
+        albumArtist = try container.decode(String.self, forKey: .albumArtist)
+        trackNumber = try container.decode(Int.self, forKey: .trackNumber)
+        artworkUrl = try container.decode(String.self, forKey: .artworkUrl)
     }
 }

@@ -50,9 +50,9 @@ class MetadataReader:
             'disc_number': int(disc_namer_raw) if disc_namer_raw is not None else None,
             'is_compilation': self.audio_MT['compilation'].first,
             'artwork_data': image_encoded,
-            # TODO: add 'sample_rate': self.audio_mutagen.info.sample_rate  — available on mutagen info for all formats
-            # TODO: add 'bit_depth': getattr(self.audio_mutagen.info, 'bits_per_sample', None)  — FLAC/WAV only; None for MP3/AAC
-            # TODO: add 'format': self.audio_mutagen.mime[0] if self.audio_mutagen.mime else None  — e.g. 'audio/flac', 'audio/mpeg'
+            'sample_rate': self.audio_mutagen.info.sample_rate,
+            'bit_depth': getattr(self.audio_mutagen.info, 'bits_per_sample', None),
+            'format': self.audio_mutagen.mime[0] if self.audio_mutagen.mime else None
         }
         return MetadataPayload(**mapped_dict)
 

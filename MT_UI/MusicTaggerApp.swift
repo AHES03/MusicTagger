@@ -13,13 +13,11 @@ struct MT_UIApp: App {
         WindowGroup {
             ContentView()
                 .onAppear {
-                    self.backendLauncher.launch()
+                    backendLauncher.launch()
                 }
-                .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)){_ in 
-                    self.backendLauncher.terminate()
+                .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
+                    backendLauncher.terminate()
                 }
         }
     }
-
-    
 }

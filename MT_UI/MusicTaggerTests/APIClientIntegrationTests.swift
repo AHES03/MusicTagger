@@ -3,13 +3,13 @@
 // Requires a real audio file path — update TEST_FILE_PATH before running.
 // Run via Product > Test in Xcode (requires MT_UITests target).
 
-import XCTest
 @testable import MusicTagger
+import XCTest
 
 // MARK: - Configure before running
+
 private let TEST_FILE_PATH = ("~/test_files/Maro - SO MUCH HAS CHANGED/MARO - SO MUCH HAS CHANGED - 01-01 I OWE IT TO YOU.flac" as NSString).expandingTildeInPath
 final class APIClientIntegrationTests: XCTestCase {
-
     // MARK: - /health
 
     func testHealthCheck() async throws {

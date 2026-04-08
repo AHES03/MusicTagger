@@ -1,27 +1,31 @@
 import SwiftUI
 
-// Holds the original file alongside its best Spotify match and whether the user has confirmed it.
-struct BatchMatch: Sendable {
+/// Holds the original file alongside its best Spotify match and whether the user has confirmed it.
+/// @Observable class (not struct) so SwiftUI reliably re-renders on nested property mutations.
+@Observable @MainActor class BatchMatch: Identifiable, Hashable {
+    var id: String {
+        original.filePath
+    }
+
     var original: MusicFile
     var proposed: MusicFile?
     var confirmed: Bool = true
-}
+    var isManuallyCorrected: Bool = false
 
-struct BatchItem: Identifiable {
-    let id: String // uses filePath as stable identity
-    let title: String
-    let artist: String
-    let album: String
-    let filename: String
-    let changes: [MetadataChange]
-}
+    init(original: MusicFile, proposed: MusicFile? = nil, confirmed: Bool = true, isManuallyCorrected: Bool = false) {
+        self.original = original
+        self.proposed = proposed
+        self.confirmed = confirmed
+        self.isManuallyCorrected = isManuallyCorrected
+    }
 
-struct MetadataChange: Identifiable {
-    let id = UUID()
-    let field: String
-    let current: String
-    let proposed: String
-    var hasConflict: Bool = false
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(original.filePath)
+    }
+
+    static func == (lhs: BatchMatch, rhs: BatchMatch) -> Bool {
+        lhs.original.filePath == rhs.original.filePath
+    }
 }
 
 struct BatchSearchView: View {
@@ -30,160 +34,153 @@ struct BatchSearchView: View {
     var onApply: (_ before: [MusicFile], _ after: [MusicFile]) -> Void
     @Environment(\.dismiss) var dismiss
 
+    @State private var path = NavigationPath()
     @State private var matches: [BatchMatch] = []
     @State private var searchedCount: Int = 0
     @State private var isSearching: Bool = false
     @State private var isApplying: Bool = false
-    @State private var expandedItems: Set<String> = []
+    @State private var tempFile: MusicFile?
 
-    // Maps BatchMatch → BatchItem by diffing original vs proposed fields.
-    var batchItems: [BatchItem] {
-        matches.map { match in
-            let original = match.original
-            let proposed = match.proposed
-            var changes: [MetadataChange] = []
-            if let proposed = proposed {
-                func check(_ field: String, _ a: String?, _ b: String?) {
-                    if (a ?? "") != (b ?? "") {
-                        changes.append(MetadataChange(field: field, current: a ?? "—", proposed: b ?? "—"))
-                    }
-                }
-                check("Title", original.title, proposed.title)
-                check("Artist", original.artist, proposed.artist)
-                check("Album", original.album, proposed.album)
-                check("Date", original.date, proposed.date)
-                check("Album Artist", original.albumArtist, proposed.albumArtist)
-                check("Track No", original.trackNumber.map(String.init), proposed.trackNumber.map(String.init))
-            }
-            return BatchItem(
-                id: original.filePath,
-                title: proposed?.title ?? original.title ?? "—",
-                artist: proposed?.artist ?? original.artist ?? "—",
-                album: proposed?.album ?? original.album ?? "—",
-                filename: URL(fileURLWithPath: original.filePath).lastPathComponent,
-                changes: changes
-            )
-        }
+    // TODO: compute field-level change count per match once inline editing is wired
+    var totalChanges: Int {
+        matches.filter { $0.proposed != nil }.count
     }
 
-    var totalChanges: Int { batchItems.reduce(0) { $0 + $1.changes.count } }
+    var analysisStatus: StageStatus {
+        isSearching ? .active : .completed
+    }
 
-    var analysisStatus: StageStatus { isSearching ? .active : .completed }
     var reviewStatus: StageStatus {
         if isSearching { return .pending }
         if isApplying { return .completed }
         return .active
     }
-    var applyingStatus: StageStatus { isApplying ? .active : .pending }
+
+    var applyingStatus: StageStatus {
+        isApplying ? .active : .pending
+    }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // MARK: - Stage Tracker
-            HStack(spacing: 0) {
-                StageIndicator(title: "ANALYSIS", status: analysisStatus)
-                StageDivider()
-                StageIndicator(title: "REVIEW", status: reviewStatus)
-                StageDivider()
-                StageIndicator(title: "APPLYING CHANGES", status: applyingStatus)
-            }
-            .padding(.top, 32)
-            .padding(.bottom, 24)
-
-            if isSearching {
-                Text("Batch Search")
-                    .font(.system(size: 24, weight: .bold))
-                Text("Searching \(searchedCount) / \(files.count)...")
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
-                    .padding(.top, 4)
-                    .padding(.bottom, 32)
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                // MARK: - Title
-                Text("Batch Review")
-                    .font(.system(size: 24, weight: .bold))
-                Text("Reviewing \(matches.count) files")
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
-                    .padding(.top, 4)
-                    .padding(.bottom, 32)
-
-                // MARK: - Review List
-                ScrollView {
-                    VStack(spacing: 16) {
-                        ForEach(batchItems) { item in
-                            CollapsibleTrackCard(
-                                item: item,
-                                isExpanded: expandedItems.contains(item.id),
-                                onToggle: {
-                                    if expandedItems.contains(item.id) {
-                                        expandedItems.remove(item.id)
-                                    } else {
-                                        expandedItems.insert(item.id)
-                                    }
-                                }
-                            )
-                        }
-                    }
-                    .padding(.horizontal, 40)
-                }
-            }
-
-            // MARK: - Footer
+        NavigationStack(path: $path) {
             VStack(spacing: 0) {
-                Divider().opacity(0.1)
+                // MARK: - Stage Tracker
 
-                HStack {
-                    Button("Cancel") { dismiss() }
-                        .buttonStyle(PlainButtonStyle())
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.primary)
+                HStack(spacing: 0) {
+                    StageIndicator(title: "ANALYSIS", status: analysisStatus)
+                    StageDivider()
+                    StageIndicator(title: "REVIEW", status: reviewStatus)
+                    StageDivider()
+                    StageIndicator(title: "APPLYING CHANGES", status: applyingStatus)
+                }
+                .padding(.top, 32)
+                .padding(.bottom, 24)
 
-                    Spacer()
+                if isSearching {
+                    Text("Batch Search")
+                        .font(.system(size: 24, weight: .bold))
+                    Text("Searching \(searchedCount) / \(files.count)...")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                        .padding(.top, 4)
+                        .padding(.bottom, 32)
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    // MARK: - Title
 
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text("REVIEW SUMMARY")
-                            .font(.system(size: 9, weight: .bold))
-                            .foregroundColor(.secondary)
-                        Text("\(totalChanges) metadata updates pending")
-                            .font(.system(size: 11))
-                            .foregroundColor(.secondary)
+                    Text("Batch Review")
+                        .font(.system(size: 24, weight: .bold))
+                    Text("Reviewing \(matches.count) files")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                        .padding(.top, 4)
+                        .padding(.bottom, 32)
+
+                    // MARK: - Review List
+
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            ForEach(matches) { match in
+                                CollapsibleTrackCard(match: match, onSearch: {
+                                    // seed proposed from original before pushing
+                                    if match.proposed == nil {
+                                        match.proposed = match.original
+                                    }
+                                    tempFile = match.original
+                                    path.append(match)
+                                })
+                            }
+                        }
+                        .padding(.horizontal, 40)
                     }
-                    .padding(.trailing, 24)
+                }
 
-                    Button("Apply All Changes") {
-                        Task {
-                            isApplying = true
-                            await withTaskGroup(of: Void.self) { group in
-                                for match in matches {
-                                    group.addTask {
-                                        if match.confirmed, let proposed = match.proposed {
-                                            do {
-                                                try await APIClient.shared.writeMetadata(file: proposed)
-                                                if proposed.artworkUrl != nil {
-                                                    try await APIClient.shared.writeArtwork(filePath: proposed.filePath, artworkPath: proposed.artworkUrl!)
-                                                }
-                                            } catch {}
+                // MARK: - Footer
+
+                VStack(spacing: 0) {
+                    Divider().opacity(0.1)
+
+                    HStack {
+                        Button("Cancel") { dismiss() }
+                            .buttonStyle(SecondaryButtonStyle())
+                            .frame(width: 100)
+
+                        Spacer()
+
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text("REVIEW SUMMARY")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundColor(.secondary)
+                            Text("\(totalChanges) metadata updates pending")
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.trailing, 24)
+
+                        Button("Apply All Changes") {
+                            Task {
+                                isApplying = true
+                                await withTaskGroup(of: Void.self) { group in
+                                    for match in matches {
+                                        group.addTask {
+                                            if await match.confirmed, let proposed = await match.proposed {
+                                                do {
+                                                    try await APIClient.shared.writeMetadata(file: proposed)
+                                                    if proposed.artworkUrl != nil {
+                                                        try await APIClient.shared.writeArtwork(filePath: proposed.filePath, artworkPath: proposed.artworkUrl!)
+                                                    }
+                                                } catch {}
+                                            }
                                         }
                                     }
                                 }
+                                let confirmed = matches.filter { $0.confirmed && $0.proposed != nil }
+                                let before = confirmed.map(\.original)
+                                let after = confirmed.map { $0.proposed! }
+                                onApply(before, after)
+                                dismiss()
+                                isApplying = false
                             }
-                            let confirmed = matches.filter { $0.confirmed && $0.proposed != nil }
-                            let before = confirmed.map { $0.original }
-                            let after = confirmed.map { $0.proposed! }
-                            onApply(before, after)
-                            dismiss()
-                            isApplying = false
                         }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .frame(width: 180)
+                        .disabled(isSearching || matches.isEmpty || isApplying)
                     }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .frame(width: 180)
-                    .disabled(isSearching || matches.isEmpty || isApplying)
+                    .padding(.horizontal, 40)
+                    .padding(.vertical, 24)
+                    .background(Color(white: 0.12))
                 }
-                .padding(.horizontal, 40)
-                .padding(.vertical, 24)
-                .background(Color(white: 0.05))
+            }
+
+            // MARK: - Navigation Destination
+
+            .navigationDestination(for: BatchMatch.self) { match in
+                SearchSheetView(file: $tempFile)
+                    .onDisappear {
+                        match.proposed = tempFile
+                        match.isManuallyCorrected = true
+                    }
+                    .navigationBarBackButtonHidden(true)
             }
         }
         .frame(width: 800, height: 700)
@@ -204,7 +201,7 @@ struct BatchSearchView: View {
                         group.addTask {
                             do {
                                 let results = try await APIClient.shared.searchTracks(query: (file.title ?? "") + " " + (file.artist ?? ""))
-                                var proposed: MusicFile? = nil
+                                var proposed: MusicFile?
                                 if let bestMatch = results.first {
                                     proposed = file
                                     proposed?.title = bestMatch.title
@@ -214,10 +211,15 @@ struct BatchSearchView: View {
                                     proposed?.date = bestMatch.date
                                     proposed?.albumArtist = bestMatch.albumArtist
                                     proposed?.artworkUrl = bestMatch.artworkUrl
+                                    if let url = URL(string: bestMatch.artworkUrl) {
+                                        if let (data, _) = try? await URLSession.shared.data(from: url) {
+                                            proposed?.artworkData = data
+                                        }
+                                    }
                                 }
-                                return BatchMatch(original: file, proposed: proposed)
+                                return await BatchMatch(original: file, proposed: proposed)
                             } catch {
-                                return BatchMatch(original: file, proposed: nil)
+                                return await BatchMatch(original: file, proposed: nil)
                             }
                         }
                     }
@@ -233,62 +235,88 @@ struct BatchSearchView: View {
 }
 
 // MARK: - Track Card
+
 struct CollapsibleTrackCard: View {
-    let item: BatchItem
-    let isExpanded: Bool
-    let onToggle: () -> Void
+    var match: BatchMatch
+    @State private var isExpanded = false
+    @State private var isLoadingArtwork: Bool = false
+    var onSearch: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
             // Header Row (Always Visible)
-            Button(action: onToggle) {
+            Button(action: { withAnimation { isExpanded.toggle() } }) {
                 HStack(spacing: 16) {
-                    // TODO: replace placeholder with AsyncImage using proposed artworkUrl once BatchItem exposes it
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: 12)
                         .fill(Color(white: 0.15))
                         .frame(width: 44, height: 44)
+                        .task(id: match.proposed?.artworkUrl) {
+                            await MainActor.run { isLoadingArtwork = true }
+                            if let artworkUrl = match.proposed?.artworkUrl, let url = URL(string: artworkUrl) {
+                                if let (data, _) = try? await URLSession.shared.data(from: url) {
+                                    await MainActor.run {
+                                        match.proposed?.artworkData = data
+                                        isLoadingArtwork = false
+                                    }
+                                }
+                            } else {
+                                await MainActor.run { isLoadingArtwork = false }
+                            }
+                        }
                         .overlay(
-                            Image(systemName: "music.note")
-                                .foregroundColor(.gray)
+                            Group {
+                                if let data = match.proposed?.artworkData ?? match.original.artworkData,
+                                   let nsImage = NSImage(data: data) {
+                                    Image(nsImage: nsImage)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                } else {
+                                    Image(systemName: "music.note")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.gray)
+                                }
+                            }
                         )
+                        .overlay {
+                            if isLoadingArtwork { ProgressView() }
+                        }
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text("PROPOSED TITLE")
                             .font(.system(size: 8, weight: .bold))
                             .foregroundColor(.secondary)
-                        Text(item.title)
+                        Text(match.proposed?.title ?? match.original.title ?? "—")
                             .font(.system(size: 13, weight: .bold))
-                            .foregroundColor(.blue)
+                            .foregroundColor(match.isManuallyCorrected ? .green : .blue)
                     }
-                    .frame(width: 120, alignment: .leading)
+                    .frame(width: 140, alignment: .leading)
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text("PROPOSED ARTIST")
                             .font(.system(size: 8, weight: .bold))
                             .foregroundColor(.secondary)
-                        Text(item.artist)
+                        Text(match.proposed?.artist ?? match.original.artist ?? "—")
                             .font(.system(size: 13, weight: .medium))
                     }
                     .frame(width: 140, alignment: .leading)
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("PROPOSED ALBUM")
+                    if match.isManuallyCorrected {
+                        Text("MANUAL")
                             .font(.system(size: 8, weight: .bold))
-                            .foregroundColor(.secondary)
-                        Text(item.album)
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundColor(item.changes.contains(where: { $0.field == "Album" }) ? .blue : .primary)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.green.opacity(0.2))
+                            .foregroundColor(.green)
+                            .cornerRadius(4)
                     }
 
                     Spacer()
 
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text(item.filename)
+                        Text(URL(fileURLWithPath: match.original.filePath).lastPathComponent)
                             .font(.system(size: 10))
                             .foregroundColor(.secondary)
-                        Text("\(item.changes.count) change\(item.changes.count == 1 ? "" : "s")")
-                            .font(.system(size: 9))
-                            .foregroundColor(.secondary.opacity(0.6))
                     }
 
                     Image(systemName: "chevron.down")
@@ -300,50 +328,70 @@ struct CollapsibleTrackCard: View {
             }
             .buttonStyle(PlainButtonStyle())
 
-            // MARK: - Expanded Changes Table
+            // MARK: - Expanded Content
+
             if isExpanded {
-                VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 16) {
                     Divider().opacity(0.1)
 
-                    HStack {
-                        Text("FIELD").frame(width: 120, alignment: .leading)
-                        Text("CURRENT VALUE").frame(width: 200, alignment: .leading)
-                        Text("PROPOSED VALUE").frame(width: 200, alignment: .leading)
-                        Spacer()
-                        Text("STATUS").frame(width: 60, alignment: .trailing)
-                    }
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal, 24)
-                    .padding(.top, 16)
-                    .padding(.bottom, 8)
-
-                    ForEach(item.changes) { change in
-                        HStack {
-                            Text(change.field.uppercased())
-                                .font(.system(size: 10, weight: .medium))
-                                .frame(width: 120, alignment: .leading)
-                            Text(change.current)
-                                .font(.system(size: 11))
-                                .foregroundColor(.secondary)
-                                .italic()
-                                .frame(width: 200, alignment: .leading)
-                            Text(change.proposed)
-                                .font(.system(size: 11, weight: .bold))
-                                .foregroundColor(change.hasConflict ? .orange : .green)
-                                .frame(width: 200, alignment: .leading)
-                            Spacer()
-                            Image(systemName: change.hasConflict ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
-                                .foregroundColor(change.hasConflict ? .orange : .green)
-                                .font(.system(size: 12))
-                                .frame(width: 60, alignment: .trailing)
+                    VStack(spacing: 12) {
+                        HStack(spacing: 12) {
+                            InlineEditField(label: "TITLE", text: Binding(
+                                get: { match.proposed?.title ?? match.original.title ?? "" },
+                                set: { match.proposed?.title = $0 }
+                            ))
+                            InlineEditField(label: "ARTIST", text: Binding(
+                                get: { match.proposed?.artist ?? match.original.artist ?? "" },
+                                set: { match.proposed?.artist = $0 }
+                            ))
+                            InlineEditField(label: "ALBUM", text: Binding(
+                                get: { match.proposed?.album ?? match.original.album ?? "" },
+                                set: { match.proposed?.album = $0 }
+                            ))
                         }
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 8)
+                        HStack(spacing: 12) {
+                            InlineEditField(label: "DATE", text: Binding(
+                                get: { match.proposed?.date ?? match.original.date ?? "" },
+                                set: { match.proposed?.date = $0 }
+                            ))
+                            InlineEditField(label: "GENRE", text: Binding(
+                                get: { match.proposed?.genre ?? match.original.genre ?? "" },
+                                set: { match.proposed?.genre = $0 }
+                            ))
+                            InlineEditField(label: "COMMENT", text: Binding(
+                                get: { match.proposed?.comment ?? match.original.comment ?? "" },
+                                set: { match.proposed?.comment = $0 }
+                            ))
+                        }
+                        HStack(spacing: 12) {
+                            InlineEditField(label: "ALBUM ARTIST", text: Binding(
+                                get: { match.proposed?.albumArtist ?? match.original.albumArtist ?? "" },
+                                set: { match.proposed?.albumArtist = $0 }
+                            ))
+                            InlineEditField(label: "COMPOSER", text: Binding(
+                                get: { match.proposed?.composer ?? match.original.composer ?? "" },
+                                set: { match.proposed?.composer = $0 }
+                            ))
+                            Button(action: onSearch) {
+                                HStack {
+                                    Image(systemName: "magnifyingglass")
+                                    Text("Search Match")
+                                }
+                                .font(.system(size: 11, weight: .bold))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(Color.blue.opacity(0.1))
+                                .foregroundColor(.blue)
+                                .cornerRadius(6)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.top, 14)
+                        }
                     }
+                    .padding(.horizontal, 16)
                     .padding(.bottom, 16)
                 }
-                .background(Color(white: 0.1).opacity(0.3))
+                .background(Color.white.opacity(0.02))
             }
         }
         .background(Color(white: 0.12))
@@ -355,7 +403,43 @@ struct CollapsibleTrackCard: View {
     }
 }
 
+// MARK: - Batch Search Destination
+
+struct BatchSearchDestination: View {
+    var match: BatchMatch
+    @State private var tempFile: MusicFile?
+
+    var body: some View {
+        SearchSheetView(file: $tempFile)
+            .onAppear { tempFile = match.original }
+            .onDisappear { match.proposed = tempFile }
+            .navigationBarBackButtonHidden(true)
+    }
+}
+
+// MARK: - Inline Edit Field
+
+struct InlineEditField: View {
+    let label: String
+    @Binding var text: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.system(size: 8, weight: .bold))
+                .foregroundColor(.secondary)
+            TextField("", text: $text)
+                .textFieldStyle(.plain)
+                .font(.system(size: 11))
+                .padding(6)
+                .background(Color(white: 0.15))
+                .cornerRadius(4)
+        }
+    }
+}
+
 // MARK: - Stage Tracker Components
+
 enum StageStatus { case completed, active, pending }
 
 struct StageIndicator: View {

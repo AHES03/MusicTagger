@@ -14,7 +14,7 @@ struct SearchResultRow: View {
             AsyncImage(url: URL(string: result.artworkUrl)) { phase in
                 switch phase {
                 case .empty: ProgressView().frame(width: 44, height: 44)
-                case .success(let image): image.resizable().scaledToFill().frame(width: 44, height: 44).clipShape(RoundedRectangle(cornerRadius: 6))
+                case let .success(image): image.resizable().scaledToFill().frame(width: 44, height: 44).clipShape(RoundedRectangle(cornerRadius: 6))
                 case .failure: Image(systemName: "music.note").frame(width: 44, height: 44)
                 @unknown default: Image(systemName: "music.note").frame(width: 44, height: 44)
                 }
@@ -37,7 +37,7 @@ struct SearchSheetView: View {
     @State private var searchQuery: String = ""
     @State private var searchResults: [Track] = []
     @State private var isLoading: Bool = false
-    @State private var errorMessage: String? = nil
+    @State private var errorMessage: String?
     @State private var selectedResultID: Track.ID?
 
     func searchSpotify(query: String) {
@@ -56,43 +56,43 @@ struct SearchSheetView: View {
         VStack(spacing: 0) {
             // Source picker — iTunes not yet implemented, defaults to Spotify
             HStack(spacing: 12) {
-                           // Search Field
-                           HStack {
-                               Image(systemName: "magnifyingglass")
-                                   .foregroundColor(.secondary)
-                               TextField("Search by Artist, Album, or Track title...", text: $searchQuery)
-                                   .textFieldStyle(.plain)
-                                   .onSubmit { searchSpotify(query: searchQuery) }
-                           }
-                           .padding(10)
-                           .background(Color(white: 0.12))
-                           .cornerRadius(10)
-                           .overlay(
-                               RoundedRectangle(cornerRadius: 10)
-                                   .stroke(Color.white.opacity(0.15), lineWidth: 1)
-                           )
-                           
-                           // Source Pop-up (No Label)
-                           Picker("", selection: $searchSource) {
-                               Text("Spotify").tag(0)
-                               Text("iTunes").tag(1)
-                           }
-                           .pickerStyle(.menu)
-                           .frame(width: 100)
-                           
-                           // Search Button
-                           Button("Search") {
-                               searchSpotify(query: searchQuery)
-                           }
-                           .buttonStyle(PrimaryButtonStyle())
-                           .frame(width: 80)
-                       }
-                       .padding(.horizontal, 24)
-                       .padding(.top, 24)
-                       .padding(.bottom, 20)
-                       
-                       Divider()
-                           .opacity(0.1)
+                // Search Field
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.secondary)
+                    TextField("Search by Artist, Album, or Track title...", text: $searchQuery)
+                        .textFieldStyle(.plain)
+                        .onSubmit { searchSpotify(query: searchQuery) }
+                }
+                .padding(10)
+                .background(Color(white: 0.12))
+                .cornerRadius(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                )
+
+                // Source Pop-up (No Label)
+                Picker("", selection: $searchSource) {
+                    Text("Spotify").tag(0)
+                    Text("iTunes").tag(1)
+                }
+                .pickerStyle(.menu)
+                .frame(width: 100)
+
+                // Search Button
+                Button("Search") {
+                    searchSpotify(query: searchQuery)
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .frame(width: 80)
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 24)
+            .padding(.bottom, 20)
+
+            Divider()
+                .opacity(0.1)
 
             if isLoading {
                 ProgressView()
@@ -101,7 +101,7 @@ struct SearchSheetView: View {
                 Text(error)
                     .foregroundColor(.red)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if searchResults.isEmpty && !searchQuery.isEmpty {
+            } else if searchResults.isEmpty, !searchQuery.isEmpty {
                 Text("No results for \"\(searchQuery)\"")
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

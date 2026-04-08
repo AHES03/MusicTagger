@@ -1,5 +1,5 @@
 //
-//  UndoManager.swift
+//  MetadataUndoService.swift
 //  MT_UI
 //
 //  Created by Hadi El-Seyed on 14/03/2026.
@@ -12,15 +12,12 @@ import Foundation
 
 class MetadataUndoService {
     static let shared = MetadataUndoService()
-    
-    private init(){
-        
-    }
 
-    // Registers an undo/redo pair for a metadata save.
+    private init() {}
+
+    /// Registers an undo/redo pair for a metadata save.
     @MainActor
     func registerSave(before: MusicFile, after: MusicFile, onComplete: @escaping @MainActor (MusicFile) -> Void, undoManager: UndoManager?) {
-
         // Labels the undo menu item so it shows "Undo Edit Metadata" in the Edit menu.
         undoManager?.setActionName("Edit Metadata")
 
@@ -35,8 +32,7 @@ class MetadataUndoService {
                 } catch {}
             }
             // Registers redo by swapping before/after. UndoManager handles Cmd+Shift+Z automatically.
-            target.registerSave(before: after, after: before, onComplete: onComplete,undoManager: undoManager)
+            target.registerSave(before: after, after: before, onComplete: onComplete, undoManager: undoManager)
         }
-        
     }
 }

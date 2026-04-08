@@ -41,7 +41,6 @@ func get(path: String) async throws -> (Data, Int) {
 // MARK: - Tests
 
 func runTests(testFilePath: String?) async {
-
     // ── /health ──────────────────────────────────────────────
     print("\n/health")
     do {
@@ -58,7 +57,7 @@ func runTests(testFilePath: String?) async {
             if !tracks.isEmpty { pass("returns results") } else { fail("returns results", "empty array") }
             let first = tracks[0]
             if first["spotify_id"] is String { pass("track has spotify_id") } else { fail("track has spotify_id", "missing") }
-            if first["title"] is String      { pass("track has title")     } else { fail("track has title", "missing") }
+            if first["title"] is String { pass("track has title") } else { fail("track has title", "missing") }
             if first["artwork_url"] is String { pass("track has artwork_url") } else { fail("track has artwork_url", "missing") }
         } else { fail("returns results", "no 'Tracks' key in response") }
     } catch { fail("/search request", error.localizedDescription) }
@@ -105,4 +104,5 @@ Task {
     await runTests(testFilePath: testFilePath)
     sema.signal()
 }
+
 sema.wait()
