@@ -44,11 +44,31 @@ struct SearchSheetView: View {
         Task {
             do {
                 isLoading = true
-                searchResults = try await APIClient.shared.searchTracks(query: query)
+                searchResults = try await APIClient.shared.searchTracksSpotify(query: query)
             } catch {
                 errorMessage = error.localizedDescription
             }
             isLoading = false
+        }
+    }
+
+    func searchItunes(query: String) {
+        Task {
+            do {
+                isLoading = true
+                searchResults = try await APIClient.shared.searchTracksItunes(query: query)
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+            isLoading = false
+        }
+    }
+
+    func search(query: String) {
+        if searchSource == 0 {
+            searchSpotify(query: query)
+        } else {
+            searchItunes(query: query)
         }
     }
 
@@ -62,7 +82,7 @@ struct SearchSheetView: View {
                         .foregroundColor(.secondary)
                     TextField("Search by Artist, Album, or Track title...", text: $searchQuery)
                         .textFieldStyle(.plain)
-                        .onSubmit { searchSpotify(query: searchQuery) }
+                        .onSubmit { search(query: searchQuery) }
                 }
                 .padding(10)
                 .background(Color(white: 0.12))
@@ -82,7 +102,7 @@ struct SearchSheetView: View {
 
                 // Search Button
                 Button("Search") {
-                    searchSpotify(query: searchQuery)
+                    search(query: searchQuery)
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .frame(width: 80)
@@ -149,6 +169,7 @@ struct SearchSheetView: View {
                     file?.date = track.date
                     file?.trackNumber = track.trackNumber
                     file?.albumArtist = track.albumArtist
+                    file?.genre = track.genre
                     file?.artworkUrl = track.artworkUrl
                     Task {
                         if let url = URL(string: track.artworkUrl),
@@ -171,7 +192,10 @@ struct SearchSheetView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .onAppear {
             searchQuery = (file?.title ?? "") + " " + (file?.artist ?? "")
-            searchSpotify(query: searchQuery)
+            search(query: searchQuery)
+        }
+        .onChange(of: searchSource) {
+            search(query: searchQuery)
         }
     }
 }

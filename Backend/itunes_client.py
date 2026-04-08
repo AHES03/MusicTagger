@@ -1,4 +1,3 @@
-import os
 import httpx
 from models import iTunesTrack
 
@@ -26,6 +25,7 @@ class iTunesClient:
                 "date": date,
                 "track_number": track["trackNumber"],
                 "album_artist": track['artistName'],
+                "genre": track['primaryGenreName'],
                 "artwork_url": track['artworkUrl30'].replace("30x30bb.jpg", "3000x3000bb.jpg")
             }
             temp = iTunesTrack(**mapped_dict)
@@ -50,6 +50,7 @@ class iTunesClient:
             "date": date,
             "track_number": track['results'][0]["trackNumber"],
             "album_artist": track['results'][0]['artistName'],
+            "genre": track['results'][0]['primaryGenreName'],
             "artwork_url": track['results'][0]['artworkUrl30'].replace("30x30bb.jpg", "3000x3000bb.jpg")
         }
 

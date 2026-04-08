@@ -17,20 +17,20 @@ final class APIClientIntegrationTests: XCTestCase {
         XCTAssertTrue(isOnline, "Backend should respond with 200 on /health")
     }
 
-    // MARK: - /search
+    // MARK: - /search-spotify
 
     func testSearchTracksReturnsResults() async throws {
-        let tracks = try await APIClient.shared.searchTracks(query: "Bohemian Rhapsody Queen")
+        let tracks = try await APIClient.shared.searchTracksSpotify(query: "Bohemian Rhapsody Queen")
         XCTAssertFalse(tracks.isEmpty, "Search should return at least one result")
     }
 
     func testSearchTracksResultShape() async throws {
-        let tracks = try await APIClient.shared.searchTracks(query: "Bohemian Rhapsody Queen")
+        let tracks = try await APIClient.shared.searchTracksSpotify(query: "Bohemian Rhapsody Queen")
         guard let first = tracks.first else {
             XCTFail("Expected at least one result")
             return
         }
-        XCTAssertFalse(first.spotifyId.isEmpty)
+        XCTAssertFalse(first.sourceId.isEmpty)
         XCTAssertFalse(first.title.isEmpty)
         XCTAssertFalse(first.artist.isEmpty)
         XCTAssertFalse(first.album.isEmpty)
@@ -39,7 +39,7 @@ final class APIClientIntegrationTests: XCTestCase {
 
     func testSearchTracksEmptyQueryThrows() async {
         do {
-            _ = try await APIClient.shared.searchTracks(query: "")
+            _ = try await APIClient.shared.searchTracksSpotify(query: "")
             XCTFail("Expected an error for empty query")
         } catch {
             // Expected — backend returns 422 for empty query

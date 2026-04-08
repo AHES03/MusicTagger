@@ -17,7 +17,7 @@ class TestMetadataReader:
         test = MetadataReader(_FLAC)
         metadata_resp = test.read()
         print(metadata_resp)
-        assert type(metadata_resp) == MetadataPayload
+        assert isinstance(metadata_resp, MetadataPayload)
 
 
     def test_read_contains_expected_fields(self, sample_audio_file):
@@ -30,7 +30,7 @@ class TestMetadataReader:
     def test_read_invalid_path_raises_error(self):
         """Providing a non-existent file path should raise an error."""
         with pytest.raises(ValueError) as excinfo:
-            test = MetadataReader(_FLAC_INVALID)
+            MetadataReader(_FLAC_INVALID)
         assert 'No such file or directory' in str(excinfo.value)
 
 
@@ -39,7 +39,7 @@ class TestMetadataReader:
         dummy = tmp_path / 'dummy.docx'
         dummy.write_bytes(b'not a real document')
         with pytest.raises(ValueError) as excinfo:
-            test = MetadataReader(str(dummy))
+            MetadataReader(str(dummy))
         assert 'not implemented' in str(excinfo.value)
 
 
@@ -61,7 +61,7 @@ class TestMetadataWriter:
     def test_write_invalid_path_raises_error(self):
         """Providing a non-existent file path should raise an error."""
         with pytest.raises(ValueError) as excinfo:
-            test = MetadataWriter(_FLAC_INVALID)
+            MetadataWriter(_FLAC_INVALID)
         assert 'No such file or directory' in str(excinfo.value)
 
 

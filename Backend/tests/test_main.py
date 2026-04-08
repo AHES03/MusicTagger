@@ -1,4 +1,3 @@
-import pytest
 from pathlib import Path
 
 _TEST_FILES = Path(__file__).parent.parent.parent / "test_files"
@@ -41,24 +40,41 @@ class TestReadMetadataRoute:
         assert response.status_code == 404
 
 
-class TestSearchRoute:
+class TestSearchSpotifyRoute:
 
     def test_search_returns_200_with_valid_query(self, api_client):
-        """POST /search with a valid query should return 200."""
-        response = api_client.post("/search", json={"query": "The Beatles"})
+        """POST /search-spotify with a valid query should return 200."""
+        response = api_client.post("/search-spotify", json={"query": "The Beatles"})
         assert response.status_code == 200
-
 
     def test_search_returns_list_of_tracks(self, api_client):
         """Response body should be a list of track objects."""
-        response = api_client.post("/search", json={"query": "The Beatles"})
+        response = api_client.post("/search-spotify", json={"query": "The Beatles"})
         assert response.status_code == 200
         assert isinstance(response.json()['Tracks'], list)
 
+    def test_search_returns_422_with_missing_query(self, api_client):
+        """POST /search-spotify with no body should return 422."""
+        response = api_client.post("/search-spotify")
+        assert response.status_code == 422
+
+
+class TestSearchItunesRoute:
+
+    def test_search_returns_200_with_valid_query(self, api_client):
+        """POST /search-itunes with a valid query should return 200."""
+        response = api_client.post("/search-itunes", json={"query": "The Beatles"})
+        assert response.status_code == 200
+
+    def test_search_returns_list_of_tracks(self, api_client):
+        """Response body should be a list of track objects."""
+        response = api_client.post("/search-itunes", json={"query": "The Beatles"})
+        assert response.status_code == 200
+        assert isinstance(response.json()['Tracks'], list)
 
     def test_search_returns_422_with_missing_query(self, api_client):
-        """POST /search with no body should return 422."""
-        response = api_client.post("/search")
+        """POST /search-itunes with no body should return 422."""
+        response = api_client.post("/search-itunes")
         assert response.status_code == 422
 
 

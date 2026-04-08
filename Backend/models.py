@@ -13,6 +13,7 @@ class Track (BaseModel):
 class iTunesTrack(Track):
     """A single iTunes track search result."""
     itunes_id: str
+    genre: Optional[str] = None
 
 class SpotifyTrack(Track):
     """A single Spotify track search result."""

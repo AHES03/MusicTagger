@@ -25,9 +25,9 @@ final class ModelDecodingTests: XCTestCase {
             "disc_number": 1,
             "is_compilation": false
         }
-        """.data(using: .utf8)!
+        """
 
-        let file = try JSONDecoder().decode(MusicFile.self, from: json)
+        let file = try JSONDecoder().decode(MusicFile.self, from: Data(json.utf8))
 
         XCTAssertEqual(file.filePath, "/music/track.flac")
         XCTAssertEqual(file.title, "So Much Has Changed")
@@ -51,9 +51,9 @@ final class ModelDecodingTests: XCTestCase {
         {
             "file_path": "/music/track.mp3"
         }
-        """.data(using: .utf8)!
+        """
 
-        let file = try JSONDecoder().decode(MusicFile.self, from: json)
+        let file = try JSONDecoder().decode(MusicFile.self, from: Data(json.utf8))
 
         XCTAssertEqual(file.filePath, "/music/track.mp3")
         XCTAssertNil(file.title)
@@ -71,9 +71,9 @@ final class ModelDecodingTests: XCTestCase {
     func testMusicFileIDEqualsFilePath() throws {
         let json = """
         { "file_path": "/music/track.flac" }
-        """.data(using: .utf8)!
+        """
 
-        let file = try JSONDecoder().decode(MusicFile.self, from: json)
+        let file = try JSONDecoder().decode(MusicFile.self, from: Data(json.utf8))
         XCTAssertEqual(file.id, file.filePath)
     }
 
@@ -86,9 +86,9 @@ final class ModelDecodingTests: XCTestCase {
             "disc_number": 2,
             "is_compilation": true
         }
-        """.data(using: .utf8)!
+        """
 
-        let file = try JSONDecoder().decode(MusicFile.self, from: json)
+        let file = try JSONDecoder().decode(MusicFile.self, from: Data(json.utf8))
         let encoded = try JSONEncoder().encode(file)
         let dict = try XCTUnwrap(try JSONSerialization.jsonObject(with: encoded) as? [String: Any])
 
@@ -104,7 +104,7 @@ final class ModelDecodingTests: XCTestCase {
 
     // MARK: - Track
 
-    func testTrackDecodesFullPayload() throws {
+    func testTrackDecodesSpotifyPayload() throws {
         let json = """
         {
             "spotify_id": "abc123",
@@ -112,19 +112,44 @@ final class ModelDecodingTests: XCTestCase {
             "artist": "MARO",
             "album": "So Much Has Changed",
             "date": "2021",
+            "track_number": 1,
+            "album_artist": "MARO",
             "artwork_url": "https://example.com/art.jpg"
         }
-        """.data(using: .utf8)!
+        """
 
-        let track = try JSONDecoder().decode(Track.self, from: json)
+        let track = try JSONDecoder().decode(Track.self, from: Data(json.utf8))
 
-        XCTAssertEqual(track.spotifyId, "abc123")
+        XCTAssertEqual(track.sourceId, "abc123")
         XCTAssertEqual(track.title, "So Much Has Changed")
         XCTAssertEqual(track.artist, "MARO")
         XCTAssertEqual(track.album, "So Much Has Changed")
         XCTAssertEqual(track.date, "2021")
         XCTAssertEqual(track.artworkUrl, "https://example.com/art.jpg")
         XCTAssertEqual(track.id, "abc123")
+        XCTAssertNil(track.genre)
+    }
+
+    func testTrackDecodesItunesPayload() throws {
+        let json = """
+        {
+            "itunes_id": "xyz789",
+            "title": "So Much Has Changed",
+            "artist": "MARO",
+            "album": "So Much Has Changed",
+            "date": "2021",
+            "track_number": 1,
+            "album_artist": "MARO",
+            "artwork_url": "https://example.com/art.jpg",
+            "genre": "Pop"
+        }
+        """
+
+        let track = try JSONDecoder().decode(Track.self, from: Data(json.utf8))
+
+        XCTAssertEqual(track.sourceId, "xyz789")
+        XCTAssertEqual(track.id, "xyz789")
+        XCTAssertEqual(track.genre, "Pop")
     }
 
     func testSearchResponseDecodes() throws {
@@ -137,13 +162,15 @@ final class ModelDecodingTests: XCTestCase {
                     "artist": "MARO",
                     "album": "So Much Has Changed",
                     "date": "2021",
+                    "track_number": 1,
+                    "album_artist": "MARO",
                     "artwork_url": "https://example.com/art.jpg"
                 }
             ]
         }
-        """.data(using: .utf8)!
+        """
 
-        let response = try JSONDecoder().decode(SearchResponse.self, from: json)
+        let response = try JSONDecoder().decode(SearchResponse.self, from: Data(json.utf8))
 
         XCTAssertEqual(response.tracks.count, 1)
         XCTAssertEqual(response.tracks[0].title, "So Much Has Changed")
@@ -157,9 +184,9 @@ final class ModelDecodingTests: XCTestCase {
                 "title": "So Much Has Changed"
             }
         }
-        """.data(using: .utf8)!
+        """
 
-        let response = try JSONDecoder().decode(ReadMetadataResponse.self, from: json)
+        let response = try JSONDecoder().decode(ReadMetadataResponse.self, from: Data(json.utf8))
         XCTAssertEqual(response.file.filePath, "/music/track.flac")
         XCTAssertEqual(response.file.title, "So Much Has Changed")
     }

@@ -4,6 +4,11 @@
 
 import Foundation
 
+/// Maps the FastAPI error body `{"detail": "..."}` returned on non-200 responses.
+struct ErrorResponse: Decodable {
+    let detail: String
+}
+
 struct SearchResponse: Decodable {
     let tracks: [Track]
     enum CodingKeys: String, CodingKey { case tracks = "Tracks" }
@@ -41,11 +46,11 @@ class APIClient {
     private static let urlBase: String = "http://127.0.0.1:8000"
     static let shared = APIClient()
 
-    // MARK: - /search
+    // MARK: - /search-spotify
 
-    func searchTracks(query: String) async throws -> [Track] {
+    func searchTracksSpotify(query: String) async throws -> [Track] {
         guard let url = URL(
-            string: "\(Self.urlBase)/search"
+            string: "\(Self.urlBase)/search-spotify"
         ) else {
             print("Invalid URL")
             return []
@@ -55,11 +60,32 @@ class APIClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let body: [String: String] = ["query": query]
         request.httpBody = try JSONEncoder().encode(body)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+            let detail = try? JSONDecoder().decode(ErrorResponse.self, from: data)
+            throw APIError.invalidResponse(detail?.detail)
+        }
+        let decoded = try JSONDecoder().decode(SearchResponse.self, from: data)
+        return decoded.tracks
+    }
 
-        // TODO: Check the HTTP status code before decoding. If it's not 200,
-        // decode the error detail from the response body and throw APIError.invalidResponse(_)
-        // instead of attempting to decode SearchResponse — which will always fail on error responses.
-        let (data, _) = try await URLSession.shared.data(for: request)
+    // MARK: - /search-itunes
+
+    func searchTracksItunes(query: String) async throws -> [Track] {
+        guard let url = URL(string: "\(Self.urlBase)/search-itunes") else {
+            print("Invalid URL")
+            return []
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: String] = ["query": query]
+        request.httpBody = try JSONEncoder().encode(body)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+            let detail = try? JSONDecoder().decode(ErrorResponse.self, from: data)
+            throw APIError.invalidResponse(detail?.detail)
+        }
         let decoded = try JSONDecoder().decode(SearchResponse.self, from: data)
         return decoded.tracks
     }
@@ -78,11 +104,11 @@ class APIClient {
         let body: [String: String] = ["file_path": filePath]
         request.httpBody = try JSONEncoder().encode(body)
 
-        // TODO: Check the HTTP status code before decoding. If it's not 200,
-        // decode the error detail from the response body and throw APIError.invalidResponse(_)
-        // instead of attempting to decode ReadMetadataResponse — which will always fail on error responses.
-
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+            let detail = try? JSONDecoder().decode(ErrorResponse.self, from: data)
+            throw APIError.invalidResponse(detail?.detail)
+        }
         let decoded = try JSONDecoder().decode(ReadMetadataResponse.self, from: data)
         return decoded.file
     }

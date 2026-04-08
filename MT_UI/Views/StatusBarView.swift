@@ -18,11 +18,11 @@ struct StatusBarView: View {
             Spacer()
 
             HStack(spacing: 6) {
-                Text(selectedFile?.format ?? "—") // TODO: populate once backend returns format field
+                Text(selectedFile?.format ?? "—")
                 Divider().frame(height: 12)
-                Text(selectedFile?.sampleRate.map { "\($0 / 1000).\(($0 % 1000) / 100) kHz" } ?? "—") // TODO: populate once backend returns sample_rate field
+                Text(selectedFile?.sampleRate.map { "\($0 / 1000).\(($0 % 1000) / 100) kHz" } ?? "—")
                 Divider().frame(height: 12)
-                Text(selectedFile?.bitDepth.map { "\($0)-bit" } ?? "—") // TODO: populate once backend returns bit_depth field
+                Text(selectedFile?.bitDepth.map { "\($0)-bit" } ?? "—")
             }
             .foregroundColor(.secondary)
         }

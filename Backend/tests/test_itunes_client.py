@@ -19,7 +19,7 @@ class TestSearchTrack:
         query = "The Beatles"
         test = iTunesClient()
         response = test.search_track(query)
-        assert type(response[0]) == iTunesTrack
+        assert isinstance(response[0], iTunesTrack)
 
 
     def test_search_with_empty_query_raises_error(self):
@@ -28,7 +28,7 @@ class TestSearchTrack:
         test = iTunesClient()
 
         with pytest.raises(ValueError) as excinfo:
-            response = test.search_track(query)
+            test.search_track(query)
         assert "Query must not be empty" in str(excinfo.value)
 
 
@@ -39,7 +39,7 @@ class TestGetTrackMetadata:
         trackId = '1440899019'
         test = iTunesClient()
         response = test.get_track_metadata(trackId)
-        assert type(response) == iTunesTrack
+        assert isinstance(response, iTunesTrack)
 
 
     def test_invalid_track_id_raises_error(self):
@@ -47,7 +47,7 @@ class TestGetTrackMetadata:
         trackId = 'hagyugwegqw73e32f'
         test = iTunesClient()
         with pytest.raises(ValueError) as excinfo:
-            response = test.get_track_metadata(trackId)
+            test.get_track_metadata(trackId)
         assert "Invalid iTunes Track ID" in str(excinfo.value)
 
 
@@ -58,7 +58,7 @@ class TestGetAlbumArtwork:
         trackId = '1440899019'
         test = iTunesClient()
         response = test.get_album_artwork(trackId)
-        assert type(response) == bytes
+        assert isinstance(response, bytes)
 
 
     def test_bad_artwork_url_raises_error(self):

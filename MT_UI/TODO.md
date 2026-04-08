@@ -11,9 +11,10 @@
 ### APIClient.swift
 - [x] Singleton (`static let shared`)
 - [x] Base URL constant
-- [x] `SearchResponse` wrapper struct for `/search` response
+- [x] `SearchResponse` wrapper struct for `/search-spotify` and `/search-itunes` responses
 - [x] `APIError` enum — `invalidResponse(String?)`, `decodingFailed`, `networkUnavailable`
-- [x] `searchTracks(query:)` — POST /search, decode `SearchResponse`, return `[Track]`
+- [x] `searchTracksSpotify(query:)` — POST /search-spotify, decode `SearchResponse`, return `[Track]`
+- [ ] `searchTracksItunes(query:)` — POST /search-itunes, decode `SearchResponse`, return `[Track]`
 - [x] `readMetadata(filePath:)` — POST /read-metadata, decode `ReadMetadataResponse`, return `MusicFile`
 - [x] `writeMetadata(file:)` — POST /write-metadata, encode `MusicFile` as body
 - [x] `writeArtwork(filePath:artworkPath:)` — POST /write-artwork

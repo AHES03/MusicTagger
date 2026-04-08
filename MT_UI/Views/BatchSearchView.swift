@@ -200,7 +200,7 @@ struct BatchSearchView: View {
                     for file in files {
                         group.addTask {
                             do {
-                                let results = try await APIClient.shared.searchTracks(query: (file.title ?? "") + " " + (file.artist ?? ""))
+                                let results = try await APIClient.shared.searchTracksSpotify(query: (file.title ?? "") + " " + (file.artist ?? ""))
                                 var proposed: MusicFile?
                                 if let bestMatch = results.first {
                                     proposed = file

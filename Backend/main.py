@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from spotify_client import SpotifyClient
+from itunes_client import iTunesClient
 from metadata import MetadataReader, MetadataWriter
 from models import SearchRequest, MetadataPayload, ReadMetadataRequest, WriteArtworkRequest
 from PIL import Image, UnidentifiedImageError
@@ -8,6 +9,7 @@ import httpx
 
 app = FastAPI()
 spotify = SpotifyClient()
+itunes = iTunesClient()
 
 
 
@@ -19,8 +21,8 @@ def health_check():
     return resp
 
 
-@app.post('/search',status_code=200)
-def search(request: SearchRequest):
+@app.post('/search-spotify', status_code=200)
+def search_spotify(request: SearchRequest):
     """
     @brief Search Spotify for tracks matching the query.
     @param request SearchRequest containing the query string.
@@ -35,7 +37,23 @@ def search(request: SearchRequest):
     return {'Tracks': resp}
 
 
-@app.post('/read-metadata',status_code=200)
+@app.post('/search-itunes', status_code=200)
+def search_itunes(request: SearchRequest):
+    """
+    @brief Search iTunes for tracks matching the query.
+    @param request SearchRequest containing the query string.
+    @return JSON with a list of iTunesTrack objects under key 'Tracks'.
+    @throws HTTPException 422 if query is empty.
+    """
+    query = request.query
+    try:
+        resp = itunes.search_track(query)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    return {'Tracks': resp}
+
+
+@app.post('/read-metadata', status_code=200)
 def read_metadata(request: ReadMetadataRequest):
     """
     @brief Read and return existing metadata from a local audio_MT file.
