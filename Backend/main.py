@@ -4,8 +4,13 @@ from itunes_client import iTunesClient
 from metadata import MetadataReader, MetadataWriter
 from models import SearchRequest, MetadataPayload, ReadMetadataRequest, WriteArtworkRequest
 from PIL import Image, UnidentifiedImageError
+from urllib.parse import urlparse
 import io
+import os
 import httpx
+
+_ALLOWED_ARTWORK_HOSTS = ('.mzstatic.com', '.scdn.co')
+_ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff'}
 
 app = FastAPI()
 spotify = SpotifyClient()
@@ -121,14 +126,20 @@ def write_artwork(request: WriteArtworkRequest):
             raise HTTPException(status_code=400, detail=str(e))
 
     if request.artwork_path.startswith(('http://', 'https://')):
+        parsed = urlparse(request.artwork_path)
+        if parsed.scheme != 'https' or not any(parsed.hostname.endswith(h) for h in _ALLOWED_ARTWORK_HOSTS):
+            raise HTTPException(status_code=422, detail='Artwork URL host not allowed')
         image = httpx.get(request.artwork_path)
         if image.status_code != 200:
             raise HTTPException(status_code=502, detail='Failed to fetch remote artwork')
         image_content = image.content
         buffer = io.BytesIO(image_content)
     else:
+        real_path = os.path.realpath(request.artwork_path)
+        if os.path.splitext(real_path)[1].lower() not in _ALLOWED_IMAGE_EXTENSIONS:
+            raise HTTPException(status_code=422, detail='Artwork file must be an image')
         try:
-            with open(request.artwork_path, 'rb') as f:
+            with open(real_path, 'rb') as f:
                 image_content = f.read()
                 buffer = io.BytesIO(image_content)
 
