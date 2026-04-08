@@ -4,12 +4,14 @@ from itunes_client import iTunesClient
 from metadata import MetadataReader, MetadataWriter
 from models import SearchRequest, MetadataPayload, ReadMetadataRequest, WriteArtworkRequest
 from PIL import Image, UnidentifiedImageError
-from urllib.parse import urlparse
 import io
 import os
+import re
 import httpx
 
-_ALLOWED_ARTWORK_HOSTS = ('.mzstatic.com', '.scdn.co')
+_ARTWORK_URL_RE = re.compile(
+    r'^(https://[a-zA-Z0-9.\-]+\.(?:mzstatic\.com|scdn\.co)/[^\s#]*)$'
+)
 _ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff'}
 
 app = FastAPI()
@@ -126,16 +128,19 @@ def write_artwork(request: WriteArtworkRequest):
             raise HTTPException(status_code=400, detail=str(e))
 
     if request.artwork_path.startswith(('http://', 'https://')):
-        parsed = urlparse(request.artwork_path)
-        if parsed.scheme != 'https' or not any(parsed.hostname.endswith(h) for h in _ALLOWED_ARTWORK_HOSTS):
+        m = _ARTWORK_URL_RE.fullmatch(request.artwork_path)
+        if not m:
             raise HTTPException(status_code=422, detail='Artwork URL host not allowed')
-        image = httpx.get(request.artwork_path)
+        image = httpx.get(m.group(1))
         if image.status_code != 200:
             raise HTTPException(status_code=502, detail='Failed to fetch remote artwork')
         image_content = image.content
         buffer = io.BytesIO(image_content)
     else:
         real_path = os.path.realpath(request.artwork_path)
+        home_dir = os.path.expanduser('~')
+        if not real_path.startswith(home_dir + os.sep):
+            raise HTTPException(status_code=422, detail='Artwork path not allowed')
         if os.path.splitext(real_path)[1].lower() not in _ALLOWED_IMAGE_EXTENSIONS:
             raise HTTPException(status_code=422, detail='Artwork file must be an image')
         try:
