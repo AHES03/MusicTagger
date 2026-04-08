@@ -15,18 +15,14 @@ Browse your local music library, search Spotify or iTunes for the correct track,
 ## Screenshots
 
 <p align="center">
-  <img src="docs/MISC/Image_startup.png" width="700" alt="Startup — empty state">
-  <br><em>Empty state on first launch</em>
+  <img src="docs/MISC/Image_startup.png" width="220" alt="Startup — empty state">
+  &nbsp;
+  <img src="docs/MISC/SCR-20260409-bncp.png" width="220" alt="Main window with loaded library">
+  &nbsp;
+  <img src="docs/MISC/SCR-20260409-bohv.png" width="220" alt="Batch Review sheet">
 </p>
-
 <p align="center">
-  <img src="docs/MISC/SCR-20260409-bncp.png" width="700" alt="Main window with loaded library">
-  <br><em>Browsing a loaded library with metadata editor</em>
-</p>
-
-<p align="center">
-  <img src="docs/MISC/SCR-20260409-bohv.png" width="700" alt="Batch Review sheet">
-  <br><em>Batch Review — applying metadata to 101 files</em>
+  <em>Empty state &nbsp;·&nbsp; Library with metadata editor &nbsp;·&nbsp; Batch Review</em>
 </p>
 
 ---
@@ -41,7 +37,6 @@ Browse your local music library, search Spotify or iTunes for the correct track,
 - Embed album artwork directly into audio files — accepts local image files or remote URLs
 - Artwork is fetched at full resolution (up to 3000×3000) from iTunes
 - Supports FLAC, MP3, AAC, M4A, and WAV via automatic format detection
-- Python backend launches automatically on app start — no manual setup needed at runtime
 
 ---
 
@@ -139,7 +134,6 @@ venv/bin/python3 -m uvicorn main:app --host 127.0.0.1 --port 8000
 
 Open `MT_UI/MT_UI.xcodeproj` in Xcode and run the app.
 
-In the final bundled distribution the app launches the backend binary automatically. During development, start the backend manually in a terminal as shown above — the app will connect to it on startup.
 
 ---
 
