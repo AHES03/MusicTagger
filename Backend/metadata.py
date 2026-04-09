@@ -27,8 +27,21 @@ class MetadataReader:
         @brief Read and return all existing metadata fields from the file.
         @return A MetadataPayload containing title, artist, album, track_number, date, genre, spotify_id.
         """
-        track_number_raw = self.audio_MT['tracknumber'].first
-        disc_namer_raw = self.audio_MT['discnumber'].first
+        def safe_int(val):
+            try:
+                return int(val)
+            except (TypeError, ValueError):
+                return None
+
+        try:
+            track_number_raw = self.audio_MT['tracknumber'].first
+        except ValueError:
+            track_number_raw = None
+
+        try:
+            disc_namer_raw = self.audio_MT['discnumber'].first
+        except ValueError:
+            disc_namer_raw = None
 
         artwork = self.audio_MT['artwork']
         image_encoded = None
@@ -41,13 +54,13 @@ class MetadataReader:
             'title': self.audio_MT['tracktitle'].first,
             'artist': self.audio_MT['artist'].first,
             'album': self.audio_MT['album'].first,
-            'track_number': int(track_number_raw) if track_number_raw is not None else None,
+            'track_number': safe_int(track_number_raw),
             'date': self.audio_mutagen.get('date', [None])[0],
             'genre': self.audio_MT['genre'].first,
             'comment': self.audio_MT['comment'].first,
             'album_artist': self.audio_MT['albumartist'].first,
             'composer': self.audio_MT['composer'].first,
-            'disc_number': int(disc_namer_raw) if disc_namer_raw is not None else None,
+            'disc_number': safe_int(disc_namer_raw),
             'is_compilation': self.audio_MT['compilation'].first,
             'artwork_data': image_encoded,
             'sample_rate': self.audio_mutagen.info.sample_rate,

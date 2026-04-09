@@ -10,8 +10,8 @@ class SpotifyClient:
     """@brief Handles all communication with the Spotify Web API."""
 
     def __init__(self):
-        ## @brief Initialises the client by loading credentials from .env.
-        load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+        ## @brief Initialises the client by loading credentials from ~/.config/musictagger/.env.
+        load_dotenv(os.path.join(os.path.expanduser('~'), '.config', 'musictagger', '.env'))
         self.client_id = os.getenv('SPOTIFY_CLIENT_ID')
         self.client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
         self.sp_client =None
