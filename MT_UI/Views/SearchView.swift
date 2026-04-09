@@ -42,6 +42,8 @@ struct SearchSheetView: View {
 
     func searchSpotify(query: String) {
         Task {
+            errorMessage = nil
+            searchResults = []
             do {
                 isLoading = true
                 searchResults = try await APIClient.shared.searchTracksSpotify(query: query)
@@ -54,6 +56,8 @@ struct SearchSheetView: View {
 
     func searchItunes(query: String) {
         Task {
+            errorMessage = nil
+            searchResults = []
             do {
                 isLoading = true
                 searchResults = try await APIClient.shared.searchTracksItunes(query: query)

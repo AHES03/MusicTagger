@@ -11,11 +11,13 @@ class SpotifyClient:
 
     def __init__(self):
         ## @brief Initialises the client by loading credentials from ~/.config/musictagger/.env.
+        ## Credentials are optional — sp_client remains None if not provided.
         load_dotenv(os.path.join(os.path.expanduser('~'), '.config', 'musictagger', '.env'))
         self.client_id = os.getenv('SPOTIFY_CLIENT_ID')
         self.client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
-        self.sp_client =None
-        self.authenticate()
+        self.sp_client = None
+        if self.client_id and self.client_secret:
+            self.authenticate()
 
     def authenticate(self) -> None:
         """
@@ -37,6 +39,8 @@ class SpotifyClient:
         """
         if not query:
             raise ValueError('Query must not be empty')
+        if self.sp_client is None:
+            raise ValueError('Spotify credentials not configured')
         search_results = []
         results = self.sp_client.search(query)
         for track in results['tracks']['items']:
