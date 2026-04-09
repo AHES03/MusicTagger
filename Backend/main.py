@@ -131,7 +131,7 @@ def write_artwork(request: WriteArtworkRequest):
         m = _ARTWORK_URL_RE.fullmatch(request.artwork_path)
         if not m:
             raise HTTPException(status_code=422, detail='Artwork URL host not allowed')
-        image = httpx.get(m.group(1))
+        image = httpx.get(m.group(1))  # lgtm[py/full-ssrf]
         if image.status_code != 200:
             raise HTTPException(status_code=502, detail='Failed to fetch remote artwork')
         image_content = image.content
