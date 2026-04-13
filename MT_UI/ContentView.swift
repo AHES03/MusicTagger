@@ -104,70 +104,79 @@ struct ContentView: View {
             }
             .navigationTitle("")
             .toolbar {
-                if !isSearching {
-                    ToolbarItem(placement: .navigation) {
-                        Button(action: { undoManager?.undo() }) {
-                            Image(systemName: "arrow.uturn.backward")
-                        }
-                    }
-                    ToolbarItem(placement: .navigation) {
-                        Button(action: { undoManager?.redo() }) {
-                            Image(systemName: "arrow.uturn.forward")
-                        }
+                // MARK: Undo / Redo — always visible, unaffected by search state
+                ToolbarItem(placement: .navigation) {
+                    Button(action: { undoManager?.undo() }) {
+                        Image(systemName: "arrow.uturn.backward")
                     }
                 }
-                ToolbarItemGroup(placement: .primaryAction) {
-                    Button(action: {
-                        let panel = NSOpenPanel()
-                        panel.allowsMultipleSelection = true
-                        panel.canChooseDirectories = true
-                        panel.allowedContentTypes = [.audio]
-                        guard panel.runModal() == .OK else { return }
-                        func importURL(_ url: URL, depth: Int) {
-                            let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
-                            let isAudio = ["flac", "mp3", "m4a", "aac", "wav"].contains(url.pathExtension.lowercased())
-                            if isDirectory, depth < 3 {
-                                let childUrls = (try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isDirectoryKey])) ?? []
-                                for childUrl in childUrls {
-                                    importURL(childUrl, depth: depth + 1)
+                ToolbarItem(placement: .navigation) {
+                    Button(action: { undoManager?.redo() }) {
+                        Image(systemName: "arrow.uturn.forward")
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    HStack(spacing: isSearching ? 0 : 8) {
+                        // MARK: Folder + Batch — collapse when searching
+                        HStack(spacing: 8) {
+                            Button(action: {
+                                let panel = NSOpenPanel()
+                                panel.allowsMultipleSelection = true
+                                panel.canChooseDirectories = true
+                                panel.allowedContentTypes = [.audio]
+                                guard panel.runModal() == .OK else { return }
+                                func importURL(_ url: URL, depth: Int) {
+                                    let isDirectory = (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true
+                                    let isAudio = ["flac", "mp3", "m4a", "aac", "wav"].contains(url.pathExtension.lowercased())
+                                    if isDirectory, depth < 3 {
+                                        let childUrls = (try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: [.isDirectoryKey])) ?? []
+                                        for childUrl in childUrls {
+                                            importURL(childUrl, depth: depth + 1)
+                                        }
+                                    } else if isAudio {
+                                        Task { @MainActor in
+                                            do {
+                                                try await files.append(APIClient.shared.readMetadata(filePath: url.path))
+                                            } catch {}
+                                        }
+                                    }
                                 }
-                            } else if isAudio {
-                                Task { @MainActor in
-                                    do {
-                                        try await files.append(APIClient.shared.readMetadata(filePath: url.path))
-                                    } catch {}
+                                for url in panel.urls {
+                                    importURL(url, depth: 0)
                                 }
+                            }) {
+                                Image(systemName: "folder.badge.plus")
+                            }
+                            Button(action: { showingBatchSearch = true }) {
+                                Image(systemName: "wand.and.stars")
                             }
                         }
-                        for url in panel.urls {
-                            importURL(url, depth: 0)
-                        }
-                    }) {
-                        Image(systemName: "folder.badge.plus")
-                    }
-                    Button(action: { showingBatchSearch = true }) {
-                        Image(systemName: "wand.and.stars")
-                    }
-                    HStack {
-                        FocusableTextField(text: $searchQuery, isFocused: isSearching) {
-                            withAnimation(.easeInOut) { isSearching = false }
-                        }
-                        .frame(width: isSearching ? 200 : 0)
+                        .frame(width: isSearching ? 0 : nil)
+                        .opacity(isSearching ? 0 : 1)
+                        .scaleEffect(isSearching ? 0.8 : 1)
                         .clipped()
-                        if !isSearching {
-                            Button(action: {
-                                searchQuery = ""
-                                withAnimation(.easeInOut) { isSearching.toggle() }
-                            }) {
-                                Image(systemName: "magnifyingglass")
+                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSearching)
+
+                        // MARK: Search — text field slides in from trailing edge
+                        HStack(spacing: 4) {
+                            FocusableTextField(text: $searchQuery, isFocused: isSearching) {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { isSearching = false }
                             }
-                        }
-                        if isSearching {
+                            .frame(width: isSearching ? 180 : 0)
+                            .opacity(isSearching ? 1 : 0)
+                            .offset(x: isSearching ? 0 : 20)
+                            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSearching)
+
+                            if !searchQuery.isEmpty {
+                                Button(action: { searchQuery = "" }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                }
+                            }
+
                             Button(action: {
-                                searchQuery = ""
-                                withAnimation(.easeInOut) { isSearching.toggle() }
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { isSearching.toggle() }
                             }) {
-                                Image(systemName: "xmark.circle.fill")
+                                Image(systemName: isSearching ? "xmark" : "magnifyingglass")
                             }
                         }
                     }
