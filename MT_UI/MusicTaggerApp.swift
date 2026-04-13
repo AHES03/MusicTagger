@@ -124,7 +124,7 @@ struct MT_UIApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(isBackendOnline: backendLauncher.isOnline)
                 .onAppear {
                     let configFile = FileManager.default.homeDirectoryForCurrentUser
                         .appendingPathComponent(".config/musictagger/.env")

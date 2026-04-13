@@ -97,6 +97,10 @@ class MetadataWriter:
         self.audio_MT['artist'] = metadata.artist
         self.audio_MT['album'] = metadata.album
         self.audio_MT['tracknumber'] = str(metadata.track_number)
+        # TODO: These guards prevent clearing fields — a user emptying comment/genre/etc.
+        # sends None, which skips the write and leaves the original tag on disk.
+        # Fix: write unconditionally (passing None to music_tag clears the tag).
+        # Same issue applies to album_artist, composer, disc_number, is_compilation, genre.
         if metadata.comment is not None:
             self.audio_MT['comment'] = metadata.comment
         if metadata.album_artist is not None:

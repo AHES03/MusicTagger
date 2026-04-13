@@ -63,7 +63,7 @@ struct ContentView: View {
     @State var searchQuery: String = ""
     @State var isSearching: Bool = false
     @State var showingBatchSearch: Bool = false
-
+    var isBackendOnline: Bool
     var filteredFiles: [MusicFile] {
         searchQuery.isEmpty ? files : files.filter { file in
             (file.title ?? "").localizedCaseInsensitiveContains(searchQuery) || (file.album ?? "").localizedCaseInsensitiveContains(searchQuery) ||
@@ -96,7 +96,11 @@ struct ContentView: View {
                     .navigationSplitViewColumnWidth(min: 300, ideal: 350, max: 800)
             } detail: {
                 // Right Pane: File List
-                FileListView(files: $files, onSelect: $selectedFile, displayedFiles: filteredFiles)
+                if isBackendOnline{
+                    FileListView(files: $files, onSelect: $selectedFile, displayedFiles: filteredFiles)
+                }else{
+                    FileLoadingView()
+                }
             }
             .navigationTitle("")
             .toolbar {
@@ -201,5 +205,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(isBackendOnline: true)
 }

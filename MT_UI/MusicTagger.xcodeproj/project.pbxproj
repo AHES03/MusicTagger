@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9837B2EB2F8CC1FB00E4E71C /* FileLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9837B2EA2F8CC1FB00E4E71C /* FileLoadingView.swift */; };
 		98929A092F678D73002B1F1C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98929A062F678D73002B1F1C /* Assets.xcassets */; };
 		98929A162F678D73002B1F1C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A072F678D73002B1F1C /* ContentView.swift */; };
 		98929A172F678D73002B1F1C /* MusicTaggerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98929A082F678D73002B1F1C /* MusicTaggerApp.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9837B2EA2F8CC1FB00E4E71C /* FileLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLoadingView.swift; sourceTree = "<group>"; };
 		98929A062F678D73002B1F1C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		98929A072F678D73002B1F1C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		98929A082F678D73002B1F1C /* MusicTaggerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicTaggerApp.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				98929A732F679B2F002B1F1C /* FileListView.swift */,
 				98929A742F679B2F002B1F1C /* MetadataEditorView.swift */,
 				98929A752F679B2F002B1F1C /* SearchView.swift */,
+				9837B2EA2F8CC1FB00E4E71C /* FileLoadingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				98929A7E2F679B2F002B1F1C /* FileListView.swift in Sources */,
 				98929A802F679B2F002B1F1C /* Track.swift in Sources */,
 				98929A822F679B2F002B1F1C /* BackendLauncher.swift in Sources */,
+				9837B2EB2F8CC1FB00E4E71C /* FileLoadingView.swift in Sources */,
 				98929A162F678D73002B1F1C /* ContentView.swift in Sources */,
 				98929A172F678D73002B1F1C /* MusicTaggerApp.swift in Sources */,
 			);
