@@ -10,6 +10,8 @@ private struct FocusableTextField: NSViewRepresentable {
     @Binding var text: String
     var isFocused: Bool
     var onSubmit: () -> Void
+    // TODO: Add @Binding var clearTrigger: Bool — when true, force-set nsView.stringValue = ""
+    // and reset clearTrigger back to false, bypassing the currentEditor() guard.
 
     func makeNSView(context: Context) -> NSTextField {
         let field = NSTextField()
@@ -20,11 +22,22 @@ private struct FocusableTextField: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSTextField, context _: Context) {
-        if nsView.stringValue != text {
-            nsView.stringValue = text
+        // Skip stringValue assignment while the field is active — currentEditor() returns the
+        // field editor (NSTextView) when typing, nil otherwise. Setting stringValue while the
+        // field editor is live resets the cursor to position 0 on every keystroke.
+        // TODO: If clearTrigger is true, bypass this guard, force-set stringValue = "", reset clearTrigger.
+        if nsView.currentEditor() == nil {
+            if nsView.stringValue != text {
+                nsView.stringValue = text
+            }
         }
-        if isFocused {
-            DispatchQueue.main.async {
+
+        // Only request focus when the field is not already active — calling makeFirstResponder
+        // on an already-focused field resigns and re-creates the field editor, resetting the cursor.
+        // Delayed to allow the width animation (spring ~0.3s) to settle before the field editor
+        // is created — otherwise the placeholder renders against a near-zero frame width.
+        if isFocused && nsView.currentEditor() == nil {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
                 nsView.window?.makeFirstResponder(nsView)
             }
         }
@@ -53,6 +66,9 @@ private struct FocusableTextField: NSViewRepresentable {
             }
             return false
         }
+
+        // TODO: Implement controlTextDidEndEditing — call parent.onSubmit() when parent.text is empty
+        // This closes the search field when the user clicks away with an empty query
     }
 }
 
@@ -159,7 +175,9 @@ struct ContentView: View {
 
                         // MARK: Search — text field slides in from trailing edge
                         HStack(spacing: 4) {
-                            FocusableTextField(text: $searchQuery, isFocused: isSearching) {
+                            // TODO: Add @State var clearTrigger = false, pass as clearTrigger: $clearTrigger
+                        // Set clearTrigger = true in the X button action instead of just searchQuery = ""
+                        FocusableTextField(text: $searchQuery, isFocused: isSearching) {
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { isSearching = false }
                             }
                             .frame(width: isSearching ? 180 : 0)
@@ -167,16 +185,14 @@ struct ContentView: View {
                             .offset(x: isSearching ? 0 : 20)
                             .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSearching)
 
-                            if !searchQuery.isEmpty {
-                                Button(action: { searchQuery = "" }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                }
-                            }
-
                             Button(action: {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { isSearching.toggle() }
+                                if !searchQuery.isEmpty {
+                                    searchQuery = ""
+                                } else {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { isSearching = true }
+                                }
                             }) {
-                                Image(systemName: isSearching ? "xmark" : "magnifyingglass")
+                                Image(systemName: searchQuery.isEmpty ? "magnifyingglass" : "xmark")
                             }
                         }
                     }
