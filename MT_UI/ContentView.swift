@@ -32,12 +32,13 @@ private struct FocusableTextField: NSViewRepresentable {
             }
         }
 
-        // Only request focus when the field is not already active — calling makeFirstResponder
-        // on an already-focused field resigns and re-creates the field editor, resetting the cursor.
         // Delayed to allow the width animation (spring ~0.3s) to settle before the field editor
         // is created — otherwise the placeholder renders against a near-zero frame width.
-        if isFocused && nsView.currentEditor() == nil {
+        // Guard is inside the block so it re-evaluates at fire time, not schedule time —
+        // prevents stacked makeFirstResponder calls from file-load re-renders resetting the cursor.
+        if isFocused {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                guard nsView.currentEditor() == nil else { return }
                 nsView.window?.makeFirstResponder(nsView)
             }
         }
