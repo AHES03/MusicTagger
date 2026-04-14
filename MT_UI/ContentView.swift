@@ -10,9 +10,7 @@ private struct FocusableTextField: NSViewRepresentable {
     @Binding var text: String
     var isFocused: Bool
     var onSubmit: () -> Void
-    // TODO: Add @Binding var clearTrigger: Bool — when true, force-set nsView.stringValue = ""
-    // and reset clearTrigger back to false, bypassing the currentEditor() guard.
-
+    @Binding var clearTrigger: Bool
     func makeNSView(context: Context) -> NSTextField {
         let field = NSTextField()
         field.placeholderString = "Search ..."
@@ -25,12 +23,14 @@ private struct FocusableTextField: NSViewRepresentable {
         // Skip stringValue assignment while the field is active — currentEditor() returns the
         // field editor (NSTextView) when typing, nil otherwise. Setting stringValue while the
         // field editor is live resets the cursor to position 0 on every keystroke.
-        // TODO: If clearTrigger is true, bypass this guard, force-set stringValue = "", reset clearTrigger.
-        if nsView.currentEditor() == nil {
-            if nsView.stringValue != text {
-                nsView.stringValue = text
-            }
+        // clearTrigger bypasses the currentEditor() guard to force-clear the field from outside.
+        if clearTrigger {
+            nsView.stringValue = ""
+            nsView.currentEditor()?.string = ""
+            DispatchQueue.main.async { self.clearTrigger = false }
+            return
         }
+
 
         // Delayed to allow the width animation (spring ~0.3s) to settle before the field editor
         // is created — otherwise the placeholder renders against a near-zero frame width.
@@ -67,9 +67,9 @@ private struct FocusableTextField: NSViewRepresentable {
             }
             return false
         }
-
-        // TODO: Implement controlTextDidEndEditing — call parent.onSubmit() when parent.text is empty
-        // This closes the search field when the user clicks away with an empty query
+        func controlTextDidEndEditing(_ notification: Notification) {
+            parent.onSubmit()
+        }
     }
 }
 
@@ -80,6 +80,7 @@ struct ContentView: View {
     @State var searchQuery: String = ""
     @State var isSearching: Bool = false
     @State var showingBatchSearch: Bool = false
+    @State private var clearTrigger: Bool = false
     var isBackendOnline: Bool
     var filteredFiles: [MusicFile] {
         searchQuery.isEmpty ? files : files.filter { file in
@@ -176,24 +177,23 @@ struct ContentView: View {
 
                         // MARK: Search — text field slides in from trailing edge
                         HStack(spacing: 4) {
-                            // TODO: Add @State var clearTrigger = false, pass as clearTrigger: $clearTrigger
-                        // Set clearTrigger = true in the X button action instead of just searchQuery = ""
-                        FocusableTextField(text: $searchQuery, isFocused: isSearching) {
+                            FocusableTextField(text: $searchQuery, isFocused: isSearching, onSubmit: {
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { isSearching = false }
-                            }
+                            }, clearTrigger: $clearTrigger)
                             .frame(width: isSearching ? 180 : 0)
                             .opacity(isSearching ? 1 : 0)
                             .offset(x: isSearching ? 0 : 20)
                             .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSearching)
 
                             Button(action: {
-                                if !searchQuery.isEmpty {
+                                if !searchQuery.isEmpty && isSearching {
                                     searchQuery = ""
+                                    clearTrigger = true
                                 } else {
                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { isSearching = true }
                                 }
                             }) {
-                                Image(systemName: searchQuery.isEmpty ? "magnifyingglass" : "xmark")
+                                Image(systemName: (!searchQuery.isEmpty && isSearching) ? "xmark" : "magnifyingglass")
                             }
                         }
                     }
